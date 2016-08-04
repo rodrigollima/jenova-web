@@ -1,0 +1,115 @@
+<md-dialog aria-label="Criar Revendedor" style="width:650px"> 
+  <md-header >
+  <div class="md-toolbar-tools" layout="row" layout-align="center center">
+    <div>
+      <i class="material-icons small">business</i>
+    </div>
+    <div flex>
+      <span class="md-headline"> Criar Revendedor</span>
+    </div>
+    <div flex class="right-align">
+      <a style="color:black" href ng-click="closeDialog()">
+        <i class="material-icons">close</i>
+      </a>
+    </div>
+  </div>
+  <md-divider></md-divider>
+ </md-header> 
+  <md-content class="white" layout-padding> 
+    <form name="userForm" ng-submit="$event.preventDefault()"> 
+      <div layout layout-sm="column"> 
+        <md-input-container flex> 
+          <label>Nome do revendedor</label> 
+          <input minlength="3" maxlength="25" required="" name="name" ng-model="newReseller.name" 
+          ng-pattern="/^[a-zA-Z0-9\-_\.]+$/" />
+          <div class="input-hints">
+            Caracteres permitidos: [a-z, _, -, .]
+          </div>
+        </md-input-container> 
+        <md-input-container flex> 
+          <label>Nome da empresa/organização</label> 
+          <input maxlength="40" required="" name="company" ng-model="newReseller.company">
+        </md-input-container> 
+        <md-input-container flex> 
+          <label>E-mail</label> 
+          <input maxlength="50" name="email" ng-model="newReseller.email" ng-pattern="/^.+@.+\..+$/" required=""/>
+          <div ng-messages="userForm.email.$error">
+            <div ng-message="pattern">Precisa ser um e-mail válido</div>
+          </div>
+        </md-input-container>
+      </div> 
+      <div layout layout-sm="column"> 
+        <md-input-container flex> 
+          <label>Telefone</label> 
+          <input name="phone" ng-model="newReseller.phone">
+        </md-input-container> 
+        <md-input-container flex> 
+          <label>Login do cliente</label> 
+          <input minlength="3" maxlength="25" required="" name="login" ng-model="newReseller.login" required=""
+              ng-pattern="/^[a-zA-Z0-9\-_\.]+$/" />
+        <div class="input-hints">
+          Caracteres permitidos: [a-z, _, -, .]
+        </div>
+        </md-input-container> 
+        <md-input-container flex> 
+          <label>Nome de exibição do login</label> 
+          <input maxlength="40" required="" name="login_name" ng-model="newReseller.login_name">
+        </md-input-container> 
+      </div> 
+      <div layout layout-sm="column"> 
+        <md-input-container flex> 
+          <label style="top:2px;line-height:0px" for="password">Senha</label> 
+          <input ng-model="newReseller.password1" type="password" name="password1"
+          required="" minlength="8" maxlength="20"/>
+        </md-input-container> 
+        <md-input-container flex> 
+          <label style="top:2px;line-height:0px">Confirme a senha</label> 
+          <input ng-model="newReseller.password2" type="password" name="password2"
+          required="" minlength="8" maxlength="20" compare-to="newReseller.password1" />
+        </md-input-container> 
+      </div>
+       
+      <div layout-sm="coloumn">
+        <md-chips ng-model="newReseller.services" md-autocomplete-snap
+                  md-transform-chip="transformChip($chip)"
+                  md-require-match="true">
+          <md-autocomplete
+            md-delay="800"
+            md-search-text="searchText" 
+            md-items="item in querySearch(searchText)"
+            md-item-text="item.name"
+            placeholder="Nome do serviço"
+            md-min-length="1"
+            md-input-maxlength="25"
+            >
+            <md-item-template ng-model="service_desc">
+              <span md-highlight-text="searchText" md-highlight-flags="^i">{{item.name}} : {{item.service_desc}}</span>
+            </md-item-template>
+            <md-not-found>
+              Nenhum serviço com o nome "{{searchText}}" foi encontrado.
+            </md-not-found>
+          </md-autocomplete>  
+          <md-chip-template>
+            <span>
+              <em>{{$chip.service_desc}}</em>
+            </span>
+          </md-chip-template>
+        </md-chips>
+      </div>
+      <div layout-sm="column">
+        <md-input-container> 
+          <md-checkbox class="md-caption" ng-disabled="true" ng-checked="true" flex>Administrador</md-checkbox>
+          <md-checkbox class="md-caption" ng-disabled="true" flex>Acesso à API</md-checkbox>
+        </md-input-container>
+      </div>
+    </form> 
+  </md-content>
+  <md-progress-linear ng-show="newReseller.$resolved" md-mode="indeterminate"></md-progress-linear>
+  <md-dialog-actions class="grey lighten-3" layout="row"> 
+    <span flex></span> 
+    <md-button 
+      ng-disabled="!(userForm.$valid === true)"
+      ng-click="saveCreateDialog()" class="md-primary">Salvar</md-button> 
+    <md-button ng-click="closeDialog()">Cancelar</md-button> 
+  </md-dialog-actions>
+</md-dialog>

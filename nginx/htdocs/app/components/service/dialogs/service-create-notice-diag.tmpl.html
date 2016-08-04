@@ -1,0 +1,108 @@
+<md-dialog aria-label="Criar Comunicado" style="width:600px"> 
+  <md-header >
+    <div class="md-toolbar-tools" layout="row" layout-align="center center">
+      <div>
+        <i class="material-icons small">event_note</i>
+      </div>
+      <div flex>
+        <span class="md-headline"> Criar Comunicado</span>
+      </div>
+      <div flex class="right-align">
+        <a style="color:black" href ng-click="closeDialog()">
+          <i class="material-icons">close</i>
+        </a>
+      </div>
+    </div>
+    <md-divider></md-divider>
+ </md-header> 
+<!-- 
+  <md-content class="white" layout-padding=""> 
+    <div layout="row" layout-align="center center">
+      <div>
+        <i class="material-icons small">event_note</i>
+      </div>
+      <div flex>
+        <span class="md-headline">Criar Comunicado</span>
+      </div>
+      <div flex class="right-align">
+        <a style="color:black" href ng-click="closeDialog()">
+          <i class="material-icons">close</i>
+        </a>
+      </div>
+    </div>
+    <md-divider></md-divider>
+ -->
+  <md-content>
+    
+    <form class="white" layout-padding="" name="noticeForm"> 
+
+      <div layout layout-sm="column"> 
+        <md-input-container flex> 
+          <label>Autor</label> 
+          <input required="" name="author" ng-model="author" ng-disabled="true">
+        </md-input-container> 
+        <md-input-container flex> 
+          <label>Tipo de Comunicado</label> 
+          <md-select ng-model="newNotice.notice_type">
+              <md-option ng-repeat="notice in notices_types" value="{{notice.type}}">
+                {{notice.desc}}
+              </md-option>
+            </md-select>
+        </md-input-container> 
+
+        <md-input-container flex> 
+          <label>Impacto SLA(%)</label> 
+          <input ng-pattern="/^\-?\d+((\.|\,)\d+)?$/" ng-model="newNotice.sla_impact">
+        </md-input-container>
+      </div> 
+
+      <!-- Date -->
+      <div layout layout-sm="column">
+            <input type="datetime-local" ng-model="newNotice.started_at">
+            <input type="datetime-local" ng-model="newNotice.ended_at">
+      </div>
+
+      <!-- Service -->
+      <div>
+      <md-autocomplete
+          md-delay="800"
+          md-selected-item="newNotice.service_name" 
+          md-search-text="searchText" 
+          md-items="item in querySearch(searchText)"
+          md-item-text="item.name"
+          placeholder="Nome do serviço"
+          md-min-length="1"
+          md-input-maxlength="25"
+          >
+          <md-item-template ng-model="newNotice.service_desc">
+            <span md-highlight-text="searchText" md-highlight-flags="^i">{{item.name}} : {{item.service_desc}}</span>
+          </md-item-template>
+          <md-not-found>
+            Nenhum serviço com o nome "{{searchText}}" foi encontrado.
+          </md-not-found>
+        </md-autocomplete>
+      </div>    
+
+      <!-- Text Area -->
+      <div>
+        <textarea placeholder="Comunicado" class="materialize-textarea" ng-model="newNotice.description"></textarea>
+      </div>       
+      <div>
+         <md-checkbox ng-model="newNotice.sendMail">Enviar Email</md-checkbox>
+      </div>
+    </form> 
+  
+  <!-- Buttons -->
+  <md-progress-linear ng-show="newNotice.$resolved" md-mode="indeterminate"></md-progress-linear> 
+  
+  </md-content>
+
+  <md-dialog-actions class="grey lighten-3" layout="row"> 
+    <span flex></span> 
+    <md-button ng-click="closeDialog()"> Cancelar </md-button> 
+    <md-button 
+      ng-disabled="noticeForm.$valid === false"
+      ng-click="saveCreateNoticeDialog(newNotice)" class="md-warn md-raised md-hue-2"> Salvar </md-button> 
+  </md-dialog-actions>
+
+</md-dialog>

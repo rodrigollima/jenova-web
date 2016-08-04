@@ -1,0 +1,107 @@
+<md-dialog aria-label="Alterar Serviço" style="width:700px"> 
+  <md-header >
+    <div class="md-toolbar-tools" layout="row" layout-align="center center">
+      <div>
+        <i class="material-icons small">info_outline</i>
+      </div>
+      <div flex>
+        <span class="md-headline">Serviço / {{currentDomain.currentService.service.service_desc}}</span>
+      </div>
+      <div flex class="right-align">
+        <a style="color:black" href ng-click="closeDialog()">
+          <i class="material-icons">close</i>
+        </a>
+      </div>
+    </div>
+  <md-divider></md-divider>
+ </md-header> 
+  <md-content>
+    <div  class="white" flex layout-padding>
+      <div layout="column">
+        <div>
+          <p>
+            Você esta prestes a mudar o estado do serviço {{currentDomain.currentService.service.service_desc}} do domínio {{currentDomain.name}}. 
+          </p>
+        </div>
+      </div>
+        
+      <div flex ng-show="isCurrentServiceEnable">
+          <div layout="row">
+            <div layout-padding>
+              <i class="material-icons small" style="color:red">warning</i>
+            </div>
+          
+            <div layout="column">
+              <p ng-show="isZimbraService">
+                  É importante que tenha excluído todas as contas antes de desativar o serviço. Essa ação irá excluir o domínio criado no serviço Zimbra.
+              </p>
+
+              <p ng-show="isDnsService">
+                É importante que tenha excluído todas as entradas de DNS antes de desativar o serviço. Essa ação irá excluir a zona inteira do domínio.
+              </p>
+
+              <p ng-show="isMxheroService"> 
+                Desativar o serviço mxHero irá indisponibilizar o recebimento de e-mails para seu domínio.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div>  
+        <md-divider></md-divider>
+          <p>
+            Deseja continuar com essa alteração?
+          </p>
+        </div>
+      </div>
+    </md-content> 
+
+     <md-content class="white" layout-padding ng-hide="warningEdit">
+      <span class="md-title">
+        Mudando estado do serviço...
+      </span>
+      
+      <div layout-padding>
+        <md-list ng-hide="domainListOff">
+          <md-list-item>
+            <p class="md-subhead"> Solicitando sincronização... </p>
+
+            <md-progress-circular md-diameter="40" ng-hide="syncDomain" md-mode="indeterminate">
+            </md-progress-circular>
+            <i class="material-icons small" ng-show="syncDomain" style="color:#33691e">check</i>
+          </md-list-item>
+          <md-list-item ng-show="syncDomain">
+            <p class="md-subhead"> Sincronizando domínio... </p>
+
+            <md-progress-circular md-diameter="40" md-mode="indeterminate" ng-hide="syncDomainZimbra">
+            </md-progress-circular>
+            <i class="material-icons small" ng-show="syncDomainZimbra" 
+              style="{{syncDomainZimbra.color}}">{{syncDomainZimbra.ico}}</i>
+          </md-list-item>
+          <md-list-item ng-show="syncDomainZimbra">
+            <p class="md-subhead"> Sincronizando permissões.... </p>
+
+            <md-progress-circular md-diameter="40" ng-hide="syncDomainZimbraDelegated" md-mode="indeterminate">
+            </md-progress-circular>
+            <i class="material-icons small" ng-show="syncDomainZimbraDelegated" 
+              style="{{syncDomainZimbraDelegated.color}}">{{syncDomainZimbraDelegated.ico}}</i>
+          </md-list-item>
+        </md-list>
+      </div>
+    </md-content>
+    <md-progress-linear ng-show="deactivateServiceButton.syncing" md-mode="indeterminate"></md-progress-linear>
+  </md-content>
+  <md-dialog-actions class="grey lighten-3" layout="row"> 
+
+    <md-button ng-show="{{isCurrentServiceEnable}}" class="md-warn md-raised md-hue-2" ng-click="continueDeactivateDialog()" ng-disabled="deactivateServiceButton.ngDisable"> Desativar </md-button> 
+    
+    <md-button ng-show="{{!isCurrentServiceEnable}}"
+      class="md-warn md-raised md-hue-2" 
+      ng-click="continueActivateDialog()" 
+      ng-disabled="disableActivateButton.ngDisable">
+      {{disableActivateButton.name}}
+    </md-button>
+
+    <md-button ng-click="closeDialog()"> {{disableActivateButton.activateOK && 'OK' || 'CANCELAR'}} </md-button> 
+  </md-dialog-actions>
+</md-dialog>

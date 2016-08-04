@@ -1,0 +1,108 @@
+<div class="container">
+  <!-- Main Menu: START -->
+  <div class="card">
+    <md-data-table-toolbar ng-hide="selected.length || filter.show">
+      <div layout="column">
+        <div class="md-title">{{currentReseller.company || 'Revendedores'}}</div>
+        <div class="md-caption" ng-show="currentReseller">
+          {{'Login: ' + currentReseller.name}}
+        </div>
+      </div>
+      <div flex></div>
+      <md-button class="md-icon-button" ng-click="filter.show = true" ng-hide="isMainMenu">
+        <md-tooltip md-direction="bottom">Busca</md-tooltip>
+        <i class="material-icons md-dark">search</i>
+      </md-button>
+
+      <div layout="row" ng-show="isMainMenu">
+        <md-button class="md-icon-button" ng-click="goToDomain(currentReseller)">
+          <md-tooltip md-direction="bottom">Dominios</md-tooltip>
+          <!-- <i class="material-icons md-dark">domain</i> -->
+          <i class="fa fa-at fa-2x"></i>
+        </md-button>
+        <md-button class="md-icon-button" ng-click="deleteReseller(currentReseller.name)" ng-disabled="isDeleteClientEnabled">
+          <md-tooltip md-direction="bottom">Remover revendedor</md-tooltip>
+          <i class="material-icons md-dark">delete</i>
+        </md-button>
+        <md-button class="md-icon-button" ng-click="disableReseller(currentReseller)">
+          <md-tooltip md-direction="bottom">{{currentReseller.enabled && 'Desativar' || 'Ativar'}} conta</md-tooltip>
+          <i class="material-icons md-dark">{{currentReseller.enabled && 'radio_button_on' || 'radio_button_off'}}</i>
+        </md-button>
+        <md-button class="md-icon-button" ng-disabled="isReadClientEnabled"
+        ng-click="openDialog('app/components/reseller/dialogs/reseller-info-diag.tmpl.html', currentReseller)" >
+          <md-tooltip md-direction="bottom">Informações do revendedor</md-tooltip>
+          <i class="material-icons">info</i>
+        </md-button>
+        <md-button class="md-icon-button" ng-disabled="isEditClientEnabled"
+        ng-click="openDialog('app/components/reseller/dialogs/reseller-edit-diag.tmpl.html', currentReseller)" >
+          <md-tooltip md-direction="bottom">Editar</md-tooltip>
+          <i class="material-icons">edit</i>
+        </md-button>
+        <md-button class="md-icon-button" ng-click="removeMainMenu()">
+          <md-tooltip md-direction="bottom">Fechar menu</md-tooltip>
+          <i class="material-icons md-dark">close</i>
+        </md-button>
+      </div>
+
+    </md-data-table-toolbar>
+
+    <md-progress-linear ng-hide="resellers.$resolved" md-mode="indeterminate"></md-progress-linear> 
+
+    <md-data-table-toolbar ng-show="filter.show && !selected.length && focusSearch()">
+      <i class="material-icons md-dark">search</i>
+      <form flex name="filter.form">
+        <input type="text" ng-model="query.filter" ng-model-options="filter.options" 
+          placeholder="Busque o revendedor desejado" focus-me="focusOn">
+      </form>
+      <md-button class="md-icon-button" ng-click="removeFilter()">
+      <md-tooltip md-direction="bottom">Fechar busca</md-tooltip>
+        <i class="material-icons md-dark">close</i>
+      </md-button>
+    </md-data-table-toolbar>    
+  </div>
+  <!-- Main Menu: END -->
+
+  <!-- This Card will blink on reload -->
+  <!-- Resellers not FOUND Card -->
+  <div layout="row" layout-align="center end" ng-hide="resellers.length">
+    <div flex="70">
+      <md-content layout-padding>
+        <div layout="column">
+          <div flex>
+            <md-divider></md-divider>
+            <div layout="row" layout-align="center center">
+              <div layout-padding>
+                <i class="material-icons large" style="color:blue;opacity:0.2">info_outline</i>
+              </div>
+              <div flex class="md-subhead">
+                Nenhum registro encontrado. <a href ng-click="openDialog('app/components/reseller/dialogs/reseller-create-diag.tmpl.html')">Crie um novo revendedor agora!</a><br>
+                Um revendedor possui um usuário na qual ele pode gerenciar clientes, usuários, domínios com seus respectivos serviços.
+              </div>
+            </div>
+            <md-divider></md-divider>
+          </div>
+        </div>
+      </md-content> 
+    </div>
+  </div>
+
+  <!-- Reseller list -->
+  <div class="card">
+    <md-list ng-show="resellerBodyMenu">
+      <md-list-item ng-click="showMainMenu(reseller)" ng-repeat="reseller in resellers | filter:query.filter | orderBy: 'name' ">
+        <i style="{{reseller.enabled||'color:#bdbdbd'}}" class="material-icons">business</i>
+        <p style="{{reseller.enabled||'color:#bdbdbd'}}"> {{ reseller.name }} </p>
+      </md-list-item>
+    </md-list>
+  </div>
+
+  <!-- Floating ADD button -->
+  <div class="fixed-action-btn" style="bottom: 45px; right: 24px;" >
+    <a ng-click="openDialog('app/components/reseller/dialogs/reseller-create-diag.tmpl.html')" class="btn-floating btn-large waves-effect waves-light pink 
+    {{isWriteUserEnabled && 'disabled'}}">
+      <md-tooltip md-direction="bottom">Criar revendedor</md-tooltip>
+      <i class="large material-icons">add</i>
+    </a>
+  </div>
+  
+</div>

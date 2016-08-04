@@ -1,0 +1,49 @@
+<md-dialog style="width:700px"> 
+  <md-content class="white" layout-padding=""> 
+  <div layout="row" layout-align="center center">
+      <div>
+        <i class="material-icons small">edit</i>
+      </div>
+      <div flex>
+        <span class="md-headline">Editar Registro</span>
+      </div>
+      <div flex class="right-align">
+        <a style="color:black" href ng-click="closeDialog()">
+          <i class="material-icons">close</i>
+        </a>
+      </div>
+    </div>
+    <md-divider></md-divider>
+
+    <form name="recordForm" ng-submit="$event.preventDefault()"> 
+      <div layout layout-sm="column"> 
+        <md-input-container flex> 
+          <label>Nome</label> 
+          <input maxlength="25" ng-disabled="true" required="" name="name" ng-model="currentRecord.name"/>
+        </md-input-container> 
+        <md-input-container flex> 
+          <label>Tipo</label>
+          <input ng-model="currentRecord.type" name="type" ng-disabled="true">        
+        </md-input-container> 
+        <md-input-container flex>
+          <label>Valor</label> 
+          <input name="content" ng-model="currentRecord.content" required=""/>
+        </md-input-container>
+        <md-input-container flex> 
+          <label>TTL</label>
+          <input maxlength="25" ng-pattern="/^[0-9]*$/" required="" name="ttl" ng-model="currentRecord.ttl"/>
+          <div ng-messages="recordForm.ttl.$error">
+            <div ng-message="pattern">Somente números</div>
+          </div>
+        </md-input-container>
+      </div> 
+    </form>
+  </md-content> 
+  <md-progress-linear ng-show="currentRecord.$resolved" md-mode="indeterminate"></md-progress-linear>
+  <div class="md-dialog-actions grey lighten-3" layout="row"> 
+    <span flex></span>
+    <md-button ng-click="closeDialog()"> Cancelar </md-button> 
+    <md-button ng-click="saveEditDialog(currentRecord)" class="md-primary"
+    ng-disabled="!(recordForm.$valid === true)" > Salvar </md-button> 
+  </div>
+</md-dialog>

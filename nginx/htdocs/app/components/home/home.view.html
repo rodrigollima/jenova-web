@@ -1,0 +1,85 @@
+<div class="container">
+  
+  <div layout="row" >
+    <!-- Cards: START -->  
+    <div flex>
+      <div class="row md-caption center">
+        <div class="col s12 m12">
+          <div>
+            
+            <div layout="row">
+              <div flex ng-repeat="card in cards">
+                <div class="chip card hoverable">
+                  <span class="md-title">{{card.size}}</span>
+                  <p>{{card.desc}}</p>
+                </div>  
+              </div>
+          
+            </div>
+          </div>
+        </div>
+      </div>  
+    </div>
+    <!-- Cards: END -->  
+    
+  </div>
+
+  <div class="row">
+    <!-- History: START  --> 
+    <div class="col s12 m6">
+      <ul class="collection card">
+        <li class="collection-item collection-header avatar">
+          <i class="material-icons circle pink">person</i>
+          <span class="md-title">Histórico</span>
+          <p class="md-caption">Atividade dos usuários</p>
+        </li>
+        <div class="pink accent-3 white-text center">
+            <md-divider></md-divider>
+
+          </div>
+        <li class="collection-item" ng-repeat="collection in collections">
+          <div layout="column">
+            <div class="md-subhead">{{collection.user}}
+              <i class="material-icons right">history</i>
+            </div>
+            <div class="md-caption">{{collection.history}}</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <!-- History: END -->
+
+    <!-- Maintenance: START  --> 
+    <div class="col s12 m6">
+      <ul class="collection card">
+        <li class="collection-item collection-header avatar">
+          <i class="material-icons circle pink">announcement</i>
+          <span class="md-title">Manutenções</span>
+          <p class="md-caption">Atividade dos serviços</p>
+        </li>
+        <div class="pink accent-3 white-text center">
+            <md-divider></md-divider>
+
+          </div>
+        <a href="#/" class="collection-item black-text" ng-repeat="rec in maintenance">
+          <div layout="column">
+            <div class="md-subhead">{{rec.service}}
+              
+            </div>
+            <div class="md-caption">
+              {{rec.msg}} 
+              <i class="material-icons right" style="color: {{rec.status.color}}">{{rec.status.ico}}</i>
+              <br/>
+              {{rec.date}}
+
+            </div>
+          </div>
+        </a>
+      </ul>
+    </div>
+    <!-- Maintenance: END -->  
+  </div>
+
+
+</div>
+

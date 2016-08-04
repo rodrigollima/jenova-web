@@ -1,0 +1,67 @@
+.input-hints {
+  /* Position the hint */
+  position: static;
+  left: 2px;
+  right: auto;
+  bottom: 4px;
+  /* Copy styles from ng-messages */
+  font-size: 12px;
+  line-height: 14px;
+  transition: all 0.3s cubic-bezier(0.55, 0, 0.55, 0.2);
+  /* Set our own color */
+  color: grey; 
+}
+
+/* Override bug fix from materialize + angular material. Overwrite CSS */
+input[type=search]:focus:not([readonly]){
+  border-bottom: 0px solid #26a69a !important;
+  box-shadow: 0 0px 0 0 #26a69a !important; 
+}
+
+md-toast {
+  position: fixed;
+}
+
+md-dialog{
+  overflow-y: hidden;
+}
+
+#overlay-loader {
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top:0;
+  left:0;
+  z-index: 10;
+  opacity: 0.8;
+}
+
+html,body {
+  height:100%;
+  margin:0;
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+    background: rgba(255,0,0,0.4); 
+}
+
+md-list md-list-item button.md-button:not([disabled]):hover {
+    background-color: rgba(158, 158, 158, 0.2);
+}
+
+
+/** PLACEHOLDER color **/
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color:    #909;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color:    #909;
+   opacity:  1;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+   color:    #909;
+   opacity:  1;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+   color:    #909;
+}

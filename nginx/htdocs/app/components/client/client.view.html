@@ -1,0 +1,101 @@
+<div class="container">
+  <!-- Main Menu: START -->
+  <div class="card">
+    <md-data-table-toolbar ng-hide="selected.length || filter.show">
+      <div layout="column">
+        <div class="md-title">{{currentClient.company || 'Clientes'}}</div>
+        <div class="md-caption" ng-show="currentClient">
+          {{'Cliente: ' + currentClient.name + ' | ' + 'Revendedor: ' + currentClient.reseller}}
+        </div>
+      </div>
+      <div flex></div>
+      <md-button class="md-icon-button" ng-click="filter.show = true" ng-hide="isMainMenu">
+        <md-tooltip md-direction="bottom">Busca</md-tooltip>
+        <i class="material-icons md-dark" >search</i>
+      </md-button>
+
+      <div layout="row" ng-show="isMainMenu">
+        <md-button class="md-icon-button" ng-click="goToDomain(currentClient)">
+          <md-tooltip md-direction="bottom">Dominios</md-tooltip>
+          <i class="fa fa-at fa-2x"></i>
+        </md-button>
+        <md-button class="md-icon-button" ng-click="deleteClient(currentClient)" ng-show="isDeleteClientEnabled">
+          <md-tooltip md-direction="bottom">Remover cliente</md-tooltip>
+          <i class="material-icons md-dark">delete</i>
+        </md-button>
+        <md-button class="md-icon-button" ng-show="isReadClientEnabled"
+        ng-click="openDialog('app/components/client/dialogs/client-info-diag.tmpl.html', currentClient)" >
+          <md-tooltip md-direction="bottom">Informações do cliente</md-tooltip>
+          <i class="material-icons">info</i>
+        </md-button>
+        <md-button class="md-icon-button" ng-show="isEditClientEnabled"
+        ng-click="openDialog('app/components/client/dialogs/client-edit-diag.tmpl.html', currentClient)" >
+          <md-tooltip md-direction="bottom">Editar</md-tooltip>
+          <i class="material-icons">edit</i>
+        </md-button>
+        <md-button class="md-icon-button" ng-click="removeMainMenu()">
+          <md-tooltip md-direction="bottom">Fechar menu</md-tooltip>
+          <i class="material-icons md-dark">close</i>
+        </md-button>
+      </div>
+
+    </md-data-table-toolbar>
+
+    <md-progress-linear ng-hide="clients.$resolved" md-mode="indeterminate"></md-progress-linear> 
+
+    <md-data-table-toolbar ng-show="filter.show && !selected.length && focusSearch()">
+      <i class="material-icons md-dark">search</i>
+      <form flex name="filter.form">
+        <input type="text" ng-model="query.filter" ng-model-options="filter.options" 
+          placeholder="Busque o cliente desejado" focus-me="focusOn">
+      </form>
+      <md-button class="md-icon-button" ng-click="removeFilter()">
+      <md-tooltip md-direction="bottom">Fechar busca</md-tooltip>
+        <i class="material-icons md-dark">close</i>
+      </md-button>
+    </md-data-table-toolbar>    
+  </div>
+  <!-- Main Menu: END -->
+  
+  <!-- Clients not FOUND Card -->
+  <div layout="row" layout-align="center end" ng-hide="clients.length">
+    <div flex="70">
+      <md-content layout-padding>
+        <div layout="column">
+          <div flex>
+            <md-divider></md-divider>
+            <div layout="row" layout-align="center center">
+              <div layout-padding>
+                <i class="material-icons large" style="color:blue;opacity:0.2">info_outline</i>
+              </div>
+              <div flex class="md-subhead">
+                Nenhum registro encontrado. <a href ng-click="openDialog('app/components/client/dialogs/client-create-diag.tmpl.html', clients)">Crie um novo cliente agora!</a><br>
+                Os clientes são associados a um respectivo revendedor, certifique-se de criá-lo antes de prosseguir na criação de um novo cliente.
+              </div>
+            </div>
+            <md-divider></md-divider>
+          </div>
+        </div>
+      </md-content> 
+    </div>
+  </div>
+
+  <!-- Client list -->
+  <div class="card">
+    <md-list ng-show="clientBodyMenu">
+      <md-list-item ng-click="showMainMenu(client)" ng-repeat="client in clients | filter:query.filter | orderBy: 'name' ">
+        <i class="material-icons">face</i>
+        <p> {{ client.name }} | {{ client.company }}</p>
+      </md-list-item>
+    </md-list>
+  </div>
+
+  <!-- Floating ADD button -->
+  <div class="fixed-action-btn" style="bottom: 45px; right: 24px;" ng-show="isWriteClientEnabled">
+    <a ng-click="openDialog('app/components/client/dialogs/client-create-diag.tmpl.html', clients)" class="btn-floating btn-large waves-effect waves-light pink" >
+      <md-tooltip md-direction="bottom">Criar cliente</md-tooltip>
+      <i class="large material-icons" >add</i>
+    </a>
+  </div>
+  
+</div>

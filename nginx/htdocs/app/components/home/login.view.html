@@ -1,0 +1,31 @@
+<div class="box">
+  <div id="header">
+  <h1 id="logintoregister">Login</h1>
+  </div> 
+    <div class="container">
+      <form ng-submit="login(cred.user, cred.password)">
+        <div class="row">
+          <div class="input-field col s12">
+            <input ng-model="cred.user" id="email" type="text" class="validate" />
+            <label for="email" data-error="wrong" data-success="right">Email</label>
+          </div>
+          <div class="input-field col s12">
+            <input ng-model="cred.password" id="password" type="password" class="validate" />
+            <label for="password">Senha </label>
+          </div>
+          <div class="right">
+            <input class="waves-effect waves-light btn" type="submit" value="Login" />
+            <!--
+            <a class="waves-effect waves-light btn"><i class="material-icons left">send</i>Login</a>
+            -->
+          </div>
+        </div>
+      </form>
+</div>
+    
+  <div id="footer-box">
+    <p class="footer-text">Esqueceu a senha?
+      <span class="sign-up"> Clique aqui</span>
+    </p>
+  </div>
+</div>

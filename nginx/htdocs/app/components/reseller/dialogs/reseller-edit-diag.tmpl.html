@@ -1,0 +1,85 @@
+<md-dialog aria-label="Editar Revendedor" style="width:600px"> 
+  <md-content class="white" layout-padding=""> 
+    <div layout="row" layout-align="center center">
+      <div>
+        <i class="material-icons small">edit</i>
+      </div>
+      <div flex>
+        <span class="md-headline">Editar Revendedor</span>
+      </div>
+      <div flex class="right-align">
+        <a style="color:black" href ng-click="closeDialog()">
+          <i class="material-icons">close</i>
+        </a>
+      </div>
+    </div>
+    <md-divider></md-divider>
+    <form name="userForm"> 
+      <div layout layout-sm="column">
+        <md-input-container flex>
+          <label>Nome do revendedor</label> 
+          <input minlength="3" maxlength="25" required="" name="name" ng-model="currentReseller.name" 
+          ng-pattern="/^[a-zA-Z0-9\-_\.]+$/" ng-disabled="true">
+          <div ng-messages="userForm.name.$error">
+            <div ng-message="pattern">Caractere inválido</div>
+          </div>
+        </md-input-container>
+        <md-input-container flex> 
+          <label>Nome da empresa/organização</label> 
+          <input maxlength="40" required="" name="company" ng-model="currentReseller.company">
+        </md-input-container>
+
+      </div>
+      <div layout layout-sm="column">
+        <md-input-container flex>
+          <label>E-mail</label>
+          <input name="email" maxlength="50"
+            ng-model="currentReseller.email" ng-pattern="/^.+@.+\..+$/" required=""/>
+          <div ng-messages="userForm.email.$error">
+            <div ng-message="pattern">Precisa ser um e-mail válido</div>
+          </div>
+        </md-input-container>
+        <md-input-container flex>
+          <label>Telefone</label> 
+          <input name="phone" ng-model="currentReseller.phone">
+        </md-input-container>
+      </div>
+     <div layout-sm="coloumn">
+        <md-chips ng-model="currentReseller.services" md-autocomplete-snap
+                  md-transform-chip="transformChip($chip)"
+                  md-require-match="true">
+          <md-autocomplete
+            md-delay="800"
+            md-search-text="searchText" 
+            md-items="item in querySearch(searchText)"
+            md-item-text="item.name"
+            placeholder="Nome do serviço"
+            md-min-length="1"
+            md-input-maxlength="25"
+            >
+            <md-item-template ng-model="service_desc">
+              <span md-highlight-text="searchText" md-highlight-flags="^i">{{item.name}} : {{item.service_desc}}</span>
+            </md-item-template>
+            <md-not-found>
+              Nenhum serviço com o nome "{{searchText}}" foi encontrado.
+            </md-not-found>
+          </md-autocomplete>  
+          <md-chip-template>
+            <span>
+              <!-- <strong>{{$chip.name}}</strong> -->
+              <em>{{$chip.service_desc}}</em>
+            </span>
+          </md-chip-template>
+        </md-chips>
+      </div>
+    </form>
+  </md-content>
+  <md-progress-linear ng-show="currentReseller.$resolved" md-mode="indeterminate"></md-progress-linear> 
+  <md-dialog-actions class="grey lighten-3" layout="row"> 
+    <span flex></span> 
+    <md-button 
+      ng-disabled="userForm.$valid === false"
+      ng-click="saveEditDialog(currentReseller)" class="md-primary">Salvar</md-button> 
+    <md-button ng-click="closeDialog()">Cancelar</md-button> 
+  </md-dialog-actions>
+</md-dialog>

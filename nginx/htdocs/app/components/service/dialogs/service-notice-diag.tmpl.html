@@ -1,0 +1,52 @@
+<md-dialog data-ng-init="loadNotices()" aria-label="Comunicados" style="width:700px" layout="column" > 
+  
+  <md-header >
+    <div class="md-toolbar-tools" layout="row" layout-align="center center">
+      <div>
+        <i class="material-icons small">event_note</i>
+      </div>
+      <div flex>
+        <span class="md-headline"> Comunicados</span>
+      </div>
+      <div flex class="right-align">
+        <a style="color:black" href ng-click="closeDialog()">
+          <i class="material-icons">close</i>
+        </a>
+      </div>
+    </div>
+        <md-divider></md-divider>
+
+ </md-header> 
+  
+
+  <md-content layout="column">
+    <section ng-repeat="service in services">
+    <md-subheader class="md-primary grey lighten-4">{{service.service_desc}}</md-subheader>
+    <md-list layout-padding>
+      <md-list-item class="md-3-line" ng-repeat="notice in notices[service.name]">
+        <i class="material-icons md-avatar" alt="{{notice.service}}"style="color:{{notice.ico_color}}">{{notice.ico}}</i>
+          <div class="md-list-item-text">
+            <p style="font-size:70%">{{notice.created_at}}</p>
+            <p style="font-size:70%">{{notice.author}}</p>
+            <h3>{{notice.type_desc}}</h3>
+            <h4>{{notice.service_name}}</h4>
+            <p>{{notice.started_at}} a {{notice.ended_at}}</p>
+            <p>{{notice.description}}</p>
+            
+          </div>
+
+          <!-- <md-button class="md-secondary">Reenviar</md-button> -->
+      </md-list-item>
+    </md-list>
+    </section>
+  </md-content>
+
+  
+  <md-dialog-actions class="grey lighten-3" layout="row"> 
+    <span flex></span> 
+    <md-button ng-click="closeDialog()"> Cancelar </md-button>
+    <md-button 
+      ng-click="openDialog('app/components/service/dialogs/service-create-notice-diag.tmpl.html', services)" class="md-primary"> Criar </md-button> 
+  </md-dialog-actions>
+
+</md-dialog>

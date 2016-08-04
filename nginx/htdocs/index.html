@@ -1,0 +1,68 @@
+<!-- USEFUL: http://www.google.com/design/spec/style/color.html#color-color-palette -->
+<!-- Overlay DIV: http://codepen.io/loljoho/pen/XJoYNr -->
+
+<html lang="en" ng-app="jenovaApp">
+  <head>
+    <title>Jenova::Portal</title>
+    <!-- STYLE SHEETS -->
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/icons/favicon.ico"/>
+    <!-- angular-material -->
+    <link rel='stylesheet prefetch' href='bower_components/angular-material/angular-material.css'>
+    <!-- md-data-table -->
+    <link href="bower_components/angular-material-data-table/dist/md-data-table.min.css" rel="stylesheet" type="text/css"/>
+    <!-- EXTERNAL: Google Icon Font -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Jenova CSS -->
+    <link rel="stylesheet" href="assets/css/login-form.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/md-data-table.css">
+    <!-- Font awesome icons -->
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
+    <!-- MaterializeCSS -->
+    <link rel="stylesheet" href="bower_components/materialize/dist/css/materialize.min.css">
+    <meta name="viewport" content="initial-scale=1" />
+  </head>
+  <body>
+    <div ui-view="nav" ng-cloack></div>
+    <!-- start dynamic content -->
+    <div ui-view="main" ng-cloack></div>
+    <!-- end dynamic content -->
+
+    <!-- jQuery - (import before materialize.js) -->
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+    <!-- MaterializeCSS -->
+    <script src="bower_components/materialize/dist/js/materialize.min.js"></script>
+
+    <!-- AngularJS imports -->
+    <script src='bower_components/angular/angular.min.js'></script>
+    <script src='bower_components/angular-animate/angular-animate.min.js'></script>
+    <script src='bower_components/angular-route/angular-route.min.js'></script>
+    <script src='bower_components/angular-aria/angular-aria.min.js'></script>
+    <script src='bower_components/angular-messages/angular-messages.min.js'></script>
+    <script src='bower_components/angular-resource/angular-resource.min.js'></script>
+    <script src='bower_components/angular-material/angular-material.min.js'></script>
+
+    <!-- MODULES - md-data-table -->
+    <script src="bower_components/angular-material-data-table/dist/md-data-table.min.js"></script>
+    <!-- MODULES - ui-route -->
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <!-- MODULES - Angular JWT -->
+    <script type="text/javascript" src="bower_components/angular-jwt/dist/angular-jwt.min.js"></script>
+
+    <!-- Jenova JS -->
+    <script src="app/app.module.js"></script>
+    <script src="app/app.states.js"></script>
+
+    <script src="app/shared/dialog.controller.js"></script>
+    <script src="app/components/home/home.controller.js"></script>
+    <script src="app/components/home/login.controller.js"></script>
+    <script src="app/components/reseller/reseller.controller.js"></script>
+    <script src="app/components/client/client.controller.js"></script>
+    <script src="app/components/dns/dns.controller.js"></script>
+    <script src="app/components/domain/domain.controller.js"></script>
+    <script src="app/components/zimbra/zimbra.controller.js"></script>
+    <script src="app/components/service/service.controller.js"></script>
+    <script src="app/components/user/user.controller.js"></script>
+    <script src="app/shared/navbar.controller.js"></script>
+  </body>
+</html>

@@ -1,0 +1,180 @@
+<div class="container">
+  <!-- Main Menu: START -->
+  <div class="card">
+    <md-data-table-toolbar ng-hide="selected.length || filter.show">
+      <div layout="column">
+        <div class="md-title">{{currentUser.name}}</div>
+        <div class="md-caption">
+          {{currentUser.login}} {{users.$resolved && '|' || ''}} {{currentUser.client.name && 'cliente - ' + currentUser.client.name || 
+          currentUser.reseller.name && 'revendedor - ' + currentUser.reseller.name || 
+          users.$resolved && 'Administrador Global'}}
+        </div>
+      </div>
+      <div flex></div>
+      <md-button class="md-icon-button" ng-click="filter.show = true" ng-hide="isMainMenu">
+        <md-tooltip md-direction="bottom">Busca</md-tooltip>
+        <i class="material-icons md-dark" >search</i>
+      </md-button>
+      <div layout="row" ng-show="isMainMenu">
+        <md-button class="md-icon-button" ng-disabled="isDeleteUserEnabled" 
+        ng-click="deleteUser(currentUser.login)">
+          <md-tooltip md-direction="bottom">Remover conta</md-tooltip>
+          <i class="material-icons md-dark">delete</i>
+        </md-button>
+        <md-button class="md-icon-button" ng-disabled="_userData.user.login === currentUser.login" ng-click="updateUser('enabled', currentUser.enabled, 'button')">
+          <md-tooltip md-direction="bottom">{{currentUser.enabled && 'Desativar' || 'Ativar'}} conta</md-tooltip>
+          <i class="material-icons md-dark">{{currentUser.enabled && 'radio_button_on' || 'radio_button_off'}}</i>
+        </md-button>
+        <md-button class="md-icon-button" ng-click="showBodyMenu('api')" ng-disabled="!currentUser.api_enabled">
+          <md-tooltip md-direction="bottom">API</md-tooltip>
+          <i class="material-icons md-dark">tune</i>
+        </md-button>
+        <md-button class="md-icon-button" ng-disabled="isEditUserEnabled"
+        ng-click="openDialog('app/components/user/dialogs/user-edit-diag.tmpl.html', currentUser)">
+          <md-tooltip md-direction="bottom">Editar usuário</md-tooltip>
+          <i class="material-icons md-dark">edit</i>
+        </md-button>
+        <md-button class="md-icon-button" ng-click="showBodyMenu('permissions')" ng-disabled="isPermissionsEnabled">
+          <md-tooltip md-direction="bottom">Permissões</md-tooltip>
+          <i class="material-icons">lock</i>
+        </md-button>
+        <md-button class="md-icon-button" ng-click="removeMainMenu()">
+          <md-tooltip md-direction="bottom">Fechar menu</md-tooltip>
+          <i class="material-icons md-dark">close</i>
+        </md-button>
+      </div>
+    </md-data-table-toolbar>
+
+    <md-data-table-toolbar ng-show="filter.show && !selected.length && focusSearch()">
+      <i class="material-icons md-dark">search</i>
+      <form flex name="filter.form">
+        <input type="text" ng-model="query.filter" ng-model-options="filter.options" 
+          placeholder="Busca" focus-me="focusOn">
+      </form>
+      <md-button class="md-icon-button" ng-click="removeFilter()">
+      <md-tooltip md-direction="bottom">Fechar busca</md-tooltip>
+        <i class="material-icons md-dark">close</i>
+      </md-button>
+    </md-data-table-toolbar>   
+
+    <md-progress-linear ng-hide="users.$resolved" md-mode="indeterminate"></md-progress-linear> 
+  </div>
+  <!-- Main Menu: END -->
+
+  <!-- User list -->
+  <div class="card">
+    <md-list ng-show="userBodyMenu">
+      <md-list-item ng-click="showMainMenu(user)" ng-repeat="user in users | filter:query.filter | orderBy: 'login' ">
+        <i style="{{user.enabled||'color:#bdbdbd'}}" class="material-icons">{{user.icon||'person_outline'}}</i>
+        <p style="{{user.enabled || 'color:#bdbdbd'}}"> {{ user.login }} | {{user.client.name && 'cliente - ' + user.client.name || user.reseller.name && 'revendedor - ' + user.reseller.name || 'Administrador Global'}}</p>
+      </md-list-item>
+    </md-list>
+  </div>
+
+  <!-- Permissions Header -->
+  <div ng-show="permBodyMenu">
+    <md-subheader class="card pink white-text">Permissões</md-subheader>
+    <div class="card">
+      <md-progress-linear ng-show="blkUsrSwt" md-mode="indeterminate"></md-progress-linear>
+      <md-list>
+        <md-list-item>
+          <i class="material-icons">public</i>
+          <p class="active"> Admininistrador Global</p>
+          <md-tooltip md-direction="right">
+            {{currentUser.global_admin && 'Ativado' || 'Desativado'}}
+          </md-tooltip>
+          <md-switch class="md-secondary" ng-model="currentUser.global_admin" ng-disabled="true"></md-switch>
+        </md-list-item>
+        <md-list-item>
+          <i class="material-icons">supervisor_account</i>
+          <p class="active">Administrador</p>
+          <md-switch class="md-secondary" ng-change="updateUser('admin', currentUser.admin)" ng-model="currentUser.admin" ng-disabled="blkUsrSwt">
+          </md-switch>
+        </md-list-item>
+        <md-list-item>
+          <i class="material-icons">tune</i>
+          <p class="active">Acesso a API</p>
+          <md-switch class="md-secondary" ng-change="updateUser('api_enabled', currentUser.api_enabled)" ng-model="currentUser.api_enabled" ng-disabled="blkUsrSwt">
+        </md-list-item>
+      </md-list> 
+    </div>
+
+    <!-- Permissions tabs -->
+    <div>
+      <md-content class="white card">
+        <md-progress-linear md-mode="indeterminate" ng-show="blkUsrPermSwt"></md-progress-linear> 
+
+        <md-tabs md-dynamic-height md-border-bottom md-no-pagination>
+          <md-tab label="{{perm.scopeName}}" ng-repeat="(scope, perm) in currentUser.permissions">
+            <md-list>
+              <md-list-item>
+                <!--
+                {{currentUser.login === _userData.user.login}}
+                -->
+                <i class="material-icons">lock_outline</i>
+                <p class="active">Leitura</p>
+                <md-switch class="md-secondary" ng-change="updateUserPerms(scope, 'read')" ng-model="perm.read" ng-disabled="blkUsrPermSwt"></md-switch>
+              </md-list-item>
+              <md-list-item>
+                <i class="material-icons">lock_outline</i>
+                <p class="active">Escrita</p>
+                <md-switch class="md-secondary" ng-change="updateUserPerms(scope, 'write')" ng-model="perm.write" ng-disabled="blkUsrPermSwt"></md-switch>
+              </md-list-item>
+              <md-list-item>
+                <i class="material-icons">lock_outline</i>
+                <p class="active">Alteração</p>
+                <md-switch class="md-secondary" ng-change="updateUserPerms(scope, 'edit')" ng-model="perm.edit" ng-disabled="blkUsrPermSwt"></md-switch>
+              </md-list-item>
+              <md-list-item>
+                <i class="material-icons">lock_outline</i>
+                <p class="active">Exclusão</p>
+                <md-switch class="md-secondary" ng-change="updateUserPerms(scope, 'delete')" ng-model="perm.delete" ng-disabled="blkUsrPermSwt"></md-switch>
+              </md-list-item>
+            </md-list>       
+          </md-tab>
+          
+        </md-tabs>
+      </md-content>
+    </div>
+  </div>
+
+  <!-- API Body Menu -->
+  <div ng-show="apiBodyMenu">
+    <md-subheader class="card pink white-text">Acesso a API</md-subheader>
+    <div class="card">
+      
+      <md-content class="grey lighten-5" flex layout-padding layout="row" layout-align="center">
+        <md-button class="md-icon-button">
+          <md-tooltip md-direction="left">Remover Token</md-tooltip>
+          <i class="material-icons md-dark">highlight_remove</i>
+        </md-button>
+        <md-button class="md-icon-button">
+          <md-tooltip md-direction="right">Renovar Token</md-tooltip>
+          <i class="material-icons md-dark">sync</i>
+        </md-button>
+        <md-button class="md-icon-button">
+          <md-tooltip md-direction="right">Criar Token</md-tooltip>
+          <i class="material-icons md-dark">note_add</i>
+        </md-button>
+      </md-content>
+      <md-content class="teal lighten-5 center-align" flex layout-padding style="word-break: break-all;">
+        Nenhum token criado  
+      </md-content>
+      <!--
+      eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im5hbWUiOiJRQSBBZG1pbiIsImFkbWluIjpmYWxzZSwiYXBpX2VuYWJsZWQiOnRydWUsImFwaV9hY2Nlc3MiOltdLCJlbmFibGVkIjp0cnVlLCJlbWFpbCI6InNhbmRyby5tZWxsb0Bpbm92YS5uZXQiLCJjcmVhdGVfdGltZSI6IjIwMTUtMTItMjBUMTY6MzU6MjQrMDA6MDAiLCJjbGllbnRfaWQiOm51bGwsImdsb2JhbF9hZG1pbiI6dHJ1ZSwibG9naW4iOiJxYV9hZG1pbiIsImlkIjoxLCJwZXJtaXNzaW9ucyI6W119fQ.45zCR4RFf2_Fi_hSWXsd1KnIQzaWPzMeZMmyVjeMm8M
+      -->
+    </div>
+  </div>
+
+  <!-- Floating ADD button -->
+  <div class="fixed-action-btn" style="bottom: 45px; right: 24px;" >
+    <a ng-click="openDialog('app/components/user/dialogs/user-create-diag.tmpl.html')" class="btn-floating btn-large waves-effect waves-light pink 
+    {{isWriteUserEnabled && 'disabled'}}">
+      <md-tooltip md-direction="bottom">Criar usuário</md-tooltip>
+      <i class="large material-icons">add</i>
+    </a>
+  </div>
+</div>
+<!--
+  http://danielnagy.me/md-data-table/
+-->

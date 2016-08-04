@@ -1,0 +1,38 @@
+<md-dialog aria-label="Informações do Cliente" style="width:700px"> 
+  <md-content class="white" layout-padding="">
+    <div layout="row" layout-align="center center">
+      <div>
+        <i class="material-icons small">info_outline</i>
+      </div>
+      <div flex>
+        <span class="md-headline">Informações do cliente</span>
+      </div>
+      <div flex class="right-align">
+        <a style="color:black" href ng-click="closeDialog()">
+          <i class="material-icons">close</i>
+        </a>
+      </div>
+    </div>
+    <md-divider></md-divider>
+    <div layout="column">
+      <div>
+        <span> Nome da empresa: {{currentClient.company}} </span>
+      </div>
+      <div>
+        <span> Revenda: {{currentClient.reseller}} </span>
+      </div>
+      <div>
+        <span> Nome do cliente: {{currentClient.name}} </span>
+      </div>
+      <div>
+        <span> E-mail: {{currentClient.email}} </span>
+      </div>
+      <div>
+        <span> Telefone: {{currentClient.phone || '-'}} </span>
+      </div>
+      <div>
+        <span> Data de criação: {{currentClient.created_at | date:'medium'}} </span>
+      </div>
+    </div>
+  </md-content> 
+</md-dialog>

@@ -1,0 +1,155 @@
+<div ng-show="zimbraOverlayLoader" id="overlay-loader" class="card" layout="column"
+layout-align="center center" flex>
+  <span class="md-title">{{zimbraOverlayLoaderStatus}}</span>
+  <md-progress-circular md-diameter="100" md-mode="indeterminate">
+  </md-progress-circular>
+</div>
+<div class="container">
+  <!-- Main Menu: START -->
+  <div class="card">
+    <md-data-table-toolbar ng-hide="selected.length || filter.show">
+      <span class="card-title">{{selected_domain || 'Domínios' }}</span>
+      <div flex></div>
+      <md-button class="md-icon-button" ng-click="filter.show = true" ng-hide="showmenu">
+        <md-tooltip md-direction="bottom">Busca</md-tooltip>
+        <i class="material-icons md-dark">search</i>
+      </md-button>
+      <div layout="row" ng-show="showmenu">
+        <md-button class="md-icon-button" ng-click="deleteDomain(currentDomain)" ng-disabled="isDeleteDomainEnabled">
+          <md-tooltip md-direction="bottom">Remover domínio</md-tooltip>
+          <i class="material-icons md-dark">delete</i>
+        </md-button>
+        <md-button class="md-icon-button" ng-disabled="isZimbraDelegatedEnabled().content"
+          ng-click="goToZimbra(selected_domain)">
+          <md-tooltip md-direction="bottom">Zimbra Admin</md-tooltip>
+          <md-icon md-svg-src="{{isZimbraDelegatedEnabled().mdIco}}"></md-icon>
+        </md-button>
+        <md-button class="md-icon-button" ng-disabled="isDnsEnabled" ng-click="goToDns(selected_domain)">
+          <md-tooltip md-direction="bottom">DNS</md-tooltip>
+          <i class="material-icons">dns</i>
+        </md-button>
+        <md-button class="md-icon-button"
+          ng-click="getDomainState(currentDomain); startMenu(selected_domain, 'settings', $event)">
+          <md-tooltip md-direction="bottom">Configurações</md-tooltip>
+          <i class="material-icons">settings</i>
+        </md-button>
+        <md-button class="md-icon-button" ng-click="removeMenu()">
+          <md-tooltip md-direction="bottom">Fechar menu</md-tooltip>
+          <i class="material-icons md-dark">close</i>
+        </md-button>
+      </div>
+    </md-data-table-toolbar>
+
+    <md-data-table-toolbar ng-show="filter.show && !selected.length && focusSearch()">
+      <i class="material-icons md-dark">search</i>
+      <form flex name="filter.form" ng-submit="searchDomain(query.filter)">
+        <input type="text" ng-model="query.filter" ng-model-options="filter.options"
+          placeholder="Busque o domínio desejado" focus-me="focusOn" required>
+      </form>
+      <md-button class="md-icon-button" ng-click="removeFilter(true)">
+      <md-tooltip md-direction="bottom">Fechar busca</md-tooltip>
+        <i class="material-icons md-dark">close</i>
+      </md-button>
+    </md-data-table-toolbar>
+  </div>
+  <!-- Main Menu: END -->
+
+  <!-- Settings menu / Services enabled -->
+  <div  ng-show="settingsMenuOn">
+    <div  class="card">
+      <!-- <md-subheader class="pink white-text">Serviços Habilitados</md-subheader> -->
+      <md-toolbar layout="row">
+        <div class="md-toolbar-tools">
+          <h2>Serviços Habilitados</h2>
+        </div>
+      </md-toolbar>
+      <div class="center-align red-text}}" ng-hide="currentDomain.states.length"
+        flex layout-padding style="word-break: break-all;" ng-cloack>
+        {{currentDomain.states.length || 'Não há serviços configurados'}}
+      </div>
+      <md-list>
+        <md-list-item ng-repeat="state in currentDomain.states" ng-disabled="{{isManageServiceEnabled}}">
+          <i class="material-icons">apps</i>
+          <p class="active"> {{ state.service.service_desc }} </p>
+
+          <md-switch ng-hide="state.activeDialog"
+          ng-change="changeServiceState('app/components/domain/dialogs/domain-edit-service-diag.tmpl.html', currentDomain, state)" ng-model="state.enabled"
+              ng-disabled="{{isManageServiceEnabled}}" class="md-secondary">
+          </md-switch>
+          <md-progress-circular ng-if="state.activeDialog" md-mode="indeterminate">
+          </md-progress-circular>
+        </md-list-item>
+      </md-list>
+    </div>
+  </div>
+
+
+
+  <!-- Search INFO Card -->
+  <div layout="row" layout-align="center end" ng-show="infoHint">
+    <div flex="70">
+      <md-content layout-padding>
+        <div layout="column">
+          <div flex>
+            <md-divider></md-divider>
+            <div layout="row" layout-align="center center">
+              <div layout-padding>
+                <i class="material-icons"
+                style="color:blue;opacity:0.2;font-size:76px;">info_outline</i>
+              </div>
+              <div flex ng-hide="infoNotFoundHint" class="md-caption">
+                Para buscar domínios pertecentes a um determinado revendedor ou cliente, clique em <code>Revendedores</code> ou <code>Clientes</code> no meu acima. Através do campo de busca é possível filtrar todos os domínios cadastrados, essa opção esta disponível apenas para administradores globais.
+              </div>
+              <div ng-show="infoNotFoundHint" flex class="md-subhead">
+                Não foi possível encontrar nenhum resultado. <a>Crie um novo domínio</a> para administrar e gerenciar os serviços contratados como Zimbra, DNS e mxHero.
+              </div>
+            </div>
+            <md-divider></md-divider>
+          </div>
+        </div>
+      </md-content>
+    </div>
+  </div>
+
+  <!-- Main Loader -->
+  <div ng-hide="loadedPages.$resolved" layout="row"
+    layout-align="center center" layout-padding layout-margin layout-xs="column">
+    <md-progress-circular md-diameter="100" md-mode="indeterminate"></md-progress-circular>
+  </div>
+  <!-- Domains list -->
+  <div ng-hide="domainListOff">
+    <div class="card" ng-show="loadedPages.$resolved" ng-hide="domainListOff">
+      <md-virtual-repeat-container style={{vrSize}}>
+        <md-list>
+          <md-list-item ng-click="showMainMenu(domain)"
+            md-virtual-repeat="domain in dynamicItems" md-on-demand flex>
+            <p>@{{domain.name}}</p>
+            <i class="material-icons"
+              style="color: lightgray;">{{domain.services.length >= 1 && 'extension'}}
+            </i>
+          </md-list-item>
+        </md-list>
+      </md-virtual-repeat-container>
+    </div>
+  </div>
+</div>
+
+
+<!-- Floating ADD button -->
+<div class="fixed-action-btn" style="bottom: 45px; right: 24px;" ng-show="{{isWriteDomainEnabled}}">
+  <a class="btn-floating btn-large pink">
+    <i class="large material-icons">add</i>
+  </a>
+  <ul>
+    <li>
+      <a ng-click="openDialog('app/components/domain/dialogs/domain-create-diag.tmpl.html', currentDomain)" class="btn-floating btn-large ">
+        <i class="fa fa-at fa-2x"></i>
+      </a>
+    </li>
+    <li ng-show="zimbraMenuOn">
+      <a ng-click="openAddZimbraUser()" class="btn-floating btn-large ">
+        <i class="material-icons">person_add</i>
+      </a>
+    </li>
+  </ul>
+</div>

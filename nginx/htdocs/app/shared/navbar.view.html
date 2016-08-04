@@ -1,0 +1,64 @@
+<div class="navbar-fixed">
+  <nav ng-controller="navbarCtrl" class="blue darken-3">
+    <div class="nav-wrapper">
+      <span class="brand-logo center">{{title}}</span>
+
+        <ul class="hide-on-med-and-down left">
+          <li class="{{home}}">
+            <a href="#/">
+              <md-tooltip md-direction="bottom">Dashboard</md-tooltip>
+              <i class="material-icons">assessment</i>
+            </a>
+          </li>
+          <li class="{{reseller}}" ng-show="{{_userData.user.global_admin}}">
+            <a href="#/reseller">
+              <md-tooltip md-direction="bottom">Revendedores</md-tooltip>
+              <i class="material-icons">business</i>
+            </a>
+          </li>
+          <li class="{{client}}" ng-show="hasClientPerm">
+            <a href="#/client">
+              <md-tooltip md-direction="bottom">Clientes</md-tooltip>
+              <i class="material-icons">face</i>
+            </a>
+          </li>
+          <li class="{{dom}}" ng-show="hasDomainPerm">
+            <a href="#/domain/{{domainName}}">
+              <md-tooltip md-direction="bottom">Domínios</md-tooltip>
+              <i class="fa fa-at"></i>
+
+            </a>
+          </li>
+          <li class="{{service}}">
+            <a href="#/service" ng-show="hasServicePerm">
+              <md-tooltip md-direction="bottom">Serviços</md-tooltip>
+              <i class="material-icons">extension</i>
+            </a>
+          </li>
+          <li ng-show="domainName" class="{{dns}}" ng-show="hasDnsPerm">
+            <a href="#/dns/{{domainName}}">
+              <md-tooltip md-direction="bottom">DNS</md-tooltip>
+              <i class="material-icons">dns</i>
+            </a>
+          </li>
+        </ul>
+
+        <ul class="hide-on-med-and-down right">
+          <li class="{{user}}">
+            <a href="#/user">
+              <i class="material-icons right">person</i>
+              <span>{{_userData.user.login}}</span>
+            </a>
+
+          </li>
+          <li>
+            <a href="#/login" ng-click="logout()">
+              <md-tooltip md-direction="bottom">Logout</md-tooltip>
+              <i class="material-icons">exit_to_app</i>
+            </a>
+          </li>
+        </ul>      
+    </div>
+  </nav>
+</div>
+

@@ -1,0 +1,23 @@
+{
+  "name": "jenova-web",
+  "version": "0.0.1",
+  "dependencies": {
+    "angular": "~1.5.0",
+    "angular-route": "~1.5.0",
+    "angular-aria": "~1.5.0",
+    "angular-messages": "~1.5.0",
+    "angular-resource": "~1.5.0",
+    "angular-material": "~1.0.6",
+    "angular-material-icons": "https://github.com/klarsys/angular-material-icons.git#v0.6.0",
+    "materialize": "https://github.com/Dogfalo/materialize.git#v0.97.3",
+    "font-awesome": "https://github.com/FortAwesome/Font-Awesome.git#v4.5.0",
+    "angular-material-data-table": "https://github.com/daniel-nagy/md-data-table.git#v0.8.14",
+    "angular-ui-router": "https://github.com/angular-ui/ui-router.git#0.2.18",
+    "angular-jwt": "~0.0.4"
+  },
+  "private": true,
+  "resolutions": {
+    "angular-material": "~1.0.6",
+    "webcomponentsjs": "^0.6.0"
+  }
+}

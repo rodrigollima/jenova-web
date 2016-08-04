@@ -1,0 +1,36 @@
+<md-dialog aria-label="Restaurar Zona" style="width:700px"> 
+  <md-content class="white" layout-padding=""> 
+  <div layout="row" layout-align="center center">
+      <div>
+        <i class="material-icons small">edit</i>
+      </div>
+      <div flex>
+        <span class="md-headline">Restaurar {{domainName}}</span>
+      </div>
+      <div flex class="right-align">
+        <a style="color:black" href ng-click="closeDialog()">
+          <i class="material-icons">close</i>
+        </a>
+      </div>
+    </div>
+    <form name="restoreForm"> 
+      <div layout="column"> 
+          <md-select md-on-open="loadZoneRestores()" ng-model="selectedRestore" required="">
+            <md-option ng-value="restore" ng-repeat="restore in restores">{{restore.created_at}}</md-option>
+          </md-select>
+      </div> 
+    </form>
+    <div>
+    <!-- <textarea ng-disable="true">
+      {{restore.diff}}
+    </textarea> -->
+    </div>
+  </md-content> 
+  <md-progress-linear ng-show="restoreZone.$resolved" md-mode="indeterminate"></md-progress-linear>
+  <div class="md-dialog-actions grey lighten-3" layout="row"> 
+    <span flex></span>
+    <md-button ng-click="closeDialog()"> Cancelar </md-button> 
+    <md-button ng-click="restoreZoneDialog(selectedRestore)" class="md-primary"
+    ng-disabled="!(restoreForm.$valid === true)" > Restaurar </md-button> 
+  </div>
+</md-dialog>

@@ -1,0 +1,94 @@
+<div class="container" ng-cloak="">
+  
+  <div ng-hide="services.$resolved" layout="row" layout-align="center center" layout-padding layout-margin layout-fill>
+    <md-progress-circular md-diameter="100" md-mode="indeterminate"></md-progress-circular>
+  </div>
+
+  <div class="row md-caption">
+    <div class="col s12 m6" ng-repeat="serv in services">
+      <div class="card">
+        <!-- Card service : START -->
+        <div class="card-content">
+          <span class="card-title">{{serv.service_desc}}</span>
+            
+            <md-divider></md-divider>
+            <div layout="row" layout-align="center">
+              <md-button class="md-icon-button" ng-disabled="{{serv.syncDisable}}">
+                <md-tooltip md-direction="bottom">Sincronizar</md-tooltip>
+                <i class="material-icons">sync</i>
+              </md-button>
+              <md-button class="md-icon-button" ng-click="openDialog('app/components/service/dialogs/service-edit-diag.tmpl.html', serv)">
+                <md-tooltip md-direction="bottom">Configurações</md-tooltip>
+                <i class="material-icons">settings</i>
+              </md-button>
+              <md-button class="md-icon-button" ng-click="deleteService(serv)">
+                <md-tooltip md-direction="bottom">Deletar</md-tooltip>
+                <i class="material-icons">delete</i>
+              </md-button>
+            </div>
+
+            <!-- Service description: START -->
+            <div class="row">
+              <div class="col s6">Status do serviço</div>
+              <div class="col s6 right-align">
+                <a href="#/service">
+                  <md-tooltip md-direction="bottom">{{serv.status.desc}}</md-tooltip>
+                  <i class="material-icons" style="color:{{serv.status.color}}">{{serv.status.ico}}</i>
+                </a>
+              </div>
+              
+              <div class="col s6">SLA</div>
+              <div class="col s6 right-align">
+                <p style="color:#00c853">{{serv.sla}}%</p>
+              </div>  
+
+              <div class="col s6">Nome do serviço</div>
+              <div class="col s6 right-align">
+                <p>{{serv.name}}</p>
+              </div>
+
+              <div class="col s6">Nome do host</div>
+              <div class="col s6 right-align">
+                <p>{{serv.service_host || 'N/A'}}</p>
+              </div>
+
+              <div class="col s2">API</div>
+              <div class="col s10 right-align">
+                <p>{{serv.service_api || 'N/A'}}</p>
+              </div>
+              
+              <div class="col s4">URL de serviço</div>
+              <div class="col s8 right-align">
+                <p>{{serv.service_url || 'N/A'}}</p>
+              </div>
+              <div class="col s4">Data de criação</div>
+              <div class="col s8 right-align">
+                <p>{{serv.created_at || 'N/A'}}</p>
+              </div>
+            </div>
+            <!-- Service description: END -->
+
+        </div>
+        <!-- Card service : END -->
+      </div>
+    </div>
+
+  </div>  
+
+  <!-- Floating ADD button -->
+  <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
+    <a class="btn-floating btn-large pink">
+      <i class="large material-icons">menu</i>
+    </a>
+    <ul>
+      <li><a ng-click="openDialog('app/components/service/dialogs/service-notice-diag.tmpl.html', services)" class="btn-floating btn-large "><i class="material-icons">announcement</i></a></li>
+      <li><a ng-click="openDialog('app/components/service/dialogs/service-create-diag.tmpl.html', services)" class="btn-floating btn-large "><i class="material-icons">add</i></a></li>
+    </ul>
+  </div>
+
+
+
+
+
+</div>
+

@@ -1,0 +1,171 @@
+<div ng-show="zimbraOverlayLoader" id="overlay-loader" class="card" layout="column" layout-align="center center" flex>
+  <span class="md-title">{{zimbraOverlayLoaderStatus}}</span>
+  <md-progress-circular md-diameter="100" md-mode="indeterminate">
+  </md-progress-circular>
+</div>
+<!-- Zimbra menu -->
+<div class="container" ng-disabled="!zDomainStatus.active">
+  <div class="card">
+    <!--TOOL BAR-->
+    <md-toolbar layout="row" class={{zDomainStatus.class}}>
+      <div ng-if="!zDomainStatus.active" class="md-toolbar-tools">
+        <h2>Domínio Suspenso: {{currentDomain.name}}</h2>
+      </div>
+  
+      <div ng-if="zDomainStatus.active" class="md-toolbar-tools">
+        <h2>Gerenciar Zimbra: {{currentDomain.name}}</h2>
+      </div>
+
+      <md-menu md-position-mode="target-right target">
+        <md-button class="md-icon-button" ng-click="$mdOpenMenu()">
+          <md-tooltip md-direction="bottom">Usuários</md-tooltip>
+          <md-icon>
+            <i class="material-icons">menu</i>
+          </md-icon>
+        </md-button>
+        <md-menu-content width="4">
+          <md-menu-item>
+            <md-button ng-click="switchMenu('users')">
+              <md-icon>
+                <i class="material-icons">person</i>
+              </md-icon>
+              Usuários
+            </md-button>
+          </md-menu-item>
+          <!--<md-menu-item>
+            <md-button ng-click="switchMenu('dlist')" >
+              <md-icon>
+                <i class="material-icons">group</i>
+              </md-icon>
+              Lista de Distribuição
+            </md-button>                     
+          </md-menu-item>-->
+          <md-menu-divider></md-menu-divider>
+          <md-menu-item>
+            <md-button ng-click="openZimbraConsoleAdmin(currentDomain)">
+              <md-icon md-svg-src="assets/img/icons/zimbra-logo-black.svg"></md-icon>
+              Console Zimbra
+            </md-button>
+          </md-menu-item>
+          <md-menu-item ng-show="isAdmin">
+            <md-button ng-if="zDomainStatus.active" ng-click="switchZStatus()" class="md-warn">
+              <md-icon>
+                <i class="material-icons">block</i>
+              </md-icon>
+              Suspender Domínio
+            </md-button>
+            <md-button ng-if="!zDomainStatus.active" ng-click="switchZStatus()">
+              <md-icon>
+                <i class="material-icons">playlist_add_check</i>
+              </md-icon>
+              Liberar Domínio
+            </md-button>                     
+          </md-menu-item>
+        </md-menu-content>
+      </md-menu>
+    </md-toolbar>
+    
+    
+    <md-content style="height:400px;" class="md-padding">
+      <div layout="row" flex>
+
+        <div flex="70">
+          <!--MANAGE USERS -->
+          <div ng-show="menu.users">
+            <md-subheader class="md-accent">Usuários</md-subheader>
+            <div ng-show="loadedPages.$resolved">
+              <md-virtual-repeat-container style="height:300px">
+                <md-list>
+                  <md-list-item ng-click="openDialog('app/components/zimbra/dialogs/user-edit.tmpl.html', account)"
+                    md-virtual-repeat="account in dynamicItems" md-on-demand flex>
+                    <p>{{account.name}}</p>
+                  </md-list-item>
+                </md-list>
+              </md-virtual-repeat-container>
+            </div>
+          </div>
+
+          <!--MANAGE DIST LIST-->
+          <div ng-show="menu.dlist">
+            <md-subheader class="md-accent">Lista de Distribuições</md-subheader>
+          </div>
+        </div>
+        <div layout-padding layout="column" flex="30">
+          <div>
+            <!--SEARCH BOX-->
+            <md-autocomplete
+              md-delay="800"
+              md-search-text="searchText"
+              md-items="item in querySearch(searchText)"
+              md-search-text-change="null"
+              md-no-cache="true"
+              md-select-on-match="true"
+              md-item-text="item.name"
+              placeholder="Buscar Conta"
+              md-min-length="1"
+              md-input-maxlength="25"
+              md-selected-item="currentAccount"
+              ng-click="openEditDiagFromSearch(currentAccount)">
+              <md-item-template>
+                <span md-highlight-text="searchText" md-highlight-flags="^i">{{item.name}}</span>
+              </md-item-template>
+              <md-not-found>
+                Nenhuma conta com o nome "{{searchText}}" foi encontrada.
+              </md-not-found>
+            </md-autocomplete>
+          </div>
+
+          <!--ACCOUNT TYPE-->
+          <div layout="column" flex>
+            <md-subheader class="md-no-sticky">Limites de Conta</md-subheader>
+            <md-divider></md-divider>
+            <div class="md-padding" ng-if="!zCOS.$resolved" layout-align="center center" layout="row">
+              <label>{{zimbraOverlayLoaderStatus}}</label>
+            </div>
+            <md-list ng-if="zCOS.$resolved">
+              <md-list-item layout="row" layout-align="space-between center" ng-repeat="cos in zCOS">
+                <div>
+                  <label> {{ cos.name + ' ' + cos.users + '/' + ( (cos.ilimited) ? 0 : cos.limit ) }} </label>
+                </div>
+                <div layout="row" ng-show="isAdmin">
+                  <md-button class="md-icon-button" ng-click="cos.limit = cos.limit - 1">
+                    <md-icon>
+                      <i class="material-icons">remove</i>
+                    </md-icon>
+                  </md-button>
+                  <md-button class="md-icon-button" ng-click="cos.limit = cos.limit + 1">
+                    <md-icon>
+                      <i class="material-icons">add</i>
+                    </md-icon>
+                  </md-button>
+                </div>
+              </md-list-item>
+              <div layout="column" layout-align="center end" ng-show="isAdmin">
+                <md-button class="md-primary" ng-click="updateCosLimits()">Salvar</md-button>
+              </div>
+            </md-list>
+          </div>
+        </div>
+      </div>
+    </md-content>
+  </div>
+</div>
+
+<!-- Floating ADD button -->
+<div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
+  <a class="btn-floating btn-large pink">
+    <i class="large material-icons">add</i>
+  </a>
+  <ul>
+    <!--<li>
+      <a ng-click="" class="btn-floating btn-large ">
+        <i class="material-icons">group_add</i>
+      </a>
+    </li>-->
+    <li>
+      <a ng-click="openDialog('app/components/zimbra/dialogs/user-create.tmpl.html', null)" class="btn-floating btn-large ">
+        <i class="material-icons">person_add</i>
+      </a>
+    </li>
+  </ul>
+</div>

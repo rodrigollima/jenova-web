@@ -1,0 +1,74 @@
+<md-dialog aria-label="Criar Dominio" style="width:700px">
+  <md-header>
+    <div class="md-toolbar-tools" layout="row" layout-align="center center">
+      <div>
+        <i class="fa fa-at fa-2x"></i>
+      </div>
+      <div flex>
+        <span class="md-headline">Criar Dominio</span>
+      </div>
+      <div flex class="right-align">
+        <a style="color:black" href ng-click="closeDialog()">
+          <i class="material-icons">close</i>
+        </a>
+      </div>
+    </div>
+    <md-divider></md-divider>
+  </md-header> 
+  <md-content class="white" layout-padding=""> 
+    <form name="domainForm" ng-submit="$event.preventDefault()"> 
+
+      <!-- DOMAIN -->    
+      <div layout layout-sm="column"> 
+        <md-input-container flex> 
+          <label>Domínio</label> 
+          <input minlength="3" maxlength="25" required="" ng-model="newDomain.domainName"/>
+        </md-input-container>
+      </div>
+
+
+      <!-- CLIENT -->
+      <div layout-sm="column">
+        <md-autocomplete
+            md-delay="800"
+            md-no-cache="true"
+            required=""
+            md-search-text="searchText"
+            md-items="item in querySearchClients(searchText)"
+            md-search-text-change="searched = false"
+            md-min-length="1"
+            md-input-maxlength="25"
+            md-item-text="item.display"
+            md-selected-item="newDomain.clientName"
+            ng-disabled="{{!(currentUser.global_admin || currentUser.admin)}}"
+            placeholder="Digite o nome do cliente...">
+          <md-item-template>
+            <span md-highlight-text="searchText" md-highlight-flags="^i">{{item.display}}</span>
+          </md-item-template>
+          <md-not-found>
+            Nenhum usuário com o nome "{{searchText}}" foi encontrado.
+          </md-not-found>
+        </md-autocomplete>
+      </div>
+      
+      <!-- SWITCH -->
+      <!-- <md-subheader class="md-no-sticky">Serviços</md-subheader>
+      <md-divider></md-divider>
+      <div layout="row" ng-repeat="service in services">
+        <md-list-item  flex ng-model="newDomain.services">
+          <p>{{service.service_desc}}</p>
+          <md-switch class="md-secondary" ng-model="service.enabled"></md-switch>
+        </md-list-item>
+      </div>
+ -->
+    </form> 
+  </md-content> 
+  <md-progress-linear ng-show="newDomain.$resolved" md-mode="indeterminate"></md-progress-linear>
+  <md-dialog-actions class="grey lighten-3" layout="row">
+    <span flex></span>
+    <md-button ng-click="saveCreateDialog()" class="md-primary"
+    ng-disabled="!(domainForm.$valid === true)" >Criar
+    </md-button> 
+    <md-button ng-click="closeDialog()">Cancelar</md-button> 
+  </md-dialog-actions>
+</md-dialog>

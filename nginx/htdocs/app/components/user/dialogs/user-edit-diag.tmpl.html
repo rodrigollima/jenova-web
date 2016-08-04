@@ -1,0 +1,93 @@
+<md-dialog aria-label="Editar Usuário" style="width:600px"> 
+  <md-header>
+    <div class="md-toolbar-tools" layout="row" layout-align="center center">
+      <div>
+        <i class="material-icons small">person</i>
+      </div>
+      <div flex>
+        <span class="md-headline">Editar Usuário</span>
+      </div>
+      <div flex class="right-align">
+        <a style="color:black" href ng-click="closeDialog()">
+          <i class="material-icons">close</i>
+        </a>
+      </div>
+    </div>
+    <md-divider></md-divider>
+  </md-header>
+  <md-content class="white" layout-padding=""> 
+    <form name="userForm"> 
+      <div layout layout-sm="column"> 
+        <md-input-container flex> 
+          <label>Login</label> 
+          <input minlength="3" md-maxlength="25" ng-disabled="true"
+            required="" name="login" ng-model="editUser.login">
+          <md-tooltip md-direction="bottom">O login não pode ser alterado</md-tooltip>
+
+        </md-input-container> 
+        
+        <md-input-container flex> 
+          <label>Nome de exibição</label> 
+          <input maxlength="40" required="" name="name" ng-model="editUser.name">
+        </md-input-container> 
+      </div> 
+      <div layout layout-sm="column"> 
+        <md-input-container flex> 
+          <label>E-mail</label> 
+          <input name="email" ng-model="editUser.email" required=""
+              md-maxlength="50" ng-pattern="/^.+@.+\..+$/" />
+        </md-input-container> 
+      </div>
+
+      <div layout layout-sm="column"> 
+        <md-input-container flex> 
+          <label style="top:2px;line-height:0px">Senha</label> 
+          <input ng-model="editUser.password1" type="password" name="password1" minlength="8" maxlength="20"/> 
+        </md-input-container> 
+        <md-input-container flex> 
+          <label style="top:2px;line-height:0px">Confirme a senha</label> 
+          <input ng-model="editUser.password2" type="password" name="password2" minlength="8" maxlength="20" 
+            compare-to="editUser.password1"/>
+        </md-input-container> 
+      </div>
+      <div>
+        <md-autocomplete
+            md-delay="800"
+            md-no-cache="true"
+            md-search-text="searchText"
+            md-items="item in querySearch(searchText)"
+            md-search-text-change="searched = false"
+            md-min-length="1"
+            md-input-maxlength="25"
+            md-item-text="item.display"
+            md-selected-item="editUser.client.name"
+            placeholder="Digite o nome do cliente..."
+            ng-disabled="{{!(currentUser.global_admin) || editUser.reseller || editUser.global_admin}}">
+          <md-item-template>
+            <span md-highlight-text="searchText" md-highlight-flags="^i">{{item.display}}</span>
+          </md-item-template>
+          <md-not-found>
+            Nenhum usuário com o nome "{{searchText}}" foi encontrado.
+          </md-not-found>
+        </md-autocomplete>
+      </div> 
+      <div layout-sm="column">
+        <md-input-container> 
+          <md-checkbox class="md-caption" ng-disabled="true" ng-model="editUser.global_admin">
+            <md-tooltip md-direction="bottom">Essa permissão não pode ser alterada</md-tooltip>
+            Administrador Global
+          </md-checkbox>
+          <md-checkbox class="md-caption" ng-model="editUser.admin">Administrador</md-checkbox>
+          <md-checkbox class="md-caption" ng-model="editUser.api_enabled">Acesso à API</md-checkbox>
+        </md-input-container>
+      </div>
+    </form> 
+  </md-content> 
+  <md-dialog-actions class="grey lighten-3" layout="row"> 
+    <span flex></span> 
+    <md-button ng-click="closeDialog()"> Cancelar </md-button> 
+    <md-button 
+    ng-disabled="!(userForm.$valid === true)"
+    ng-click="saveEditDialog(editUser)" class="md-primary"> Salvar </md-button> 
+  </md-dialog-actions>
+</md-dialog>

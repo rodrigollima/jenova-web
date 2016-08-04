@@ -1,0 +1,86 @@
+<md-dialog aria-label="Editar Serviço" style="width:600px">   
+  <md-header >
+    <div class="md-toolbar-tools" layout="row" layout-align="center center">
+      <div>
+        <i class="material-icons small">extension</i>
+      </div>
+      <div flex>
+        <span class="md-headline"> Editar Serviço</span>
+      </div>
+      <div flex class="right-align">
+        <a style="color:black" href ng-click="closeDialog()">
+          <i class="material-icons">close</i>
+        </a>
+      </div>
+    </div>
+    <md-divider></md-divider>
+ </md-header> 
+ <md-content>
+  <form name="servForm" class="white" layout-padding=""> 
+    <div layout layout-sm="column"> 
+      <md-input-container flex> 
+        <label>Nome</label> 
+        <input minlength="3" maxlength="25" required="" name="name" ng-model="currentService.name" 
+        ng-disabled="true">
+        <div ng-messages="servForm.name.$error">
+          <div ng-message="pattern">Caractere inválido</div>
+        </div>
+      </md-input-container> 
+      <md-input-container flex> 
+        <label>Tipo</label> 
+        <md-select name="type" ng-model="currentService.service_type" required="">
+          <md-option ng-repeat="type in srv_types" value="{{type}}">
+            {{type}}
+          </md-option>
+        </md-select>
+      </md-input-container> 
+      <md-input-container flex> 
+        <label>Host</label>
+        <input maxlength="40" required="" name="host" ng-model="currentService.service_host">
+      </md-input-container>
+    </div>
+    <div layout layout-sm="column">
+      <md-input-container flex>
+        <label>Descrição</label>
+        <input maxlength="40" required="" name="desc" ng-model="currentService.service_desc">
+      </md-input-container>
+    </div>
+    <div layout layout-sm="column">
+      <md-input-container flex>
+        <label>API</label> 
+        <input name="api" maxlength="50"
+          ng-model="currentService.service_api"/>
+      </md-input-container>
+      <md-input-container flex> 
+        <label>URL do serviço</label> 
+        <input name="url" ng-model="currentService.service_url" required="">
+      </md-input-container> 
+    </div>
+    <div layout layout-sm="column">
+      <md-input-container>
+      <i class="material-icons small">people</i>
+      </md-input-container>
+      <md-input-container flex>
+        <label>Usuário / API Key</label>
+        <input type="text" name="cred_identity" 
+          ng-model="currentService.cred_identity"/>
+      </md-input-container>
+    <md-input-container>
+    <i class="material-icons small">vpn_key</i>
+    </md-input-container>
+    <md-input-container flex>
+      <label>Senha / Secret Key</label>
+      <input name="cred_secret" ng-model="currentService.cred_secret" type="password">
+    </md-input-container>
+    </div>
+  </form> 
+  <md-progress-linear ng-show="currentService.$resolved" md-mode="indeterminate"></md-progress-linear> 
+  </md-content>
+  <md-dialog-actions class="grey lighten-3" layout="row"> 
+    <span flex></span> 
+    <md-button ng-click="closeDialog()"> Cancelar </md-button> 
+    <md-button 
+      ng-disabled="servForm.$valid === false"
+      ng-click="saveEditDialog(currentService)" class="md-primary"> Salvar </md-button> 
+  </md-dialog-actions>
+</md-dialog>

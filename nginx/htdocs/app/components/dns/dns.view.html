@@ -1,0 +1,85 @@
+<div ng-show="dnsOverlayLoader" id="overlay-loader" class="card" layout="column" 
+layout-align="center center" flex>
+  <span class="md-title">{{dnsOverlayLoaderStatus}}</span>
+  <md-progress-circular md-diameter="100" md-mode="indeterminate">
+  </md-progress-circular> 
+</div>
+<div class="container" ng-hide="dnsOverlayLoader">
+  <div class="card" ng-cloak ng-show="domainName">
+    <md-data-table-toolbar ng-hide="selected.length || filter.show">
+      <h2 class="md-title">{{domainName}}</h2>
+      <div flex></div>
+      <!-- <md-button class="md-icon-button" ng-click="filter.show = true">
+        <md-tooltip md-direction="bottom">Busca</md-tooltip>
+        <i class="material-icons md-dark">search</i>
+      </md-button> -->
+
+      <md-button ng-show="isAdmin" class="md-icon-button" ng-click="openDialog('app/components/dns/dialogs/dns-restore-diag.tmpl.html')">
+        <md-tooltip md-direction="bottom">Restaurar</md-tooltip>
+        <i class="material-icons md-dark">restore</i>
+      </md-button>
+
+    </md-data-table-toolbar>
+
+    <md-data-table-toolbar ng-show="filter.show && !selected.length">
+      <i class="material-icons md-dark">search</i>
+      <form flex name="filter.form">
+        <input type="text" placeholder="Busca">
+      </form>
+      <md-button class="md-icon-button" ng-click="removeFilter()">
+      <md-tooltip md-direction="bottom">Fechar busca</md-tooltip>
+        <i class="material-icons md-dark">close</i>
+      </md-button>
+    </md-data-table-toolbar>
+
+    <md-data-table-toolbar class="alternate" ng-show="selected.length">
+      <p>{{selected.length}} {{selected.length > 1 ? 'itens' : 'item'}} selecionado(s)</p>
+      <div flex></div>
+      <md-button class="md-icon-button" ng-disabled="isDnsEditEnabled || selected.length > 1" 
+      ng-click="openDialog('app/components/dns/dialogs/dns-edit-diag.tmpl.html', selected[0])" >
+        <md-tooltip md-direction="bottom">Editar registro</md-tooltip>
+        <i class="material-icons md-dark">edit</i>
+      </md-button>
+      <md-button class="md-icon-button" ng-click="deleteRecord()" ng-disabled="isDnsDeleteEnabled">
+        <md-tooltip md-direction="bottom">Excluir registro(s)</md-tooltip>
+        <i class="material-icons md-dark">delete</i>
+      </md-button>
+    </md-data-table-toolbar>
+
+    <md-data-table-container >
+      <table md-data-table md-row-select="selected" md-progress="deferred">
+        <thead md-order="query.order" md-trigger="onOrderChange">
+          <tr>
+            <th name="Nome" order-by="data.name"></th>
+            <th name="Tipo" order-by="data.type"></th>
+            <th name="Content" order-by="data.content"></th>
+            <th name="TTL" order-by="data.ttl"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr md-auto-select md-disable-select="data.type == 'SOA'" ng-repeat="data in dnsdata">
+            <td>{{data.name}}</td>
+            <td>{{data.type}}</td>
+            <td>{{data.content}}</td>
+            <td>{{data.ttl}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </md-data-table-container>
+
+    
+  </div>
+
+</div>
+
+<!-- Floating ADD button -->
+<div class="fixed-action-btn" style="bottom: 45px; right: 24px;" >
+  <a ng-click="openDialog('app/components/dns/dialogs/dns-create-diag.tmpl.html')" class="btn-floating btn-large waves-effect waves-light pink 
+  {{isDnsWriteEnabled && 'disabled'}}">
+    <md-tooltip md-direction="bottom">Criar Entrada</md-tooltip>
+    <i class="large material-icons">add</i>
+  </a>
+</div>
+<!--
+  http://danielnagy.me/md-data-table/
+-->
