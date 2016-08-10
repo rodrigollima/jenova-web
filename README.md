@@ -1,5 +1,5 @@
 JENOVA-WEB
-======
+==========
 
 **You can help build this...**
 
@@ -12,18 +12,19 @@ This instructions will help you to build the development environment.
 
 > - Requirements: 
 > -- git, 
-> --nodejs, 
-> --bower, 
-> --docker(engine/compose/machine)...
+> -- nodejs, 
+> -- bower, 
+> -- docker(engine/compose/machine)...
 > - Clone this repository;
+> - Navigate to nginx/htdocs/ and run ```$ bower install```
 > - Generate a Self-Signed Certificate in nginx\ssl
 > ```
-> openssl req \
+> $ openssl req \
        -newkey rsa:2048 -nodes -keyout mydomain.key \
        -x509 -days 365 -out mydomain.crt
 > ```
 > - Run:
->  ```docker-compose build && docker-compose up``` 
+>  ```$ docker-compose build && docker-compose up``` 
 
 ----------
 
