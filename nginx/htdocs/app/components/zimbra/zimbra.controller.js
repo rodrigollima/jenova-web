@@ -5,10 +5,12 @@
     // load
     cosResource = resource.cos;
     domainResource = resource.domains;
+    reportResource = resource.reports
     accountResource = resource.accounts;
     accountListResource = resource.accountsList;
     $scope.currentDomain = currentData.domain;
     $scope.zCOS = [];
+    $scope.userReport = [];
     $scope.zimbraOverlayLoader=false; // set false when prod.
     $scope.zimbraOverlayLoaderStatus="Carregando...";
     $scope.searchText    = null;
@@ -18,7 +20,8 @@
 
     $scope.menu = {
       users : true,
-      dlist : false
+      dlist : false,
+      reports : false
     }
 
     // init functions
@@ -35,6 +38,33 @@
     **/
     $scope.userData = $rootScope._userData;
     $scope.isAdmin = userData.user.admin || $scope.userData.user.global_admin
+
+
+    // Get Domain Report
+    function getDomainReport() {
+      $scope.userReport.$resolved = true;
+      // $scope.zimbraOverlayLoaderStatus="Carregando";
+      // $scope.zimbraOverlayLoader = true;
+      var pathParams = {
+        serviceName : $scope.currentDomain['zimbra_service_name'],
+        domainName : $scope.currentDomain['name']
+      }
+
+      
+      reportResource.domain.get(pathParams, null,  function(data){
+        console.log(data);
+        for (cidx in data.response[0].accounts){
+          $scope.userReport.push(data.response[0].accounts[cidx]);
+        }
+
+        $scope.userReport.$resolved = false;
+        
+      }, function(data){
+        console.log('Error getting domain report. See response below');
+        console.log(data);
+        openToast(data.status + ' - Erro gerando relatório', 4, data.status);
+      });
+    }
 
     // Change zimbraDomainStatus
     $scope.switchZStatus = function () {
@@ -328,6 +358,10 @@
       }
       else if ( menu == 'dlist'){
         $scope.menu.dlist = true;
+      }
+      else if ( menu == 'reports'){
+        $scope.menu.reports = true;
+        getDomainReport();
       }
     }
 

@@ -42,6 +42,14 @@
           </md-menu-item>-->
           <md-menu-divider></md-menu-divider>
           <md-menu-item>
+            <md-button ng-click="switchMenu('reports')" >
+              <md-icon>
+                <i class="material-icons">assignment</i>
+              </md-icon>
+              Relatórios
+            </md-button>                     
+          </md-menu-item>
+          <md-menu-item>
             <md-button ng-click="openZimbraConsoleAdmin(currentDomain)">
               <md-icon md-svg-src="assets/img/icons/zimbra-logo-black.svg"></md-icon>
               Console Zimbra
@@ -66,10 +74,43 @@
     </md-toolbar>
     
     
-    <md-content style="height:400px;" class="md-padding">
+    <div style="height:600px;" class="md-padding">
       <div layout="row" flex>
+        <!--MANAGE REPORTS -->
+        <div ng-show="menu.reports" flex=100>
+          <md-subheader class="md-accent">Relatórios</md-subheader>
+          <div>
+            <md-data-table-container style="height:500px;">
+              <table md-data-table md-progress="userReport.$resolved">
+                <md-progress-linear ng-show="userReport.$resolved" md-mode="indeterminate"></md-progress-linear>
+                <thead md-order="query.order" md-trigger="onOrderChange">
+                  <tr>
+                    <th name="Email" order-by="user.email"></th>
+                    <th name="Plano" order-by="user.cos"></th>
+                    <th name="Status" order-by="user.zimbraAccountStatus"></th>
+                    <th name="Primeiro Nome" order-by="user.givenName"></th>
+                    <th name="Ultimo Nome" order-by="user.sn"></th>
+                    <th name="Aliases" order-by="user.mail"></th>
+                    <th name="Ultimo Login" order-by="user.zimbraLastLogonTimestamp"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr md-auto-select ng-repeat="user in userReport">
+                    <td>{{user.email}}</td>
+                    <td>{{user.cos}}</td>
+                    <td>{{user.zimbraAccountStatus}}</td>
+                    <td>{{user.givenName}}</td>
+                    <td>{{user.sn}}</td>
+                    <td>{{user.mail}}</td>
+                    <td>{{user.zimbraLastLogonTimestamp}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </md-data-table-container>
+          </div>
+        </div>
 
-        <div flex="70">
+        <div flex="70" ng-hide="menu.reports">
           <!--MANAGE USERS -->
           <div ng-show="menu.users">
             <md-subheader class="md-accent">Usuários</md-subheader>
@@ -90,7 +131,7 @@
             <md-subheader class="md-accent">Lista de Distribuições</md-subheader>
           </div>
         </div>
-        <div layout-padding layout="column" flex="30">
+        <div layout-padding layout="column" flex="30" ng-hide="menu.reports">
           <div>
             <!--SEARCH BOX-->
             <md-autocomplete
@@ -147,7 +188,7 @@
           </div>
         </div>
       </div>
-    </md-content>
+    </div>
   </div>
 </div>
 
