@@ -1,12 +1,13 @@
-<div ng-show="dnsOverlayLoader" id="overlay-loader" class="card" layout="column" 
+<!--<div ng-show="dnsOverlayLoader" id="overlay-loader" class="card" layout="column" 
 layout-align="center center" flex>
   <span class="md-title">{{dnsOverlayLoaderStatus}}</span>
   <md-progress-circular md-diameter="100" md-mode="indeterminate">
   </md-progress-circular> 
-</div>
-<div class="container" ng-hide="dnsOverlayLoader">
+</div>-->
+<div class="container">
   <div class="card" ng-cloak ng-show="domainName">
     <md-data-table-toolbar ng-hide="selected.length || filter.show">
+       
       <h2 class="md-title">{{domainName}}</h2>
       <div flex></div>
       <!-- <md-button class="md-icon-button" ng-click="filter.show = true">
@@ -18,7 +19,7 @@ layout-align="center center" flex>
         <md-tooltip md-direction="bottom">Restaurar</md-tooltip>
         <i class="material-icons md-dark">restore</i>
       </md-button>
-
+    
     </md-data-table-toolbar>
 
     <md-data-table-toolbar ng-show="filter.show && !selected.length">
@@ -46,8 +47,9 @@ layout-align="center center" flex>
       </md-button>
     </md-data-table-toolbar>
 
+    <md-progress-linear ng-show="dnsOverlayLoader" md-mode="indeterminate"></md-progress-linear>
     <md-data-table-container >
-      <table md-data-table md-row-select="selected" md-progress="deferred">
+      <table md-data-table md-row-select="selected">
         <thead md-order="query.order" md-trigger="onOrderChange">
           <tr>
             <th name="Nome" order-by="data.name"></th>
