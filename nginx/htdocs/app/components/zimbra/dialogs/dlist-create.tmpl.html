@@ -1,0 +1,37 @@
+<md-dialog style="width:700px">
+  <md-header>
+    <div class="md-toolbar-tools" layout="row" layout-align="center center">
+      <div>
+        <i class="fa fa-at fa-2x"></i>
+      </div>
+      <div flex>
+        <span class="md-headline">Criar Lista de Distribuição</span>
+      </div>
+      <div flex class="right-align">
+        <a style="color:black" href ng-click="closeDialog()">
+          <i class="material-icons">close</i>
+        </a>
+      </div>
+    </div>
+    <md-divider></md-divider>
+  </md-header> 
+  <md-content class="white" layout-padding="">
+    <form name="dlistForm" ng-submit="$event.preventDefault()">   
+      <div>
+        <div layout="row">
+          <md-input-container flex class="md-block">
+            <label>Nome/Email</label>
+            <input ng-model="dlist.name"></input>
+          </md-input-container>
+        </div>        
+      </div>
+    </form>
+  </md-content> 
+  <md-progress-linear ng-show="zimbraOverlayLoader" md-mode="indeterminate"></md-progress-linear>
+  <md-dialog-actions class="grey lighten-3" layout="row">
+    <span flex></span>
+    <md-button ng-click="createDList()" class="md-primary"
+    ng-disabled="!(dlistForm.$valid === true)" >Criar</md-button>
+    <md-button ng-click="closeDialog()">Cancelar</md-button> 
+  </md-dialog-actions>
+</md-dialog>

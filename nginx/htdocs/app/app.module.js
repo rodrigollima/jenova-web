@@ -257,6 +257,16 @@ app.factory('resource', function($resource, APIHOST) {
 
     //accountsListResource
     accountsList : $resource(APIHOST + '/services/:serviceName/domains/:domainName/accounts', null, {}),
+    
+    
+    dlist : $resource(APIHOST + '/services/:serviceName/domains/:domainName/dlists/:dlistName', null, {
+      'update' : { method : 'PUT' },
+      'delete' : { method : 'DELETE' }      
+    }),
+
+    dlistList : $resource(APIHOST + '/services/:serviceName/domains/:domainName/dlists', null, {
+      'create' : { method : 'POST' },
+    }),
 
     //domainResource
     domains : {

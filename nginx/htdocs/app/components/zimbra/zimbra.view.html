@@ -32,14 +32,14 @@
               Usuários
             </md-button>
           </md-menu-item>
-          <!--<md-menu-item>
+          <md-menu-item>
             <md-button ng-click="switchMenu('dlist')" >
               <md-icon>
                 <i class="material-icons">group</i>
               </md-icon>
               Lista de Distribuição
             </md-button>                     
-          </md-menu-item>-->
+          </md-menu-item>
           <md-menu-divider></md-menu-divider>
           <md-menu-item>
             <md-button ng-click="openZimbraConsoleAdmin(currentDomain)">
@@ -88,7 +88,16 @@
           <!--MANAGE DIST LIST-->
           <div ng-show="menu.dlist">
             <md-subheader class="md-accent">Lista de Distribuições</md-subheader>
+              <md-virtual-repeat-container style="height:300px">
+                <md-list>
+                  <md-list-item ng-click="openDialogDlist('app/components/zimbra/dialogs/dlist-edit.tmpl.html', dlist)"
+                    md-virtual-repeat="dlist in dListAll" md-on-demand flex>
+                    <p>{{dlist.name}}</p>
+                  </md-list-item>
+                </md-list>
+              </md-virtual-repeat-container>
           </div>
+
         </div>
         <div layout-padding layout="column" flex="30">
           <div>
@@ -157,13 +166,13 @@
     <i class="large material-icons">add</i>
   </a>
   <ul>
-    <!--<li>
-      <a ng-click="" class="btn-floating btn-large ">
+    <li>
+      <a ng-show="menu.dlist" ng-click="openDialog('app/components/zimbra/dialogs/dlist-create.tmpl.html', dynamicItems)" class="btn-floating btn-large ">
         <i class="material-icons">group_add</i>
       </a>
-    </li>-->
+    </li>
     <li>
-      <a ng-click="openDialog('app/components/zimbra/dialogs/user-create.tmpl.html', null)" class="btn-floating btn-large ">
+      <a ng-show="menu.users" ng-click="openDialog('app/components/zimbra/dialogs/user-create.tmpl.html', null)" class="btn-floating btn-large ">
         <i class="material-icons">person_add</i>
       </a>
     </li>
