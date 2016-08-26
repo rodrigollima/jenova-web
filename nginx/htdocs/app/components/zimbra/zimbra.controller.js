@@ -379,16 +379,20 @@
       var dListData = {dlist: {},
                        accounts: {}
                       };
-      
+
       pathParams = {
         serviceName : $scope.currentDomain['zimbra_service_name'],
-        domainName : $scope.currentDomain['name'],
-        dlistName: data.name
+        domainName : $scope.currentDomain['name']
       }
 
-      dListResource.get(pathParams, function(resp){
-        dListData.dlist = resp.response;
-      })
+      if (data != undefined) {
+        pathParams.dlistName = data.name;
+        dListResource.get(pathParams, function(resp){
+          dListData.dlist = resp.response;
+        })
+      } else {
+        dListData.dlist = {'dlist': '','accounts':[]};
+      }
 
       accountListResource.get(pathParams, function(resp){
         dListData.accounts =  resp.response.accounts;
@@ -397,7 +401,6 @@
         console.log(data);
         openToast(data.status + ' - Não foi possível carregar usuários', 4, data.status);
       });
-      console.log(dListData);
       Dialog.open(template_url, 'zimbraDListDialogCtrl', dListData, false);
     }
 
@@ -436,16 +439,110 @@
 
 function zimbraDListDialogCtrl($scope, $mdDialog, $state, data, currentData, mdToast){
   $scope.localData = data;
-  
-  $scope.clickMe = function(accountName){
-    console.log(accountName);
+  $scope.currentDomain = currentData.domain;
+
+  Array.prototype.indexByAccount = function(accountName){
+      for(var i = 0; i < this.length; i++)
+      {
+          console.log(this[i].name +'|'+ accountName);
+          if(this[i].name == accountName) {
+              return i;
+          }
+      }
+      return -1;    
+  }
+
+  $scope.addMember = function(account){
+    var member = {name : ''};
+    if ($scope.localData.dlist.accounts.indexByAccount(account.name) !== -1){
+      openToast('Esta conta já é membro da lista!', 5, 409);
+    } else {
+      member.name = account.name;
+      $scope.localData.dlist.accounts.push(member);
+    }
+  }
+
+  $scope.removeMember = function(account){
+    idx = $scope.localData.dlist.accounts.indexByAccount(account.name);
+    $scope.localData.dlist.accounts.splice(idx,1);
   }
 
   $scope.closeDialog = function() {
         // Disable loading at service desc state view
         // $scope.currentDomain.currentService.activeDialog = false;
-        //$state.reload();
+        $state.reload();
         $mdDialog.hide();
+  }
+
+  $scope.updateDlist = function() {
+    var dlistToUpdate = {
+      dlist : $scope.localData.dlist.dlist,
+      accounts: $scope.localData.dlist.accounts
+    }
+
+    pathParams = {
+          serviceName : $scope.currentDomain['zimbra_service_name'],
+          domainName : $scope.currentDomain['name'],
+          dlistName  : $scope.localData.dlist.dlist
+      }
+
+      dListResource.update(pathParams, dlistToUpdate, function(data) {
+        openToast('Salvo com sucesso!', 4, data.status);
+        $scope.closeDialog();
+      }, function(data) {
+        var msg = data.status + ' - Não foi possível salvar as alterações.';
+        openToast(msg, 4, data.status);
+        console.log(data);
+        $scope.zimbraOverlayLoader = false;
+      })
+
+  }
+
+  $scope.createDlist = function() {
+    console.log($scope.localData.dlist);
+    $scope.localData.dlist.dlist = $scope.localData.dlist.dlist + 
+      "@" + $scope.currentDomain.name;
+    $scope.zimbraOverlayLoader = true;
+
+    pathParams = {
+        serviceName: $scope.currentDomain['zimbra_service_name'],
+        domainName : $scope.currentDomain['name']
+    }
+    
+    dListLitsResource.create(pathParams, $scope.localData.dlist, function(data) {
+      openToast('Lista de distribuição creada com sucesso!', 4, data.status);
+      $scope.closeDialog();
+    }, function(data) {
+      var msg = data.status + ' - Não foi possível criar a lista de distribuição.';
+      openToast(msg, 4, data.status);
+      console.log(data);
+      $scope.zimbraOverlayLoader = false;
+    })
+  }
+
+  $scope.deleteDlist = function() {
+    $scope.zimbraOverlayLoader = true;
+
+    pathParams = {
+        serviceName: $scope.currentDomain['zimbra_service_name'],
+        domainName : $scope.currentDomain['name'],
+        dlistName  : $scope.localData.dlist.dlist
+    }
+    
+    dListResource.delete(pathParams, null, function(data) {
+      openToast('Lista de distribuição deletada com sucesso!', 4, data.status);
+      $scope.closeDialog();
+    }, function(data) {
+      var msg = data.status + ' - Não foi possível deletar a lista de distribuição.';
+      openToast(msg, 4, data.status);
+      console.log(data);
+      $scope.zimbraOverlayLoader = false;
+    })
+  }
+
+  function openToast(msg, delay, status){
+      delay = delay * 1000
+      mdToast.show(mdToast.getSimple(msg, delay));
   }
 }
 

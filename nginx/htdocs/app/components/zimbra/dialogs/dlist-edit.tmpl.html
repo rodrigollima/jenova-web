@@ -24,7 +24,7 @@
           <div>
             <md-virtual-repeat-container style="height:300px">
               <md-list>
-                <md-list-item ng-click="clickMe(member.name)"
+                <md-list-item ng-click="removeMember(member)"
                   md-virtual-repeat="member in localData.dlist.accounts" flex>
                   <p>{{member.name}}</p>
                 </md-list-item>
@@ -37,7 +37,7 @@
           <div>
             <md-virtual-repeat-container style="height:300px">
               <md-list>
-                <md-list-item ng-click="clickMe(account.name)"
+                <md-list-item ng-click="addMember(account)" 
                   md-virtual-repeat="account in localData.accounts" flex>
                   <p>{{account.name}}</p>
                 </md-list-item>
@@ -53,9 +53,9 @@
   <md-dialog-actions class="grey lighten-3" layout="row">
     <span flex></span>
     <md-button ng-click="updateDlist()" class="md-primary"
-    ng-disabled="!(dlistForm.$valid === true)" >Salvar
+      ng-disabled="" >Salvar
     </md-button> 
     <md-button ng-click="deleteDlist()" class="md-warn">Deletar</md-button> 
-    <md-button ng-click="closeDialog('dlist')">Cancelar</md-button> 
+    <md-button ng-click="closeDialog()">Cancelar</md-button> 
   </md-dialog-actions>
 </md-dialog>

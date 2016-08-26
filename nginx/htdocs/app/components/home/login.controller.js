@@ -1,7 +1,7 @@
 (function(){
   var app = angular.module("jenovaApp");
 
-  function loginCtrl($scope, $http, $window, $location, $rootScope, authResource){
+  function loginCtrl($scope, $http, $window, $location, $rootScope, authResource, mdToast){
     if ($window.sessionStorage.token){
       return $location.path('/');  
     }
@@ -16,9 +16,12 @@
         console.log('Error logging in');
         console.log(data);
         var message = 'Erro desconhecido.'
-        if (status == 401){
+        if (data.status == 401){
           message = 'Login/Senha incorretos.';
+        } else {
+          message = message + ' - ' + data.status;
         }
+        mdToast.show(mdToast.getSimple(message, 5000));
       });      
     }
   }

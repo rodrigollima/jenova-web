@@ -1,11 +1,11 @@
 <md-dialog style="width:700px">
   <md-header>
     <div class="md-toolbar-tools" layout="row" layout-align="center center">
-      <div>
-        <i class="fa fa-at fa-2x"></i>
+      <div flex = "5">
+        <i class="fa fa-users"></i>
       </div>
-      <div flex>
-        <span class="md-headline">Criar Lista de Distribuição</span>
+      <div flex = "85">
+        <span class="md-headline">Criar lista de distribuição</span>
       </div>
       <div flex class="right-align">
         <a style="color:black" href ng-click="closeDialog()">
@@ -16,22 +16,50 @@
     <md-divider></md-divider>
   </md-header> 
   <md-content class="white" layout-padding="">
-    <form name="dlistForm" ng-submit="$event.preventDefault()">   
-      <div>
-        <div layout="row">
-          <md-input-container flex class="md-block">
-            <label>Nome/Email</label>
-            <input ng-model="dlist.name"></input>
-          </md-input-container>
-        </div>        
+    <form name="dlistForm" ng-submit="$event.preventDefault()"> 
+      <div layout="row">
+        <md-input-container flex class="md-block">
+            <label>Nome da Lista de Distribuição</label>
+            <input ng-model="localData.dlist.dlist" required></input><i>@{{currentDomain.name}}</i>
+        </md-input-container>
+      </div>    
+      <div layout="row" layout-xs="column">
+        <div flex = "50">
+          <md-subheader class="md-accent">Membros da Lista</md-subheader>
+          <div>
+            <md-virtual-repeat-container style="height:300px">
+              <md-list>
+                <md-list-item ng-click="removeMember(member)"
+                  md-virtual-repeat="member in localData.dlist.accounts" flex>
+                  <p>{{member.name}}</p>
+                </md-list-item>
+              </md-list>
+            </md-virtual-repeat-container>
+          </div>
+        </div>
+        <div flex = "50">
+          <md-subheader class="md-accent">Usuários do dominio</md-subheader>
+          <div>
+            <md-virtual-repeat-container style="height:300px">
+              <md-list>
+                <md-list-item ng-click="addMember(account)" 
+                  md-virtual-repeat="account in localData.accounts" flex>
+                  <p>{{account.name}}</p>
+                </md-list-item>
+              </md-list>
+            </md-virtual-repeat-container>
+          </div>
+        </div>
       </div>
     </form>
-  </md-content> 
+  </md-content>
+
   <md-progress-linear ng-show="zimbraOverlayLoader" md-mode="indeterminate"></md-progress-linear>
   <md-dialog-actions class="grey lighten-3" layout="row">
     <span flex></span>
-    <md-button ng-click="createDList()" class="md-primary"
-    ng-disabled="!(dlistForm.$valid === true)" >Criar</md-button>
+    <md-button ng-click="createDlist()" class="md-primary"
+      ng-disabled="!(dlistForm.$valid === true)">Criar
+    </md-button> 
     <md-button ng-click="closeDialog()">Cancelar</md-button> 
   </md-dialog-actions>
 </md-dialog>
