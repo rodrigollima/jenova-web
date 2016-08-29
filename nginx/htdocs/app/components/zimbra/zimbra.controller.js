@@ -8,6 +8,10 @@
     reportResource = resource.reports
     accountResource = resource.accounts;
     accountListResource = resource.accountsList;
+    
+    dListLitsResource = resource.dlistList;
+    dListResource = resource.dlist; 
+
     $scope.currentDomain = currentData.domain;
     $scope.zCOS = [];
     $scope.zimbraOverlayLoader=false; // set false when prod.
@@ -121,6 +125,73 @@
       });
 
     }
+
+    var DListAll = function(query) {
+      this.query = query;
+
+      $scope.loadedPagesDList = {};
+
+      $scope.numItemsDlist = 1;
+
+      this.PAGE_SIZE = 25;
+      this.fetchPage_();
+    }
+
+    DListAll.prototype.getItemAtIndex = function(index) {
+      var pageNumber = Math.floor(index / this.PAGE_SIZE);
+      var page = $scope.loadedPagesDList[pageNumber];
+
+      if (page) {
+        return page[index % this.PAGE_SIZE];
+      } else if (page !== null) {
+        if (pageNumber > 0){
+          /* Will only fetch next page if the previous page has size of the PAGE_SIZE limit.
+          Prevents unwanted requests. */
+          var prevPageNumber = Math.max(0, pageNumber - 1);
+          if ($scope.loadedPagesDList[prevPageNumber].length == this.PAGE_SIZE){
+            this.fetchPage_(pageNumber);
+          }
+        }else{
+          this.fetchPage_(pageNumber);
+        }
+      }
+    };
+
+    DListAll.prototype.getLength = function() {
+      return $scope.numItemsDlist;
+    };
+
+    DListAll.prototype.fetchPage_ = function(pageNumber) {
+      if (!pageNumber){
+        pageNumber = 0;
+      }
+      // Set the page to null so we know it is already being fetched.
+      $scope.loadedPagesDList[pageNumber] = null;
+      var pageOffset = pageNumber * this.PAGE_SIZE;
+      
+      var pathParams = {
+          serviceName : $scope.currentDomain['zimbra_service_name'],
+          domainName : $scope.currentDomain['name']
+      }
+
+      dListLitsResource.get(pathParams, function(data){
+        $scope.loadedPagesDList[pageNumber] = [];
+        for ( idx in data.response.dlists ){
+          $scope.loadedPagesDList[pageNumber].push(data.response.dlists[idx]);
+        }
+        $scope.numItemsDlist = data.response.total;
+        $scope.loadedPagesDList.$resolved = data.$resolved;
+
+        if ($scope.loadedPagesDList.$resolved){
+          $scope.vrSize = getVirtualRepeatSize($scope.numItemsDlist);
+        }
+      }, function(data){
+        console.log('Error getting Dlists. See response below');
+        console.log(data);
+        openToast(data.status + ' - Não foi possível carregar listas de distribuição', 4, data.status);
+      });
+    };
+
     // Load users
     var DynamicItems = function(query) {
       /**
@@ -197,7 +268,7 @@
       }
 
       domainResource.zstatus.get(pathParams, function(data){
-        console.log(data.response);
+        //console.log(data.response);
          var status = data.response.status;
          if (status == 'active'){
            $scope.zDomainStatus.active = true;
@@ -332,6 +403,35 @@
       Dialog.open(template_url, 'zimbraDialogCtrl', data, false);
     }
 
+    $scope.openDialogDlist = function(template_url, data) {      
+      var dListData = {dlist: {},
+                       accounts: {}
+                      };
+
+      pathParams = {
+        serviceName : $scope.currentDomain['zimbra_service_name'],
+        domainName : $scope.currentDomain['name']
+      }
+
+      if (data != undefined) {
+        pathParams.dlistName = data.name;
+        dListResource.get(pathParams, function(resp){
+          dListData.dlist = resp.response;
+        })
+      } else {
+        dListData.dlist = {'dlist': '','accounts':[]};
+      }
+
+      accountListResource.get(pathParams, function(resp){
+        dListData.accounts =  resp.response.accounts;
+      }, function(data){
+        console.log('Error getting users. See response below');
+        console.log(data);
+        openToast(data.status + ' - Não foi possível carregar usuários', 4, data.status);
+      });
+      Dialog.open(template_url, 'zimbraDListDialogCtrl', dListData, false);
+    }
+
     function openToast(msg, delay, status){
       msg = getStatusCodeMessage(msg, status);
       delay = delay * 1000
@@ -355,7 +455,7 @@
         $scope.menu.users = true;
       }
       else if ( menu == 'dlist'){
-        $scope.menu.dlist = true;
+        $scope.menu.dlist = true;      
       }
       else if ( menu == 'reports'){
         $scope.menu.reports = true;
@@ -365,7 +465,118 @@
 
     //init constructors
     $scope.dynamicItems = new DynamicItems();
+    $scope.dListAll = new DListAll();
   }
+
+
+function zimbraDListDialogCtrl($scope, $mdDialog, $state, data, currentData, mdToast){
+  $scope.localData = data;
+  $scope.currentDomain = currentData.domain;
+
+  Array.prototype.indexByAccount = function(accountName){
+      for(var i = 0; i < this.length; i++)
+      {
+          console.log(this[i].name +'|'+ accountName);
+          if(this[i].name == accountName) {
+              return i;
+          }
+      }
+      return -1;    
+  }
+
+  $scope.addMember = function(account){
+    var member = {name : ''};
+    if ($scope.localData.dlist.accounts.indexByAccount(account.name) !== -1){
+      openToast('Esta conta já é membro da lista!', 5, 409);
+    } else {
+      member.name = account.name;
+      $scope.localData.dlist.accounts.push(member);
+    }
+  }
+
+  $scope.removeMember = function(account){
+    idx = $scope.localData.dlist.accounts.indexByAccount(account.name);
+    $scope.localData.dlist.accounts.splice(idx,1);
+  }
+
+  $scope.closeDialog = function() {
+        // Disable loading at service desc state view
+        // $scope.currentDomain.currentService.activeDialog = false;
+        $state.reload();
+        $mdDialog.hide();
+  }
+
+  $scope.updateDlist = function() {
+    var dlistToUpdate = {
+      dlist : $scope.localData.dlist.dlist,
+      accounts: $scope.localData.dlist.accounts
+    }
+
+    pathParams = {
+          serviceName : $scope.currentDomain['zimbra_service_name'],
+          domainName : $scope.currentDomain['name'],
+          dlistName  : $scope.localData.dlist.dlist
+      }
+
+      dListResource.update(pathParams, dlistToUpdate, function(data) {
+        openToast('Salvo com sucesso!', 4, data.status);
+        $scope.closeDialog();
+      }, function(data) {
+        var msg = data.status + ' - Não foi possível salvar as alterações.';
+        openToast(msg, 4, data.status);
+        console.log(data);
+        $scope.zimbraOverlayLoader = false;
+      })
+
+  }
+
+  $scope.createDlist = function() {
+    console.log($scope.localData.dlist);
+    $scope.localData.dlist.dlist = $scope.localData.dlist.dlist + 
+      "@" + $scope.currentDomain.name;
+    $scope.zimbraOverlayLoader = true;
+
+    pathParams = {
+        serviceName: $scope.currentDomain['zimbra_service_name'],
+        domainName : $scope.currentDomain['name']
+    }
+    
+    dListLitsResource.create(pathParams, $scope.localData.dlist, function(data) {
+      openToast('Lista de distribuição creada com sucesso!', 4, data.status);
+      $scope.closeDialog();
+    }, function(data) {
+      var msg = data.status + ' - Não foi possível criar a lista de distribuição.';
+      openToast(msg, 4, data.status);
+      console.log(data);
+      $scope.zimbraOverlayLoader = false;
+    })
+  }
+
+  $scope.deleteDlist = function() {
+    $scope.zimbraOverlayLoader = true;
+
+    pathParams = {
+        serviceName: $scope.currentDomain['zimbra_service_name'],
+        domainName : $scope.currentDomain['name'],
+        dlistName  : $scope.localData.dlist.dlist
+    }
+    
+    dListResource.delete(pathParams, null, function(data) {
+      openToast('Lista de distribuição deletada com sucesso!', 4, data.status);
+      $scope.closeDialog();
+    }, function(data) {
+      var msg = data.status + ' - Não foi possível deletar a lista de distribuição.';
+      openToast(msg, 4, data.status);
+      console.log(data);
+      $scope.zimbraOverlayLoader = false;
+    })
+  }
+
+  function openToast(msg, delay, status){
+      delay = delay * 1000
+      mdToast.show(mdToast.getSimple(msg, delay));
+  }
+}
 
   // DIALOG CONTROLLER
 function zimbraDialogCtrl($scope, $mdDialog, $state, data, currentData, mdToast){
@@ -462,12 +673,12 @@ function zimbraDialogCtrl($scope, $mdDialog, $state, data, currentData, mdToast)
       // $scope.currentDomain.currentService.activeDialog = false;
       $state.reload();
       $mdDialog.hide();
-    }
+  }
   function openToast(msg, delay, status){
       msg = getStatusCodeMessage(msg, status);
       delay = delay * 1000
       mdToast.show(mdToast.getSimple(msg, delay));
-    }
+  }
 
   function getStatusCodeMessage(msg, status){
     if (status in [403, 401]){
@@ -478,4 +689,5 @@ function zimbraDialogCtrl($scope, $mdDialog, $state, data, currentData, mdToast)
 }
   app.controller("zimbraCtrl", zimbraCtrl);
   app.controller("zimbraDialogCtrl", zimbraDialogCtrl);
+  app.controller("zimbraDListDialogCtrl", zimbraDListDialogCtrl);
 }());
