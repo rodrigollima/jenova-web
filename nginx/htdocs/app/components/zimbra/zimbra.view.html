@@ -113,7 +113,7 @@
         <div flex="70" ng-hide="menu.reports">
           <!--MANAGE USERS -->
           <div ng-show="menu.users">
-            <p>Usuários</p>
+            <md-subheader class="md-accent">Usuários</md-subheader>
             <div ng-show="loadedPages.$resolved">
               <md-virtual-repeat-container style="height:500px">
                 <md-list>
@@ -128,12 +128,12 @@
 
           <!--MANAGE DIST LIST-->
           <div ng-show="menu.dlist">
-            <p>Listas de Distribuição</p>
-            <div ng-show="loadedPagesDList.$resolved">
-              <md-virtual-repeat-container style="height:300px">
+            <md-subheader class="md-accent">Listas de Distribuição</md-subheader>
+            <div>
+              <md-virtual-repeat-container style="height:500px">
                 <md-list>
-                  <md-list-item ng-click="openDialogDlist('app/components/zimbra/dialogs/dlist-edit.tmpl.html', dlist)"
-                    md-virtual-repeat="dlist in dListAll" md-on-demand flex>
+                  <md-list-item ng-repeat="dlist in dListAll"
+                   ng-click="openDialogDlist('app/components/zimbra/dialogs/dlist-edit.tmpl.html', dlist)">
                     <p>{{dlist.name}}</p>
                   </md-list-item>
                 </md-list>

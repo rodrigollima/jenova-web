@@ -10,7 +10,8 @@
     accountListResource = resource.accountsList;
     
     dListLitsResource = resource.dlistList;
-    dListResource = resource.dlist; 
+    dListResource = resource.dlist;
+    $scope.dListAll = [];
 
     $scope.currentDomain = currentData.domain;
     $scope.zCOS = [];
@@ -42,6 +43,29 @@
     $scope.userData = $rootScope._userData;
     $scope.isAdmin = userData.user.admin || $scope.userData.user.global_admin
 
+
+
+    // Get Dlists
+    function getDlists(){
+      var pathParams = {
+          serviceName : $scope.currentDomain['zimbra_service_name'],
+          domainName : $scope.currentDomain['name']
+      }
+
+      dListLitsResource.get(pathParams, function(data){
+        $scope.dListAll = data.response.dlists;
+        console.log($scope.dListAll)
+        // for ( idx in data.response.dlists ){
+          
+        //   console.log($scope.dListAll);
+        // }
+        $scope.numItemsDlist = data.response.total;
+      }, function(data){
+        console.log('Error getting Dlists. See response below');
+        console.log(data);
+        openToast(data.status + ' - Não foi possível carregar listas de distribuição', 4, data.status);
+      });
+    }
 
     // Get Domain Report
     function getDomainReport() {
@@ -126,71 +150,6 @@
 
     }
 
-    var DListAll = function(query) {
-      this.query = query;
-
-      $scope.loadedPagesDList = {};
-
-      $scope.numItemsDlist = 1;
-
-      this.PAGE_SIZE = 25;
-      this.fetchPage_();
-    }
-
-    DListAll.prototype.getItemAtIndex = function(index) {
-      var pageNumber = Math.floor(index / this.PAGE_SIZE);
-      var page = $scope.loadedPagesDList[pageNumber];
-
-      if (page) {
-        return page[index % this.PAGE_SIZE];
-      } else if (page !== null) {
-        if (pageNumber > 0){
-          /* Will only fetch next page if the previous page has size of the PAGE_SIZE limit.
-          Prevents unwanted requests. */
-          var prevPageNumber = Math.max(0, pageNumber - 1);
-          if ($scope.loadedPagesDList[prevPageNumber].length == this.PAGE_SIZE){
-            this.fetchPage_(pageNumber);
-          }
-        }else{
-          this.fetchPage_(pageNumber);
-        }
-      }
-    };
-
-    DListAll.prototype.getLength = function() {
-      return $scope.numItemsDlist;
-    };
-
-    DListAll.prototype.fetchPage_ = function(pageNumber) {
-      if (!pageNumber){
-        pageNumber = 0;
-      }
-      // Set the page to null so we know it is already being fetched.
-      $scope.loadedPagesDList[pageNumber] = null;
-      var pageOffset = pageNumber * this.PAGE_SIZE;
-      
-      var pathParams = {
-          serviceName : $scope.currentDomain['zimbra_service_name'],
-          domainName : $scope.currentDomain['name']
-      }
-
-      dListLitsResource.get(pathParams, function(data){
-        $scope.loadedPagesDList[pageNumber] = [];
-        for ( idx in data.response.dlists ){
-          $scope.loadedPagesDList[pageNumber].push(data.response.dlists[idx]);
-        }
-        $scope.numItemsDlist = data.response.total;
-        $scope.loadedPagesDList.$resolved = data.$resolved;
-
-        if ($scope.loadedPagesDList.$resolved){
-          $scope.vrSize = getVirtualRepeatSize($scope.numItemsDlist);
-        }
-      }, function(data){
-        console.log('Error getting Dlists. See response below');
-        console.log(data);
-        openToast(data.status + ' - Não foi possível carregar listas de distribuição', 4, data.status);
-      });
-    };
 
     // Load users
     var DynamicItems = function(query) {
@@ -455,7 +414,8 @@
         $scope.menu.users = true;
       }
       else if ( menu == 'dlist'){
-        $scope.menu.dlist = true;      
+        $scope.menu.dlist = true;
+        getDlists();
       }
       else if ( menu == 'reports'){
         $scope.menu.reports = true;
@@ -465,7 +425,6 @@
 
     //init constructors
     $scope.dynamicItems = new DynamicItems();
-    $scope.dListAll = new DListAll();
   }
 
 
