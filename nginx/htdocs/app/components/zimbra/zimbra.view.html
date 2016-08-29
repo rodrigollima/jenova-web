@@ -115,7 +115,7 @@
           <div ng-show="menu.users">
             <md-subheader class="md-accent">Usuários</md-subheader>
             <div ng-show="loadedPages.$resolved">
-              <md-virtual-repeat-container style="height:300px">
+              <md-virtual-repeat-container style="height:500px">
                 <md-list>
                   <md-list-item ng-click="openDialog('app/components/zimbra/dialogs/user-edit.tmpl.html', account)"
                     md-virtual-repeat="account in dynamicItems" md-on-demand flex>

@@ -10,7 +10,6 @@
     accountListResource = resource.accountsList;
     $scope.currentDomain = currentData.domain;
     $scope.zCOS = [];
-    $scope.userReport = [];
     $scope.zimbraOverlayLoader=false; // set false when prod.
     $scope.zimbraOverlayLoaderStatus="Carregando...";
     $scope.searchText    = null;
@@ -42,9 +41,9 @@
 
     // Get Domain Report
     function getDomainReport() {
+      $scope.userReport = [];
       $scope.userReport.$resolved = true;
-      // $scope.zimbraOverlayLoaderStatus="Carregando";
-      // $scope.zimbraOverlayLoader = true;
+      
       var pathParams = {
         serviceName : $scope.currentDomain['zimbra_service_name'],
         domainName : $scope.currentDomain['name']
@@ -131,7 +130,7 @@
       $scope.loadedPages = {};
 
       /** @type {number} Total number of items. */
-      $scope.numItems = 1;
+      $scope.numItems = 0;
       /** @const {number} Number of items to fetch per request. */
       this.PAGE_SIZE = 25;
       this.fetchPage_();
@@ -163,32 +162,31 @@
       if (!pageNumber){
         pageNumber = 0;
       }
+    
       // Set the page to null so we know it is already being fetched.
       $scope.loadedPages[pageNumber] = null;
       var pageOffset = pageNumber * this.PAGE_SIZE;
       
       var pathParams = {
           serviceName : $scope.currentDomain['zimbra_service_name'],
-          domainName : $scope.currentDomain['name']
+          domainName : $scope.currentDomain['name'],
+          limit : this.PAGE_SIZE,
+          offset : pageOffset
       }
 
+      console.log('fetching page ' + pageNumber);
       accountListResource.get(pathParams, function(data){
         $scope.loadedPages[pageNumber] = [];
         for ( idx in data.response.accounts ){
           $scope.loadedPages[pageNumber].push(data.response.accounts[idx]);
         }
-        $scope.numItems = data.response.total;
+        $scope.numItems = $scope.numItems + data.response.total;
         $scope.loadedPages.$resolved = data.$resolved;
-
-        if ($scope.loadedPages.$resolved){
-          $scope.vrSize = getVirtualRepeatSize($scope.numItems);
-        }
       }, function(data){
         console.log('Error getting users. See response below');
         console.log(data);
         openToast(data.status + ' - Não foi possível carregar usuários', 4, data.status);
-      });
-      // domainResource.clients.get({clientName : clientName, domainName : this.query, limit:this.PAGE_SIZE, offset:pageOffset}, function(data){
+      }); 
     };
 
     // Load zimbraDomainStatus
