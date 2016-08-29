@@ -21,8 +21,8 @@
     $scope.zDomainStatus = { active : true, class : '' };
 
     $scope.menu = {
-      users : false,
-      dlist : true
+      users : true,
+      dlist : false
     }
 
     // init functions
