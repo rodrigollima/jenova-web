@@ -132,8 +132,8 @@
             <div>
               <md-virtual-repeat-container style="height:500px">
                 <md-list>
-                  <md-list-item ng-repeat="dlist in dListAll"
-                   ng-click="openDialogDlist('app/components/zimbra/dialogs/dlist-edit.tmpl.html', dlist)">
+                  <md-list-item ng-repeat="dlist in dListAll | filter:query.filter | orderBy: 'name'"
+                   ng-click="getDListMembers(dlist)">
                     <p>{{dlist.name}}</p>
                   </md-list-item>
                 </md-list>
@@ -143,8 +143,8 @@
 
         </div>
         <div layout-padding layout="column" flex="30" ng-hide="menu.reports">
-          <div>
-            <!--SEARCH BOX-->
+          <div ng-if="menu.users">
+            <!--SEARCH USER-->
             <md-autocomplete
               md-delay="800"
               md-search-text="searchText"
@@ -168,7 +168,7 @@
           </div>
 
           <!--ACCOUNT TYPE-->
-          <div layout="column" flex>
+          <div layout="column" ng-if="menu.cos" flex>
             <p>Limites de Conta</p>
             <md-divider></md-divider>
             <div class="md-padding" ng-if="!zCOS.$resolved" layout-align="center center" layout="row">
@@ -197,6 +197,43 @@
               </div>
             </md-list>
           </div>
+
+          <!--SEARCH DLIST-->
+          <div ng-if="menu.dlist">
+            <md-autocomplete
+              md-delay="200"
+              md-no-cache="true"
+              md-search-text="queryDList"
+              md-items="_ in searchDList(queryDList)"
+              md-search-text-change ="searchDList(queryDList)"
+              placeholder="Buscar Lista"
+              md-min-length="1"
+              md-input-maxlength="25">
+            </md-autocomplete>
+          </div>
+
+          <!--DLIST Members-->
+          <div layout="column" ng-if="menu.dlist">
+            <p>Membros</p>
+            <md-divider></md-divider>
+            <div class="md-padding" ng-if="!currentDList.members.$resolved" layout-align="center center" layout="row">
+              <label>{{zimbraOverlayLoaderStatus}}</label>
+            </div>
+            <md-virtual-repeat-container style="height:500px">
+
+            <md-list ng-if="currentDList.members.$resolved">
+              <md-list-item layout="row" layout-align="space-between center" ng-repeat="member in currentDList.members">
+                <div>
+                  <label> {{ member.name }} </label>
+                </div>
+              </md-list-item>
+            </md-list>
+            </md-virtual-repeat-container>
+            <div layout="row" layout-align="end end">
+              <md-button class="md-primary" ng-disabled="!currentDList.members.$resolved" ng-click="openDListDialog('app/components/zimbra/dialogs/dlist-edit.tmpl.html', currentDList)">Editar</md-button>
+            </div>
+          </div>
+          
         </div>
       </div>
     </div>
@@ -210,7 +247,7 @@
   </a>
   <ul>
     <li>
-      <a ng-show="menu.dlist" ng-click="openDialogDlist('app/components/zimbra/dialogs/dlist-create.tmpl.html', null)" class="btn-floating btn-large ">
+      <a ng-show="menu.dlist" ng-click="openDListDialog('app/components/zimbra/dialogs/dlist-create.tmpl.html', null)" class="btn-floating btn-large ">
         <md-tooltip md-direction="left">Lista de distribuição</md-tooltip>
         <i class="material-icons">group_add</i>
       </a>
