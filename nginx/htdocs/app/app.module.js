@@ -248,7 +248,11 @@ app.factory('resource', function($resource, APIHOST) {
         'update' : { method : 'PUT' },
       })
     },
-    
+    // reports
+    reports : {
+      reseller : $resource(APIHOST + '/reports/:resellerName', null, {}), 
+      domain : $resource(APIHOST + '/reports/domains/:domainName/services/:serviceName', null, {})
+    },
     //accountsResource
     accounts : $resource(APIHOST + '/services/:serviceName/domains/:domainName/accounts/:accountName', null, {
       'update' : { method : 'PUT' },
@@ -257,6 +261,17 @@ app.factory('resource', function($resource, APIHOST) {
 
     //accountsListResource
     accountsList : $resource(APIHOST + '/services/:serviceName/domains/:domainName/accounts', null, {}),
+    
+    //dListResource
+    dlist : $resource(APIHOST + '/services/:serviceName/domains/:domainName/dlists/:dlistName', null, {
+      'update' : { method : 'PUT' },
+      'delete' : { method : 'DELETE' }      
+    }),
+
+    //dListsResource
+    dlistList : $resource(APIHOST + '/services/:serviceName/domains/:domainName/dlists', null, {
+      'create' : { method : 'POST' },
+    }),
 
     //domainResource
     domains : {

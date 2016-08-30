@@ -1,0 +1,74 @@
+<md-dialog style="width:700px">
+  <md-header>
+    <div class="md-toolbar-tools" layout="row" layout-align="center center">
+      <div flex = "5">
+        <i class="fa fa-users"></i>
+      </div>
+      <div flex = "85">
+        <span class="md-headline">Criar Lista de Distribuição</span>
+      </div>
+      <div flex class="right-align">
+        <a style="color:black" href ng-click="closeDialog()">
+          <i class="material-icons">close</i>
+        </a>
+      </div>
+    </div>
+    <md-divider></md-divider>
+  </md-header> 
+  <md-content class="white" layout-padding="">
+    <form name="dlistForm" ng-submit="$event.preventDefault()">
+      <div layout="row">
+        <md-input-container flex class="md-block">
+          <label>Email</label>
+          <input ng-model="currentDList.name" required></input>
+        </md-input-container>
+      </div>     
+      <div layout="row" layout-xs="column">
+        <!--MEMBERS-->
+        <div flex = "50">
+          <md-subheader>Membros</md-subheader>
+          <md-divider flex="90"></md-divider>
+          <div>
+            <md-virtual-repeat-container style="height:300px">
+              <md-list>
+                <md-list-item layout="row" layout-align="space-between center"
+                  md-virtual-repeat="member in currentDList.members" flex>
+                  <label>{{member.name}}</label>
+                  <md-button class="md-icon-button" ng-click="removeDListMember(member)">
+                    <md-icon>
+                      <i class="material-icons">remove</i>
+                    </md-icon>
+                  </md-button>
+                </md-list-item>
+              </md-list>
+            </md-virtual-repeat-container>
+          </div>
+        </div>
+        
+        <!--USERS -->
+        <div flex = "50">
+          <md-subheader>Usuários</md-subheader>
+          <md-divider flex="90"></md-divider>
+          <md-virtual-repeat-container style="height:300">
+            <md-list>
+              <md-list-item ng-click="addDListMember(account)"
+                md-virtual-repeat="account in dynamicItems" md-on-demand flex>
+                <span>{{account.name}}</span>
+              </md-list-item>
+            </md-list>
+          </md-virtual-repeat-container>
+
+        </div>
+      </div>
+    </form>
+  </md-content>
+
+  <md-progress-linear ng-show="zimbraOverlayLoader" md-mode="indeterminate"></md-progress-linear>
+  <md-dialog-actions class="grey lighten-3" layout="row">
+    <span flex></span>
+    <md-button ng-click="createDList()" class="md-primary"
+      ng-disabled="!(dlistForm.$valid === true)" > Criar
+    </md-button> 
+    <md-button ng-click="closeDialog()">Cancelar</md-button> 
+  </md-dialog-actions>
+</md-dialog>

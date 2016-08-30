@@ -20,17 +20,28 @@
                 }
             })
             .state('home', {
-                url: '/',
+                url : '/',
                 views : {
                     nav : {
                         templateUrl : 'app/shared/navbar.view.html'
                     },
                     main : {
-                        templateUrl: 'app/components/home/home.view.html',
-                        controller: 'homeCtrl',
+                        templateUrl: 'app/components/domain/domain.view.html',
+                        controller: 'domainCtrl',
                         authenticate: true
                     }
                 }
+                // url: '/',
+                // views : {
+                //     nav : {
+                //         templateUrl : 'app/shared/navbar.view.html'
+                //     },
+                //     main : {
+                //         templateUrl: 'app/components/home/home.view.html',
+                //         controller: 'homeCtrl',
+                //         authenticate: true
+                //     }
+                // }
             })
             .state('dns', {
                 url: '/dns/:domain',
