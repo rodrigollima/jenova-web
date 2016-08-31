@@ -15,8 +15,10 @@
 
     
     if ($location.path() === '/'){
-      $scope.home = 'active';
-      $scope.title = 'Dashboard';
+      $scope.dom = 'active';
+      $scope.title = 'Domínios';
+      // $scope.home = 'active';
+      // $scope.title = 'Dashboard';
     }else if ($location.path().startsWith('/domain') || $location.path().endsWith('/domains')){
       $scope.dom = 'active';
       $scope.title = 'Domínios';
