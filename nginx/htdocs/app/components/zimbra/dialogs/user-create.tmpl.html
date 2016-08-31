@@ -1,4 +1,4 @@
-<md-dialog style="width:700px">
+<md-dialog style="width:700px; height:500px">
   <md-header>
     <div class="md-toolbar-tools" layout="row" layout-align="center center">
       <div>
@@ -69,7 +69,7 @@
               ng-pattern="/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,20}$/"/>
               <div ng-messages="accountForm.password1.$error" role="alert" multiple>
                 <div ng-message="required" class="my-message">Você deve informar a senha.</div>
-                <div ng-message="pattern" class="my-message">A senha deve conter, de 8 a 20 caracteres e ao menos um maiusculo, um minusculo, um digito e um caractere especial.</div>
+                <div ng-message="pattern" class="my-message">A senha deve conter de 8 a 20 caracteres e ao menos um maiusculo, minusculo, digito e caractere especial.</div>
               </div>
           </md-input-container>
           <md-input-container flex>
