@@ -125,6 +125,20 @@
     $scope.services = [];
     // $scope.transformChip = transformChip;
 
+    $scope.checkResellerName = function(name){
+      $scope.userForm.name.$setValidity("nameExists", true);
+      resource.clients.resellers.get({resellerName : name}, function(data){
+        $scope.userForm.name.$setValidity("nameExists", false);
+      });
+    }
+
+    $scope.checkLogin = function(){
+      $scope.userForm.login.$setValidity("loginInUse", true);
+      resource.users.get({userName : $scope.newReseller.login}, function(data){
+        $scope.userForm.login.$setValidity("loginInUse", false);
+      });
+    }
+
     // getting services  
     resource.services.get({serviceName : 'all'}, function(data){
       console.log('Loaded services sucessfully.');

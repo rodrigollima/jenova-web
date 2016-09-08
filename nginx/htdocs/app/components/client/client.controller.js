@@ -209,7 +209,14 @@
     $scope.searchText    = null;
     $scope.querySearch   = querySearch;
     var clientResource = resource.clients;
+    var userResource = resource.users;
 
+    $scope.checkLogin = function(){
+      $scope.userForm.login.$setValidity("loginInUse", true);
+      userResource.get({userName : $scope.newClient.login}, function(data){
+        $scope.userForm.login.$setValidity("loginInUse", false);
+      });
+    }
 
     $scope.closeDialog = function() {
       $mdDialog.hide();
