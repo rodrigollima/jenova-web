@@ -647,6 +647,34 @@ function zimbraDListDialogCtrl($scope, $mdDialog, $state, data, currentData, mdT
 function zimbraDialogCtrl($scope, $mdDialog, $state, data, currentData, mdToast){
   $scope.currentAccount = data;
   $scope.currentDomain = currentData.domain;
+  $scope.firstCos = '';
+  $scope.validateEmail = function(email) {
+    re = /^[a-z0-9].*[a-z0-9]$/igm;
+    indexAt = email.indexOf('@'); 
+
+    if (indexAt == -1){
+      validEmail = email + '@' + $scope.currentDomain['name'];
+      $scope.currentAccount.name = validEmail;
+    } else {
+      validEmail = email;
+      accountDomain = email.slice(indexAt+1,email.length);
+      if (accountDomain !== $scope.currentDomain['name']) {
+        $scope.accountForm.accountName.$setValidity("domainCheck", false);
+      } else {
+        $scope.accountForm.accountName.$setValidity("domainCheck", true);
+      }
+    }
+
+    beforeAt = email.slice(0,indexAt);
+    console.log(beforeAt);
+
+    if (validEmail == '' || !re.test(beforeAt)) {
+      $scope.accountForm.accountName.$setValidity("validEmail", false);
+    } else {
+      $scope.accountForm.accountName.$setValidity("validEmail", true);
+    }
+
+  }
 
   $scope.zStatus = [
       { zimbra : "active", desc : "Ativado"},
@@ -675,7 +703,7 @@ function zimbraDialogCtrl($scope, $mdDialog, $state, data, currentData, mdToast)
           accountName : $scope.currentAccount.name
       }
       accountResource.create(pathParams, $scope.currentAccount, function(data) {
-        openToast('Conta critada com sucesso!', 4, data.status);
+        openToast('Conta criada com sucesso!', 4, data.status);
         $scope.closeDialog();
       }, function(data) {
         var msg = data.status + ' - Não foi possível criar conta.';
@@ -731,8 +759,18 @@ function zimbraDialogCtrl($scope, $mdDialog, $state, data, currentData, mdToast)
     if (cos.limit <= cos.users && cos.limit != 0 ){
       return true;
     }
+    if ($scope.firstCos == ""){
+      $scope.firstCos = cos.name;
+    }
     return false;
   }
+  $scope.isCosFirstEnabled = function(cosName){
+    if ($scope.firstCos == cosName){
+      return true;
+    }
+    return false;
+  }
+
   $scope.closeDialog = function() {
       // Disable loading at service desc state view
       // $scope.currentDomain.currentService.activeDialog = false;

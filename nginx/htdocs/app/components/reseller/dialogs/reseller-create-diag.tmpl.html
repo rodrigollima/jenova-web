@@ -1,4 +1,4 @@
-<md-dialog aria-label="Criar Revendedor" style="width:650px"> 
+<md-dialog aria-label="Criar Revendedor" style="width:700px; height:700px""> 
   <md-header >
   <div class="md-toolbar-tools" layout="row" layout-align="center center">
     <div>
@@ -21,9 +21,12 @@
         <md-input-container flex> 
           <label>Nome do revendedor</label> 
           <input minlength="3" maxlength="25" required="" name="name" ng-model="newReseller.name" 
-          ng-pattern="/^[a-zA-Z0-9\-_\.]+$/" />
+          ng-pattern="/^[a-zA-Z0-9\-_\.]+$/" ng-blur="checkResellerName(newReseller.name)"/>
           <div class="input-hints">
             Caracteres permitidos: [a-z, _, -, .]
+          </div>
+          <div ng-messages="userForm.name.$error" role="alert">
+            <div ng-message="nameExists">Já existe um revendedor com este nome.</div>
           </div>
         </md-input-container> 
         <md-input-container flex> 
@@ -46,9 +49,12 @@
         <md-input-container flex> 
           <label>Login do cliente</label> 
           <input minlength="3" maxlength="25" required="" name="login" ng-model="newReseller.login" required=""
-              ng-pattern="/^[a-zA-Z0-9\-_\.]+$/" />
+              ng-pattern="/^[a-zA-Z0-9\-_\.]+$/" ng-blur="checkLogin()"/>
         <div class="input-hints">
           Caracteres permitidos: [a-z, _, -, .]
+        </div>
+        <div ng-messages="userForm.login.$error" role="alert">
+            <div ng-message="loginInUse">Login em uso.</div>
         </div>
         </md-input-container> 
         <md-input-container flex> 
