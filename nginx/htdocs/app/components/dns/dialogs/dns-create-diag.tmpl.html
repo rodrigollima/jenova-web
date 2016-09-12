@@ -17,7 +17,7 @@
       <div layout layout-sm="column"> 
         <md-input-container flex> 
           <label>Nome</label> 
-          <input maxlength="25" required="" name="name" ng-model="newRecord.name"/>
+          <input maxlength="253" required="" name="name" ng-model="newRecord.name"/>
         </md-input-container> 
         <md-input-container flex> 
           <label>Tipo</label>
@@ -27,11 +27,11 @@
         </md-input-container> 
         <md-input-container flex> 
           <label>Valor</label> 
-          <input name="content" ng-model="newRecord.content" required=""/>
+          <input maxlength="255" name="content" ng-model="newRecord.content" required=""/>
         </md-input-container>
         <md-input-container flex> 
           <label>TTL</label>
-          <input maxlength="25" ng-pattern="/^[0-9]*$/" required="" name="ttl" ng-model="newRecord.ttl" ng-init="newRecord.ttl = 3600"/>
+          <input maxlength="2147483647" ng-pattern="/^[0-9]*$/" required="" name="ttl" ng-model="newRecord.ttl" ng-init="newRecord.ttl = 3600"/>
           <div ng-messages="recordForm.ttl.$error">
             <div ng-message="pattern">Somente números</div>
           </div>
