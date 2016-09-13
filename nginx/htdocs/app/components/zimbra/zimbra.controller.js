@@ -136,7 +136,7 @@
          }
          else {
            $scope.zDomainStatus.active = false;
-           $scope.zDomainStatus.class = 'md-accent';
+           $scope.zDomainStatus.class = 'pink';
          }
       }, function(data){
         console.log('Error updating zimbra domain status. See response below');
@@ -251,7 +251,7 @@
          }
          else {
            $scope.zDomainStatus.active = false;
-           $scope.zDomainStatus.class = 'md-accent';
+           $scope.zDomainStatus.class = 'pink';
          }
          
       }, function(data){
