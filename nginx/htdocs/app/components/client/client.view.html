@@ -82,7 +82,7 @@
 
   <!-- Client list -->
   <div class="card" ng-show="loadedPages.$resolved">
-    <md-virtual-repeat-container style="height:500px">
+    <md-virtual-repeat-container style={{vrSize}}>
       <md-list>
         <md-list-item ng-click="showMainMenu(client)" md-virtual-repeat="client in dynamicItems" md-on-demand flex>
           <i class="material-icons">face</i>

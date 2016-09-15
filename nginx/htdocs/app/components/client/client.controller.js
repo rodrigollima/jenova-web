@@ -186,6 +186,16 @@
       return $location.path('/client/' + client.name + '/domains');
     }
   
+    function getVirtualRepeatSize(numItems){
+      // 0 fakes index from 1. 7 items = 355px
+      var sizes = [0, 65, 113, 160, 210, 260, 305, 355];
+      var height = sizes[numItems];
+      if (!height){
+        height = 405;
+      }
+      return 'height: ' + height + 'px;';
+    }
+    
     // Load clients
     var DynamicItems = function(query) {
       /**
@@ -243,6 +253,9 @@
           $scope.loadedPages[pageNumber] = data.response.clients;
           $scope.numItems = $scope.numItems + data.response.clients.length;
           $scope.loadedPages.$resolved = data.$resolved;
+          if ($scope.loadedPages.$resolved){
+            $scope.vrSize = getVirtualRepeatSize($scope.numItems);
+          }
         }, function(data){
           console.log('Error loading clients. See response below...');
           console.log(data);
@@ -264,6 +277,9 @@
           $scope.loadedPages[pageNumber] = data.response.clients;
           $scope.numItems = $scope.numItems + data.response.clients.length;
           $scope.loadedPages.$resolved = data.$resolved;
+          if ($scope.loadedPages.$resolved){
+            $scope.vrSize = getVirtualRepeatSize($scope.numItems);
+          }
         }, function(data){
           console.log('Error loading clients. See response below...');
           console.log(data);
