@@ -195,7 +195,7 @@
       }
       return 'height: ' + height + 'px;';
     }
-    
+
     // Load clients
     var DynamicItems = function(query) {
       /**
