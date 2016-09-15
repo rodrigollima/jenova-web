@@ -27,7 +27,7 @@
         </md-input-container> 
         <md-input-container flex> 
           <label>Valor</label> 
-          <input maxlength="255" name="content" ng-model="newRecord.content" required=""/>
+          <input maxlength="255" name="content" ng-blur="validateRecordValue(newRecord)" ng-model="newRecord.content" required=""/>
         </md-input-container>
         <md-input-container flex> 
           <label>TTL</label>

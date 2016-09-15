@@ -180,6 +180,20 @@
       });
     }
 
+    $scope.validateRecordValue = function(record){
+      if (record.type == 'MX'){
+        re = /^[0-0]\s.+?$/g;
+        if (!re.test(record.value)){
+          if ($scope.currentRecord){
+            $scope.currentRecord.content = '10 ' + $scope.currentRecord.content;
+          }
+          else if($scope.newRecord){
+            $scope.newRecord.content = '10 ' + $scope.newRecord.content;
+          }
+        }
+      }
+    }
+    
     $scope.saveEditDialog = function(record) {
       $scope.currentRecord.$resolved = true;
       var updateData = {
