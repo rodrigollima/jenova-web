@@ -1,7 +1,7 @@
 (function(){
   var app = angular.module("jenovaApp");
 
-  function zimbraCtrl($scope, $location, $rootScope, resource, mdToast, currentData, Dialog, $timeout, $q){
+  function zimbraCtrl($scope, $location, $rootScope, resource, mdToast, currentData, Dialog, $q){
     // load
     cosResource = resource.cos;
     domainResource = resource.domains;
@@ -226,6 +226,7 @@
         for ( idx in data.response.accounts ){
           $scope.loadedPages[pageNumber].push(data.response.accounts[idx]);
         }
+        console.log($scope.loadedPages);
         $scope.numItems = $scope.numItems + data.response.total;
         $scope.loadedPages.$resolved = data.$resolved;
       }, function(data){

@@ -306,6 +306,7 @@ app.factory('resource', function($resource, APIHOST) {
         'update' : { method : 'PUT' },
         'create' : { method: 'POST' }
       }),
+      clients_ga : $resource(APIHOST + '/lista/msteds', null, {}),
     },
     //noticeResource
     notices : $resource(APIHOST + '/service/:serviceName/notices/', null, {
