@@ -1,0 +1,9 @@
+{
+    "title": "Acesso",
+    "form": {
+        "username": "Usuário",
+        "password": "Senha",
+        "login": "Entrar",
+        "remember_password": "Esqueceu a senha? Clique aqui"
+    }
+}

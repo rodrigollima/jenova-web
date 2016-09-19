@@ -8,7 +8,12 @@ var app = angular.module('jenovaApp', [
       'ngMessages',
       'angular-jwt',
       'ngAnimate',
-      'ngResource'
+      'ngResource',
+      
+      'ngCookies',
+      'LocalStorageModule',       
+      'tmh.dynamicLocale',
+      'pascalprecht.translate'
   ])
   .constant('APIHOST', 'https://localhost:8443');
 
@@ -347,18 +352,6 @@ app.factory('resource', function($resource, APIHOST) {
   };
 });
 
-app.run(function($rootScope, $location, $window){
-  // Redirect to login if route requires auth and you're not logged in
-  $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
-    if ($location.url() !== '/login' && !$window.sessionStorage.token){
-      //$rootScope.returnToState = toState.url;
-      //$rootScope.returnToStateParams = toParams.Id;
-      //$location.path('/login');
-      return $location.path('/login');
-    }
-  });
-});
-
 /** Focus INPUT on click **/
 app.directive('focusMe', function($timeout) {
   return {
@@ -399,6 +392,25 @@ app.directive('compareTo', [function() {
   };
 }]);
 
+app.run(function($rootScope, $location, $window, $translate, Language) {
+
+  // Redirect to login if route requires auth and you're not logged in
+  $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
+    if ($location.url() !== '/login' && !$window.sessionStorage.token){
+      //$rootScope.returnToState = toState.url;
+      //$rootScope.returnToStateParams = toParams.Id;
+      //$location.path('/login');
+      return $location.path('/login');
+    }
+    
+    // Update the language
+    Language.getCurrent().then(function (language) {
+        $translate.use(language);
+    });
+
+  });
+});
+
 app.config(function($httpProvider){
   $httpProvider.interceptors.push('authInterceptor');
 
@@ -407,4 +419,22 @@ app.config(function($httpProvider){
 app.config(function($mdThemingProvider){
   $mdThemingProvider.theme('default')
     .primaryPalette('blue')
+});
+
+
+//app.config(function($translate, Language, $translateProvider) {
+
+app.config(function ($translateProvider, tmhDynamicLocaleProvider) {  
+  $translateProvider.useLoader('$translatePartialLoader', {
+    urlTemplate: 'i18n/{lang}/{part}.json'
+  });
+
+  $translateProvider.preferredLanguage('en-us');
+  $translateProvider.useCookieStorage();
+  $translateProvider.useSanitizeValueStrategy('escaped');
+  $translateProvider.addInterpolation('$translateMessageFormatInterpolation');
+
+  tmhDynamicLocaleProvider.localeLocationPattern('bower_components/angular-i18n/angular-locale_{{locale}}.js');
+  tmhDynamicLocaleProvider.useCookieStorage();
+  tmhDynamicLocaleProvider.storageKey('NG_TRANSLATE_LANG_KEY');
 });

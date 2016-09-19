@@ -21,6 +21,7 @@
     <!-- MaterializeCSS -->
     <link rel="stylesheet" href="bower_components/materialize/dist/css/materialize.min.css">
     <meta name="viewport" content="initial-scale=1" />
+    <meta name="google" value="notranslate">
   </head>
   <body>
     <div ui-view="nav" ng-cloack></div>
@@ -49,6 +50,18 @@
     <!-- MODULES - Angular JWT -->
     <script type="text/javascript" src="bower_components/angular-jwt/dist/angular-jwt.min.js"></script>
 
+    <script src='bower_components/angular-material/angular-material.min.js'></script>
+
+    <!--i18n-->
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_components/angular-translate/angular-translate.js"></script>
+    <script src="bower_components/messageformat/messageformat.js"></script>
+    <script src="bower_components/angular-translate-interpolation-messageformat/angular-translate-interpolation-messageformat.js"></script>
+    <script src="bower_components/angular-translate-loader-partial/angular-translate-loader-partial.js"></script>
+    <script src="bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.js"></script>
+    <script src="bower_components/angular-dynamic-locale/src/tmhDynamicLocale.js"></script>
+    <script src="bower_components/angular-local-storage/dist/angular-local-storage.js"></script>
+
     <!-- Jenova JS -->
     <script src="app/app.module.js"></script>
     <script src="app/app.states.js"></script>
@@ -64,5 +77,10 @@
     <script src="app/components/service/service.controller.js"></script>
     <script src="app/components/user/user.controller.js"></script>
     <script src="app/shared/navbar.controller.js"></script>
+    
+    <script src="app/components/language/language.service.js"></script>
+    <script src="app/components/language/language.controller.js"></script>
+
+
   </body>
 </html>

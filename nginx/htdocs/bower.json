@@ -13,7 +13,17 @@
     "font-awesome": "https://github.com/FortAwesome/Font-Awesome.git#v4.5.0",
     "angular-material-data-table": "https://github.com/daniel-nagy/md-data-table.git#v0.8.14",
     "angular-ui-router": "https://github.com/angular-ui/ui-router.git#0.2.18",
-    "angular-jwt": "~0.0.4"
+    "angular-jwt": "~0.0.4",
+
+    "angular-cookies": "1.5.0",
+
+    "angular-i18n": "1.5.0",
+    "angular-dynamic-locale": "0.1.32",
+    "angular-local-storage": "0.5.0",
+    "angular-translate": "2.12.1",
+    "angular-translate-interpolation-messageformat": "2.12.1",
+    "angular-translate-loader-partial": "2.12.1",
+    "angular-translate-storage-cookie": "2.12.1"
   },
   "private": true,
   "resolutions": {

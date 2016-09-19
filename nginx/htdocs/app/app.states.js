@@ -17,6 +17,13 @@
                         templateUrl: 'app/components/home/login.view.html',
                         controller: 'loginCtrl',
                     }
+                },
+                resolve: {
+                    translatePartialLoader: ['$translate', '$translatePartialLoader', 
+                    function ($translate, $translatePartialLoader) {
+                        $translatePartialLoader.addPart('login');
+                        return $translate.refresh();
+                    }]
                 }
             })
             .state('home', {
@@ -30,6 +37,13 @@
                         controller: 'domainCtrl',
                         authenticate: true
                     }
+                },
+                resolve: {
+                    translatePartialLoader: ['$translate', '$translatePartialLoader', 
+                    function ($translate, $translatePartialLoader) {
+                        $translatePartialLoader.addPart('home');
+                        return $translate.refresh();
+                    }]
                 }
                 // url: '/',
                 // views : {
@@ -79,6 +93,13 @@
                         templateUrl: 'app/components/domain/domain.view.html',
                         controller: 'domainCtrl',
                         authenticate: true
+                    },
+                    resolve: {
+                        translatePartialLoader: ['$translate', '$translatePartialLoader', 
+                        function ($translate, $translatePartialLoader) {
+                            $translatePartialLoader.addPart('domain');
+                            return $translate.refresh();
+                        }]
                     }
                 }
             })

@@ -1,0 +1,9 @@
+{
+    "title": "Login",
+    "form": {
+        "username": "Username",
+        "password": "Password",
+        "login": "Login",
+        "remember_password": "Fogot the password? Click here"
+    }
+}
