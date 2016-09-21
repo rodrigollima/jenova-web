@@ -12,32 +12,32 @@
           </li>-->
           <li class="{{reseller}}" ng-show="{{_userData.user.global_admin}}">
             <a href="#/reseller">
-              <md-tooltip md-direction="bottom" >resselers</md-tooltip>
+              <md-tooltip md-direction="bottom">{{'menu.resellers' | translate}}</md-tooltip>
               <i class="material-icons">business</i>
             </a>
           </li>
           <li class="{{client}}" ng-show="hasClientPerm">
             <a href="#/client">
-              <md-tooltip md-direction="bottom">Clientes</md-tooltip>
+              <md-tooltip md-direction="bottom">{{'menu.clients' | translate}}</md-tooltip>
               <i class="material-icons">face</i>
             </a>
           </li>
           <li class="{{dom}}" ng-show="hasDomainPerm">
             <a href="#/domain/{{domainName}}">
-              <md-tooltip md-direction="bottom">Domínios</md-tooltip>
+              <md-tooltip md-direction="bottom">{{'menu.domains' | translate}}</md-tooltip>
               <i class="fa fa-at"></i>
 
             </a>
           </li>
           <li class="{{service}}">
             <a href="#/service" ng-show="hasServicePerm">
-              <md-tooltip md-direction="bottom">Serviços</md-tooltip>
+              <md-tooltip md-direction="bottom">{{'menu.services' | translate}}</md-tooltip>
               <i class="material-icons">extension</i>
             </a>
           </li>
           <li ng-show="domainName" class="{{dns}}" ng-show="hasDnsPerm">
             <a href="#/dns/{{domainName}}">
-              <md-tooltip md-direction="bottom">DNS</md-tooltip>
+              <md-tooltip md-direction="bottom">{{'menu.dns' | translate}}</md-tooltip>
               <i class="material-icons">dns</i>
             </a>
           </li>
@@ -53,7 +53,7 @@
           </li>
           <li>
             <a href="#/login" ng-click="logout()">
-              <md-tooltip md-direction="bottom">Logout</md-tooltip>
+              <md-tooltip md-direction="bottom">{{'menu.logout' | translate}}</md-tooltip>
               <i class="material-icons">exit_to_app</i>
             </a>
           </li>

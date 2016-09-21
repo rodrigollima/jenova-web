@@ -1,12 +1,12 @@
 {
-    "global": {
-        "title": "Jenova",
-        "menu": {
-            "home": "Home",
-            "resellers": "Resellers EN-US",
-            "clients": "Clients",
-            "domains": "Domains",
-            "services": "Services"
-        }
+    "menu": {
+        "home": "Home",
+        "resellers": "Resellers",
+        "clients": "Clients",
+        "domains": "Domains",
+        "services": "Services",
+        "dns": "DNS",
+        "users": "Users",
+        "logout": "Logout"
     }
 }

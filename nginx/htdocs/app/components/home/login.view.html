@@ -1,17 +1,17 @@
 <div class="box">
   <div id="header">
-    <h1 id="logintoregister">Login</h1>
+    <h1 id="logintoregister">{{'form.login' | translate}}</h1>
   </div> 
   <div class="container">
     <form ng-submit="login(cred.user, cred.password)">
       <div class="row">
         <div class="input-field col s12">
           <input ng-model="cred.user" id="email" type="text" class="validate" />
-          <label for="email" data-error="wrong" data-success="right">Email</label>
+          <label for="email" data-error="wrong" data-success="right">{{'form.username' | translate}}</label>
         </div>
         <div class="input-field col s12">
           <input ng-model="cred.password" id="password" type="password" class="validate" />
-          <label for="password">Senha </label>
+          <label for="password">{{'form.password' | translate}} </label>
         </div>
         <div class="right">
           <input class="waves-effect waves-light btn" type="submit" value="Login" />
@@ -24,8 +24,8 @@
 </div>
     
   <div id="footer-box">
-    <p class="footer-text">Esqueceu a senha?
-      <span class="sign-up"> Clique aqui</span>
+    <p class="footer-text">{{'form.forgot_password' | translate}}
+      <span class="sign-up"> {{'form.click_here' | translate}}</span>
     </p>
   </div>
 </div>

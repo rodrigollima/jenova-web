@@ -429,7 +429,7 @@ app.config(function ($translateProvider, tmhDynamicLocaleProvider) {
     urlTemplate: 'i18n/{lang}/{part}.json'
   });
 
-  $translateProvider.preferredLanguage('en-us');
+  $translateProvider.preferredLanguage('pt-br');
   $translateProvider.useCookieStorage();
   $translateProvider.useSanitizeValueStrategy('escaped');
   $translateProvider.addInterpolation('$translateMessageFormatInterpolation');

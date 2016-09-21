@@ -1,0 +1,12 @@
+{
+    "menu": {
+        "home": "Inicio",
+        "resellers": "Revendas",
+        "clients": "Clientes",
+        "domains": "Domínios",
+        "services": "Serviços",
+        "dns": "DNS",
+        "users": "Usaríos",
+        "logout": "Sair"
+    }
+}

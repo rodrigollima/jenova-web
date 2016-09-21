@@ -30,7 +30,14 @@
                 url : '/',
                 views : {
                     nav : {
-                        templateUrl : 'app/shared/navbar.view.html'
+                        templateUrl : 'app/shared/navbar.view.html',
+                        resolve: {
+                            translatePartialLoader: ['$translate', '$translatePartialLoader', 
+                            function ($translate, $translatePartialLoader) {
+                                $translatePartialLoader.addPart('navbar');
+                                return $translate.refresh();
+                            }]
+                        }
                     },
                     main : {
                         templateUrl: 'app/components/domain/domain.view.html',
@@ -61,7 +68,14 @@
                 url: '/dns/:domain',
                 views : {
                     nav : {
-                        templateUrl : 'app/shared/navbar.view.html'
+                        templateUrl : 'app/shared/navbar.view.html',
+                        resolve: {
+                            translatePartialLoader: ['$translate', '$translatePartialLoader', 
+                            function ($translate, $translatePartialLoader) {
+                                $translatePartialLoader.addPart('navbar');
+                                return $translate.refresh();
+                            }]
+                        }
                     },
                     main : {
                         templateUrl: 'app/components/dns/dns.view.html',
@@ -74,7 +88,14 @@
                 url: '/service',
                 views : {
                     nav : {
-                        templateUrl : 'app/shared/navbar.view.html'
+                        templateUrl : 'app/shared/navbar.view.html',
+                        resolve: {
+                            translatePartialLoader: ['$translate', '$translatePartialLoader', 
+                            function ($translate, $translatePartialLoader) {
+                                $translatePartialLoader.addPart('navbar');
+                                return $translate.refresh();
+                            }]
+                        }
                     },
                     main : {
                         templateUrl: 'app/components/service/service.view.html',
@@ -87,7 +108,14 @@
                 url: '/domain/:domain',
                 views : {
                     nav : {
-                        templateUrl : 'app/shared/navbar.view.html'
+                        templateUrl : 'app/shared/navbar.view.html',
+                        resolve: {
+                            translatePartialLoader: ['$translate', '$translatePartialLoader', 
+                            function ($translate, $translatePartialLoader) {
+                                $translatePartialLoader.addPart('navbar');
+                                return $translate.refresh();
+                            }]
+                        }
                     },
                     main : {
                         templateUrl: 'app/components/domain/domain.view.html',
@@ -107,7 +135,14 @@
               url: '/zimbra/:domain',
               views : {
                   nav : {
-                      templateUrl : 'app/shared/navbar.view.html'
+                      templateUrl : 'app/shared/navbar.view.html',
+                      resolve: {
+                            translatePartialLoader: ['$translate', '$translatePartialLoader', 
+                            function ($translate, $translatePartialLoader) {
+                                $translatePartialLoader.addPart('navbar');
+                                return $translate.refresh();
+                            }]
+                        }
                   },
                   main : {
                       templateUrl: 'app/components/zimbra/zimbra.view.html',
@@ -120,7 +155,14 @@
                 url: '/client/:client/domains',
                 views : {
                     nav : {
-                        templateUrl : 'app/shared/navbar.view.html'
+                        templateUrl : 'app/shared/navbar.view.html',
+                        resolve: {
+                            translatePartialLoader: ['$translate', '$translatePartialLoader', 
+                            function ($translate, $translatePartialLoader) {
+                                $translatePartialLoader.addPart('navbar');
+                                return $translate.refresh();
+                            }]
+                        }
                     },
                     main : {
                         templateUrl: 'app/components/domain/domain.view.html',
@@ -133,7 +175,14 @@
                 url: '/reseller/:reseller/domains',
                 views : {
                     nav : {
-                        templateUrl : 'app/shared/navbar.view.html'
+                        templateUrl : 'app/shared/navbar.view.html',
+                        resolve: {
+                            translatePartialLoader: ['$translate', '$translatePartialLoader', 
+                            function ($translate, $translatePartialLoader) {
+                                $translatePartialLoader.addPart('navbar');
+                                return $translate.refresh();
+                            }]
+                        }
                     },
                     main : {
                         templateUrl: 'app/components/domain/domain.view.html',
@@ -146,7 +195,14 @@
                 url: '/user',
                 views : {
                     nav : {
-                        templateUrl : 'app/shared/navbar.view.html'
+                        templateUrl : 'app/shared/navbar.view.html',
+                        resolve: {
+                            translatePartialLoader: ['$translate', '$translatePartialLoader', 
+                            function ($translate, $translatePartialLoader) {
+                                $translatePartialLoader.addPart('navbar');
+                                return $translate.refresh();
+                            }]
+                        }
                     },
                     main : {
                         templateUrl: 'app/components/user/user.view.html',
@@ -159,7 +215,14 @@
                 url: '/client',
                 views : {
                     nav : {
-                        templateUrl : 'app/shared/navbar.view.html'
+                        templateUrl : 'app/shared/navbar.view.html',
+                        resolve: {
+                            translatePartialLoader: ['$translate', '$translatePartialLoader', 
+                            function ($translate, $translatePartialLoader) {
+                                $translatePartialLoader.addPart('navbar');
+                                return $translate.refresh();
+                            }]
+                        }
                     },
                     main : {
                         templateUrl: 'app/components/client/client.view.html',
@@ -172,7 +235,14 @@
                 url: '/reseller',
                 views : {
                     nav : {
-                        templateUrl : 'app/shared/navbar.view.html'
+                        templateUrl : 'app/shared/navbar.view.html',
+                        resolve: {
+                            translatePartialLoader: ['$translate', '$translatePartialLoader', 
+                            function ($translate, $translatePartialLoader) {
+                                $translatePartialLoader.addPart('navbar');
+                                return $translate.refresh();
+                            }]
+                        }
                     },
                     main : {
                         templateUrl: 'app/components/reseller/reseller.view.html',
@@ -185,7 +255,14 @@
                 url: '/404',
                 views : {
                     nav : {
-                        templateUrl : 'app/shared/navbar.view.html'
+                        templateUrl : 'app/shared/navbar.view.html',
+                        resolve: {
+                            translatePartialLoader: ['$translate', '$translatePartialLoader', 
+                            function ($translate, $translatePartialLoader) {
+                                $translatePartialLoader.addPart('navbar');
+                                return $translate.refresh();
+                            }]
+                        }
                     },
                     main : {
                         templateUrl: 'app/shared/404.html'

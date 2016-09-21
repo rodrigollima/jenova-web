@@ -1,9 +1,14 @@
 {
-    "title": "Login",
     "form": {
+        "login": "Login",
         "username": "Username",
         "password": "Password",
-        "login": "Login",
-        "remember_password": "Fogot the password? Click here"
-    }
+        "forgot_password": "Forgot the password?",
+        "click_here": "Click here"
+    },
+    "messages": {
+        "login_userpass_error": "Username/password incorret",
+        "login_unknown_error": "Unknown error"
+    } 
+
 }

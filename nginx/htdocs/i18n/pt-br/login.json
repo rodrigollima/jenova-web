@@ -1,9 +1,14 @@
 {
-    "title": "Acesso",
     "form": {
+        "login": "Acesso",
         "username": "Usuário",
         "password": "Senha",
-        "login": "Entrar",
-        "remember_password": "Esqueceu a senha? Clique aqui"
-    }
+        "forgot_password": "Esqueceu a senha?",
+        "click_here": "Clique aqui"
+    },
+    "messages": {
+        "login_userpass_error": "Usuário/senha incorretos",
+        "login_unknown_error": "Erro desconhecido"
+    } 
+
 }
