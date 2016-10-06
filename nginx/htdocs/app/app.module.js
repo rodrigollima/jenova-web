@@ -10,7 +10,7 @@ var app = angular.module('jenovaApp', [
       'ngAnimate',
       'ngResource'
   ])
-  .constant('APIHOST', 'https://localhost:8443');
+  .constant('APIHOST', 'https://api.inova.com.br:8443');
 
 app.factory('Dialog', ['$mdDialog', function DialogFactory ($mdDialog) {
   return {
@@ -306,7 +306,7 @@ app.factory('resource', function($resource, APIHOST) {
         'update' : { method : 'PUT' },
         'create' : { method: 'POST' }
       }),
-      clients_ga : $resource(APIHOST + '/clients/list', null, {}),
+      clients_ga : $resource(APIHOST + '/clients/:clientName', null, {}),
     },
     //noticeResource
     notices : $resource(APIHOST + '/service/:serviceName/notices/', null, {

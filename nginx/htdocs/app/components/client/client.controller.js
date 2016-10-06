@@ -190,7 +190,7 @@
       // 0 fakes index from 1. 7 items = 355px
       var sizes = [0, 65, 113, 160, 210, 260, 305, 355];
       var height = sizes[numItems];
-      if (!height){
+      if (!height && height != 0){
         height = 405;
       }
       return 'height: ' + height + 'px;';
@@ -246,6 +246,7 @@
       if ($rootScope._userData.user.global_admin){
         // Global Admin
         var pathParams = {
+          clientName : this.query,
           limit : this.PAGE_SIZE,
           offset : pageOffset
         }
@@ -256,6 +257,7 @@
           if ($scope.loadedPages.$resolved){
             $scope.vrSize = getVirtualRepeatSize($scope.numItems);
           }
+          console.log($scope.numItems);
         }, function(data){
           console.log('Error loading clients. See response below...');
           console.log(data);
@@ -270,6 +272,7 @@
         // Reseller
         var pathParams = {
           resellerName : resellerName,
+          clientName : this.query,
           limit : this.PAGE_SIZE,
           offset : pageOffset
         }
@@ -286,22 +289,13 @@
           mdToast.show(mdToast.getSimple(data.status + ' - Não foi possível obter a lista de clientes', 4000));
         });
       }
-
-
-      // accountListResource.get(pathParams, function(data){
-      //   $scope.loadedPages[pageNumber] = [];
-      //   for ( idx in data.response.accounts ){
-      //     $scope.loadedPages[pageNumber].push(data.response.accounts[idx]);
-      //   }
-      //   $scope.numItems = $scope.numItems + data.response.total;
-      //   $scope.loadedPages.$resolved = data.$resolved;
-      // }, function(data){
-      //   console.log('Error getting users. See response below');
-      //   console.log(data);
-      //   openToast(data.status + ' - Não foi possível carregar usuários', 4, data.status);
-      // }); 
     };
 
+    $scope.searchClient = function (query) {
+      // vrSize=0 prevents rendering problems when searching and re-searching
+      $scope.vrSize = 0;
+      $scope.dynamicItems = new DynamicItems(query);
+    }
     //init constructors
     $scope.dynamicItems = new DynamicItems();
   }

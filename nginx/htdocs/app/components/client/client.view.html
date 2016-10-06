@@ -45,7 +45,7 @@
 
     <md-data-table-toolbar ng-show="filter.show && !selected.length && focusSearch()">
       <i class="material-icons md-dark">search</i>
-      <form flex name="filter.form">
+      <form flex name="filter.form" ng-submit="searchClient(query.filter)">
         <input type="text" ng-model="query.filter" ng-model-options="filter.options" 
           placeholder="Busque o cliente desejado" focus-me="focusOn">
       </form>
