@@ -1,7 +1,7 @@
 (function(){
   var app = angular.module("jenovaApp");
 
-  function zimbraCtrl($scope, $location, $rootScope, resource, mdToast, currentData, Dialog, $timeout, $q){
+  function zimbraCtrl($scope, $location, $rootScope, resource, mdToast, currentData, Dialog, $q){
     // load
     cosResource = resource.cos;
     domainResource = resource.domains;
@@ -96,7 +96,6 @@
 
       
       reportResource.domain.get(pathParams, null,  function(data){
-        console.log(data);
         for (cidx in data.response[0].accounts){
           $scope.userReport.push(data.response[0].accounts[cidx]);
         }
@@ -136,7 +135,7 @@
          }
          else {
            $scope.zDomainStatus.active = false;
-           $scope.zDomainStatus.class = 'md-accent';
+           $scope.zDomainStatus.class = 'pink';
          }
       }, function(data){
         console.log('Error updating zimbra domain status. See response below');
@@ -251,7 +250,7 @@
          }
          else {
            $scope.zDomainStatus.active = false;
-           $scope.zDomainStatus.class = 'md-accent';
+           $scope.zDomainStatus.class = 'pink';
          }
          
       }, function(data){
@@ -666,8 +665,6 @@ function zimbraDialogCtrl($scope, $mdDialog, $state, data, currentData, mdToast)
     }
 
     beforeAt = email.slice(0,indexAt);
-    console.log(beforeAt);
-
     if (validEmail == '' || !re.test(beforeAt)) {
       $scope.accountForm.accountName.$setValidity("validEmail", false);
     } else {
@@ -684,15 +681,7 @@ function zimbraDialogCtrl($scope, $mdDialog, $state, data, currentData, mdToast)
       { zimbra : "pending", desc : "Pendente"}
   ];
 
-  // if ($scope.currentAccount){
-  //   for (cidx in $scope.currentDomain.cos){
-  //     var cos = $scope.currentDomain.cos[cidx];
-  //     if (cos.id == $scope.currentAccount.zimbraCOSId){
-  //       $scope.currentAccount.cosName = cos.name; 
-  //     } 
-  //   }
-  // }
-
+  
   // create Account
   $scope.createAccount = function(currentAccount){
     $scope.zimbraOverlayLoader = true;
@@ -776,6 +765,76 @@ function zimbraDialogCtrl($scope, $mdDialog, $state, data, currentData, mdToast)
       // $scope.currentDomain.currentService.activeDialog = false;
       $state.reload();
       $mdDialog.hide();
+  }
+
+  $scope.addAccountAlias = function() {
+    if ($scope.currentAccount){
+      if (indexByAccount($scope.currentAccount.zimbraMailAlias, $scope.accountAlias) !== -1){
+        openToast('Esta conta já possui esse alias!', 5, 409);
+      } else {
+        if ( !$scope.currentAccount.addZimbraMailAlias ){
+          $scope.currentAccount.addZimbraMailAlias = [];
+        }
+        if ( $scope.currentAccount.removeZimbraMailAlias ){
+          idx = indexByAccount($scope.currentAccount.removeZimbraMailAlias, $scope.accountAlias)
+          if (idx !== -1){
+            $scope.currentAccount.removeZimbraMailAlias.splice(idx,1);
+            var removedFromRemoveAlias = true;
+          }
+        }
+        
+        if (!removedFromRemoveAlias){
+          $scope.currentAccount.addZimbraMailAlias.push($scope.accountAlias);
+        }
+        if (!$scope.currentAccount.zimbraMailAlias){
+          $scope.currentAccount.zimbraMailAlias = [];
+        }
+        $scope.currentAccount.zimbraMailAlias.push($scope.accountAlias);
+        var msg = $scope.accountAlias + ' adicionado.';
+        $scope.accountAlias = '';
+        openToast(msg, 4, null);
+      }
+    }
+  }
+
+  $scope.validateAlias = function(email) {
+    if (!email){
+      return;
+    }
+    re = /^[a-z0-9].*[a-z0-9]$/igm;
+    indexAt = email.indexOf('@'); 
+    if (indexAt == -1){
+      validEmail = email + '@' + $scope.currentDomain['name'];
+      $scope.accountAlias = validEmail;
+    }
+  }
+
+  $scope.removeAccountAlias = function(alias){
+    idx = indexByAccount($scope.currentAccount.zimbraMailAlias, alias);
+    $scope.currentAccount.zimbraMailAlias.splice(idx,1);
+    if ( !$scope.currentAccount.removeZimbraMailAlias ){
+      $scope.currentAccount.removeZimbraMailAlias = [];
+    }
+    if ( $scope.currentAccount.addZimbraMailAlias ){
+      idx = indexByAccount($scope.currentAccount.addZimbraMailAlias, alias)
+      if (idx !== -1){
+        $scope.currentAccount.addZimbraMailAlias.splice(idx,1);
+        var removedFromAddAlias = true;
+      }
+    }
+    if (!removedFromAddAlias){
+      $scope.currentAccount.removeZimbraMailAlias.push(alias);
+    }
+    openToast(alias + ' removido!', 4, 'OK');
+  }
+
+  function indexByAccount(list, name){
+    for ( idx in list){
+      if (list[idx] == name){
+        return idx;
+      }
+    }
+    return -1;
   }
   function openToast(msg, delay, status){
       msg = getStatusCodeMessage(msg, status);

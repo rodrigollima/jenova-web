@@ -1,4 +1,4 @@
-<md-dialog style="width:700px; height:500px">
+<md-dialog style="width:700px; height:600px">
   <md-header>
     <div class="md-toolbar-tools" layout="row" layout-align="center center">
       <div>
@@ -15,61 +15,107 @@
     </div>
     <md-divider></md-divider>
   </md-header> 
-  <md-content class="white" layout-padding="">
-    <form name="accountForm" ng-submit="$event.preventDefault()"> 
-  
-      <div>
-        <!--ROW ONE-->
-        <div layout="row">
-          <md-input-container flex class="md-block">
-            <label>Primeiro Nome</label>
-            <input ng-model="currentAccount.givenName"></input>
-          </md-input-container>
-          <md-input-container flex class="md-block">
-            <label>Último Nome</label>
-            <input ng-model="currentAccount.sn"></input>
-          </md-input-container>
-        </div>
-        <!--ROW TWO-->
-        <div layout="row">
-          <md-input-container flex class="md-block">
-            <label>Nome de Exibição</label>
-            <input ng-model="currentAccount.displayName"></input>
-          </md-input-container>
-          <md-input-container flex>
-            <label>Status</label>
-            <md-select ng-model="currentAccount.zimbraAccountStatus">
-              <md-option value="{{status.zimbra}}" ng-repeat="status in zStatus">{{status.desc}}</md-option>
-            </md-select>
-          </md-input-container>
-          <md-input-container flex>
-            <label>Tipo</label>
-            <md-select ng-model="currentAccount.zimbraCOSId">
-              <md-option ng-disabled="isCosLimitReached(cos)" value="{{cos.id}}"" ng-repeat="cos in currentDomain.cos">{{cos.name}}</md-option>
-            </md-select>
-          </md-input-container>
-        </div>
-        <!--ROW THREE-->
-        <div layout="row">
-          <md-input-container flex>
-            <label for="password">Senha</label>
-            <input ng-model="currentAccount.userPassword" type="password" name="password1" 
-              ng-pattern="/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,20}$/"/>
-              <div ng-messages="accountForm.password1.$error" role="alert" multiple>
-                <div ng-message="pattern" class="my-message">A senha deve conter de 8 a 20 caracteres e ao menos um maiusculo, minusculo, digito e caractere especial.</div>
+  <md-content class="white">
+    <md-tabs md-swipe-content md-dynamic-height>
+      <md-tab label="Geral" >
+          <form layout-padding name="accountForm" ng-submit="$event.preventDefault()"> 
+        
+            <div>
+              <!--ROW ONE-->
+              <div layout="row">
+                <md-input-container flex class="md-block">
+                  <label>Primeiro Nome</label>
+                  <input ng-model="currentAccount.givenName"></input>
+                </md-input-container>
+                <md-input-container flex class="md-block">
+                  <label>Último Nome</label>
+                  <input ng-model="currentAccount.sn"></input>
+                </md-input-container>
               </div>
-          </md-input-container>
-          <md-input-container flex>
-            <label for="password">Confirmar Senha </label>
-            <input ng-model="password2" type="password" name="password2" 
-              ng-pattern="{{currentAccount.userPassword}}"/>
-            <div ng-messages="accountForm.password2.$error" role="alert" multiple>
-                <div ng-message="pattern" class="my-message">As senhas são diferentes.</div>
+              <!--ROW TWO-->
+              <div layout="row">
+                <md-input-container flex class="md-block">
+                  <label>Nome de Exibição</label>
+                  <input ng-model="currentAccount.displayName"></input>
+                </md-input-container>
+                <md-input-container flex>
+                  <label>Status</label>
+                  <md-select ng-model="currentAccount.zimbraAccountStatus">
+                    <md-option value="{{status.zimbra}}" ng-repeat="status in zStatus">{{status.desc}}</md-option>
+                  </md-select>
+                </md-input-container>
+                <md-input-container flex>
+                  <label>Tipo</label>
+                  <md-select ng-model="currentAccount.zimbraCOSId">
+                    <md-option ng-disabled="isCosLimitReached(cos)" value="{{cos.id}}"" ng-repeat="cos in currentDomain.cos">{{cos.name}}</md-option>
+                  </md-select>
+                </md-input-container>
+              </div>
+              <!--ROW THREE-->
+              <div layout="row">
+                <md-input-container flex>
+                  <label for="password">Senha</label>
+                  <input ng-model="currentAccount.userPassword" type="password" name="password1" 
+                    ng-pattern="/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,20}$/"/>
+                    <div ng-messages="accountForm.password1.$error" role="alert" multiple>
+                      <div ng-message="pattern" class="my-message">A senha deve conter de 8 a 20 caracteres e ao menos um maiusculo, minusculo, digito e caractere especial.</div>
+                    </div>
+                </md-input-container>
+                <md-input-container flex>
+                  <label for="password">Confirmar Senha </label>
+                  <input ng-model="password2" type="password" name="password2" 
+                    ng-pattern="{{currentAccount.userPassword}}"/>
+                  <div ng-messages="accountForm.password2.$error" role="alert" multiple>
+                      <div ng-message="pattern" class="my-message">As senhas são diferentes.</div>
+                  </div>
+                </md-input-container>
+              </div>
             </div>
-          </md-input-container>
-        </div>
-      </div>
-    </form>
+          </form>
+      </md-tab>
+      <md-tab label="Alias">
+        <form  layout-padding name="aliasForm" ng-submit="$event.preventDefault()"> 
+          <div >
+              <!--Show Aliases-->
+              <md-subheader>Nomes Alternativos</md-subheader>
+              <md-divider flex="90"></md-divider>
+              <div flex>
+                
+                <md-virtual-repeat-container style="height:200px">
+                <md-list>
+                  <md-list-item layout="row" layout-align="space-between center"
+                  md-virtual-repeat="alias in currentAccount.zimbraMailAlias" flex>
+                    <label>{{alias}}</label>
+                    <md-button class="md-icon-button" ng-click="removeAccountAlias(alias)">
+                      <md-icon>
+                        <i class="material-icons">remove</i>
+                      </md-icon>
+                    </md-button>
+                  </md-list-item>
+                </md-list>
+                </md-virtual-repeat-container>
+              </div>
+              
+              <!--Add Alias-->
+              <md-subheader>Adicionar</md-subheader>
+              <md-divider flex="90"></md-divider>
+              <div layout="row">
+                
+                  <md-input-container flex class="md-block" layout-align="center right">
+                    <label>Email</label>
+                    <input ng-blur="validateAlias(accountAlias)" ng-model="accountAlias"></input>
+                  </md-input-container>
+                
+                  <md-button  class="md-icon-button md-primary" ng-disabled="!accountAlias" ng-click="addAccountAlias()">
+                    <md-icon>
+                      <i class="material-icons">person_add</i>
+                    </md-icon>
+                  </md-button>
+                
+              </div>
+          </div>
+        </form>
+      </md-tab>
   </md-content> 
   <md-progress-linear ng-show="zimbraOverlayLoader" md-mode="indeterminate"></md-progress-linear>
   <md-dialog-actions class="grey lighten-3" layout="row" ng-init="deleteMode = false">

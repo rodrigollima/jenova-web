@@ -59,33 +59,6 @@
     }
 
 
-
-    // $scope.openAddZimbraUser = function(){
-    //   $scope.zimbraAccountOn = true;
-    // }
-
-    // $scope.saveEditGrid = function(currentAccount){
-    //   $scope.zimbraOverlayLoaderStatus = 'Salvando...'
-    //   $scope.zimbraOverlayLoader = true;
-
-    //   pathParams = {
-    //       serviceName : $scope.currentDomain['zimbra_service_name'],
-    //       domainName : $scope.currentDomain['name'],
-    //       accountName : $scope.currentAccount.name
-    //   }
-
-    //   accountResource.update(pathParams, currentAccount, function(data) {
-    //     $scope.zimbraOverlayLoaderStatus = 'Pronto!'
-    //     $scope.zimbraOverlayLoader = false;
-    //   }, function(data) {
-    //     var msg = data.status + ' - Não foi possível salvar as alterações.';
-    //     openToast(msg, 4, data.status);
-    //     console.log(data);
-    //     $scope.zimbraOverlayLoader = false;
-    //   })
-    // }
-
-
     function openToast(msg, delay, status){
       msg = getStatusCodeMessage(msg, status);
       delay = delay * 1000

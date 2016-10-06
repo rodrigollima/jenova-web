@@ -216,18 +216,18 @@
           <div layout="column" ng-if="menu.dlist">
             <p>Membros</p>
             <md-divider></md-divider>
-            <div class="md-padding" ng-if="!currentDList.members.$resolved" layout-align="center center" layout="row">
-              <label>{{zimbraOverlayLoaderStatus}}</label>
-            </div>
-            <md-virtual-repeat-container style="height:500px">
+            <md-virtual-repeat-container style="height:400px">
+              <div class="md-padding" ng-hide="currentDList.members.$resolved" layout-align="center center" layout="row">
+                <label>{{zimbraOverlayLoaderStatus}}</label>
+              </div>
 
-            <md-list ng-if="currentDList.members.$resolved">
-              <md-list-item layout="row" layout-align="space-between center" ng-repeat="member in currentDList.members">
-                <div>
-                  <label> {{ member.name }} </label>
-                </div>
-              </md-list-item>
-            </md-list>
+              <md-list ng-if="currentDList.members.$resolved">
+                <md-list-item layout="row" layout-align="space-between center" ng-repeat="member in currentDList.members">
+                  <div>
+                    <label> {{ member.name }} </label>
+                  </div>
+                </md-list-item>
+              </md-list>
             </md-virtual-repeat-container>
             <div layout="row" layout-align="end end">
               <md-button class="md-primary" ng-disabled="!currentDList.members.$resolved" ng-click="openDListDialog('app/components/zimbra/dialogs/dlist-edit.tmpl.html', currentDList)">Editar</md-button>

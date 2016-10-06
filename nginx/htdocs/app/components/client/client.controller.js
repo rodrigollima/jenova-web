@@ -2,10 +2,10 @@
   var app = angular.module("jenovaApp");
 
   function clientCtrl($scope, $location, $rootScope, $state, resource, Dialog, mdToast){
-    $scope.clients = [];
     var resellerName = '';
     var clientName = '';
     $scope.currentUser = $rootScope._userData.user;
+    $scope.loadedPages = {$resolved: false};
 
     //Permissions
     
@@ -54,72 +54,71 @@
     }
 
     $scope.isMainMenu = false;
-    $scope.clientBodyMenu = false;
     $scope.selected = [];
     var clientResource = resource.clients;
 
-    if ($rootScope._userData.user.global_admin){
-      resellerName = '';
-      // Global Admin
-      clientResource.resellers.get({resellerName : resellerName}, function(data){
-        var clients = [];
-        $scope.clientBodyMenu = true;
-        // ng-repeat expect an array, otherwise will fail
-        if (!Array.isArray(data.response.resellers)){
-          clients = [data.response.resellers];
-        }        
+    // if ($rootScope._userData.user.global_admin){
+    //   resellerName = '';
+    //   // Global Admin
+    //   clientResource.resellers.get({resellerName : resellerName}, function(data){
+    //     var clients = [];
+    //     $scope.clientBodyMenu = true;
+    //     // ng-repeat expect an array, otherwise will fail
+    //     if (!Array.isArray(data.response.resellers)){
+    //       clients = [data.response.resellers];
+    //     }        
 
-        for (ridx in data.response.resellers){
-          var resellers = data.response.resellers[ridx];
-          for (cidx in resellers.clients){
-            var client = resellers.clients[cidx];
-            clients.push(client);
-          }
-        }
-        $scope.clients = clients;
-        $scope.clients.$resolved = data.$resolved;
-        if ($scope.clients.length == 0){
-          $scope.clientBodyMenu = false
-        }
-      }, function(data){
-        $scope.clients.$resolved = true;
-        console.log('Error loading clients. See response below...');
-        console.log(data);
-        mdToast.show(mdToast.getSimple(data.status + ' - Não foi possível obter a lista de clientes', 4000));
-      });
-    }else {
-      if ( $rootScope._userData.user.reseller ){
-        resellerName = $rootScope._userData.user.reseller.name;
-      }else{
-        resellerName = $rootScope._userData.user.client.reseller.name;
-      }
-      // Reseller
-      clientResource.clients.get({resellerName : resellerName}, function(data){
-        var clients = [];
-        // ng-repeat expect an array, otherwise will fail
-        if (!Array.isArray(data.response.resellers)){
-          clients = [data.response.resellers];
-        }
+    //     for (ridx in data.response.resellers){
+    //       var resellers = data.response.resellers[ridx];
+    //       for (cidx in resellers.clients){
+    //         var client = resellers.clients[cidx];
+    //         clients.push(client);
+    //       }
+    //     }
+    //     $scope.clients = clients;
+    //     $scope.clients.$resolved = data.$resolved;
+    //     if ($scope.clients.length == 0){
+    //       $scope.clientBodyMenu = false
+    //     }
+    //   }, function(data){
+    //     $scope.clients.$resolved = true;
+    //     console.log('Error loading clients. See response below...');
+    //     console.log(data);
+    //     mdToast.show(mdToast.getSimple(data.status + ' - Não foi possível obter a lista de clientes', 4000));
+    //   });
+    // }else {
+    //   if ( $rootScope._userData.user.reseller ){
+    //     resellerName = $rootScope._userData.user.reseller.name;
+    //   }else{
+    //     resellerName = $rootScope._userData.user.client.reseller.name;
+    //   }
+    //   // Reseller
+    //   clientResource.clients.get({resellerName : resellerName}, function(data){
+    //     var clients = [];
+    //     // ng-repeat expect an array, otherwise will fail
+    //     if (!Array.isArray(data.response.resellers)){
+    //       clients = [data.response.resellers];
+    //     }
         
-        for (cidx in data.response.clients){
-          var client = data.response.clients[cidx];
-          clients.push(client);
-        }
+    //     for (cidx in data.response.clients){
+    //       var client = data.response.clients[cidx];
+    //       clients.push(client);
+    //     }
 
-        $scope.clients = clients;
-        $scope.clients.$resolved = data.$resolved;
-        if (data.$resolved){
-          $scope.clientBodyMenu = true;
-        }
+    //     $scope.clients = clients;
+    //     $scope.clients.$resolved = data.$resolved;
+    //     if (data.$resolved){
+    //       $scope.clientBodyMenu = true;
+    //     }
 
-      }, function(data){
-        $scope.clients.$resolved = true;
-        console.log('Error loading clients. See response below...');
-        console.log(data);
-        mdToast.show(mdToast.getSimple(data.status + ' - Não foi possível obter a lista de clientes', 4000));
+    //   }, function(data){
+    //     $scope.clients.$resolved = true;
+    //     console.log('Error loading clients. See response below...');
+    //     console.log(data);
+    //     mdToast.show(mdToast.getSimple(data.status + ' - Não foi possível obter a lista de clientes', 4000));
 
-      });
-    }
+    //   });
+    // }
     $scope.filter = {
       options: {
         debounce: 500
@@ -133,16 +132,13 @@
     };
 
     $scope.deleteClient = function(client){
-      $scope.clients.$resolved = false;
       pathParams = {resellerName : client.reseller, clientName : client.name}
       clientResource.clients.delete(pathParams, function(data){
-        $scope.clients.$resolved = data.$resolved;
         console.log('delete sucessfully');
         $state.reload();  
       }, function(data){
         console.log('Error deleting client. See response below...');
         console.log(data);
-        $scope.clients.$resolved = true;
         var msg = data.status + ' - Não foi possível excluir o cliente: ';
         if (data.status == 403){
           msg += 'Permissão negada';
@@ -173,7 +169,6 @@
       $scope.currentClient = client;
       $scope.removeFilter();
       $scope.isMainMenu = true;
-      $scope.clientBodyMenu = true;
     }
 
     $scope.focusSearch = function(){
@@ -190,6 +185,119 @@
       
       return $location.path('/client/' + client.name + '/domains');
     }
+  
+    function getVirtualRepeatSize(numItems){
+      // 0 fakes index from 1. 7 items = 355px
+      var sizes = [0, 65, 113, 160, 210, 260, 305, 355];
+      var height = sizes[numItems];
+      if (!height && height != 0){
+        height = 405;
+      }
+      return 'height: ' + height + 'px;';
+    }
+
+    // Load clients
+    var DynamicItems = function(query) {
+      /**
+       * @type {!Object<?Array>} Data pages, keyed by page number (0-index).
+       */
+      this.query = query;
+      // $scope.loadedPages = {};
+
+      /** @type {number} Total number of items. */
+      $scope.numItems = 0;
+      /** @const {number} Number of items to fetch per request. */
+      this.PAGE_SIZE = 25;
+      this.fetchPage_();
+      // this.fetchNumItems_();
+    };
+    
+    DynamicItems.prototype.getItemAtIndex = function(index) {
+      var pageNumber = Math.floor(index / this.PAGE_SIZE);
+      var page = $scope.loadedPages[pageNumber];
+
+      if (page) {
+        return page[index % this.PAGE_SIZE];
+      } else if (page !== null) {
+        if (pageNumber > 0){
+          /* Will only fetch next page if the previous page has size of the PAGE_SIZE limit.
+          Prevents unwanted requests. */
+          var prevPageNumber = Math.max(0, pageNumber - 1);
+          if ($scope.loadedPages[prevPageNumber].length == this.PAGE_SIZE){
+            this.fetchPage_(pageNumber);
+          }
+        }else{
+          this.fetchPage_(pageNumber);
+        }
+      }
+    };
+    DynamicItems.prototype.getLength = function() {
+      return $scope.numItems;
+    };
+    DynamicItems.prototype.fetchPage_ = function(pageNumber) {
+      if (!pageNumber){
+        pageNumber = 0;
+      }
+    
+      // Set the page to null so we know it is already being fetched.
+      $scope.loadedPages[pageNumber] = null;
+      var pageOffset = pageNumber * this.PAGE_SIZE;
+      
+      if ($rootScope._userData.user.global_admin){
+        // Global Admin
+        var pathParams = {
+          clientName : this.query,
+          limit : this.PAGE_SIZE,
+          offset : pageOffset
+        }
+        clientResource.clients_ga.get(pathParams, function(data){
+          $scope.loadedPages[pageNumber] = data.response.clients;
+          $scope.numItems = $scope.numItems + data.response.clients.length;
+          $scope.loadedPages.$resolved = data.$resolved;
+          if ($scope.loadedPages.$resolved){
+            $scope.vrSize = getVirtualRepeatSize($scope.numItems);
+          }
+          console.log($scope.numItems);
+        }, function(data){
+          console.log('Error loading clients. See response below...');
+          console.log(data);
+          mdToast.show(mdToast.getSimple(data.status + ' - Não foi possível obter a lista de clientes', 4000));
+        });
+      }else {
+        if ( $rootScope._userData.user.reseller ){
+          resellerName = $rootScope._userData.user.reseller.name;
+        }else{
+          resellerName = $rootScope._userData.user.client.reseller.name;
+        }
+        // Reseller
+        var pathParams = {
+          resellerName : resellerName,
+          clientName : this.query,
+          limit : this.PAGE_SIZE,
+          offset : pageOffset
+        }
+        clientResource.clients.get(pathParams, function(data){
+          $scope.loadedPages[pageNumber] = data.response.clients;
+          $scope.numItems = $scope.numItems + data.response.clients.length;
+          $scope.loadedPages.$resolved = data.$resolved;
+          if ($scope.loadedPages.$resolved){
+            $scope.vrSize = getVirtualRepeatSize($scope.numItems);
+          }
+        }, function(data){
+          console.log('Error loading clients. See response below...');
+          console.log(data);
+          mdToast.show(mdToast.getSimple(data.status + ' - Não foi possível obter a lista de clientes', 4000));
+        });
+      }
+    };
+
+    $scope.searchClient = function (query) {
+      // vrSize=0 prevents rendering problems when searching and re-searching
+      $scope.vrSize = 0;
+      $scope.dynamicItems = new DynamicItems(query);
+    }
+    //init constructors
+    $scope.dynamicItems = new DynamicItems();
   }
 
   /**

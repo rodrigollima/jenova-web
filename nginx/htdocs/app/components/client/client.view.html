@@ -41,11 +41,11 @@
 
     </md-data-table-toolbar>
 
-    <md-progress-linear ng-hide="clients.$resolved" md-mode="indeterminate"></md-progress-linear> 
+    <md-progress-linear ng-hide="loadedPages.$resolved" md-mode="indeterminate"></md-progress-linear> 
 
     <md-data-table-toolbar ng-show="filter.show && !selected.length && focusSearch()">
       <i class="material-icons md-dark">search</i>
-      <form flex name="filter.form">
+      <form flex name="filter.form" ng-submit="searchClient(query.filter)">
         <input type="text" ng-model="query.filter" ng-model-options="filter.options" 
           placeholder="Busque o cliente desejado" focus-me="focusOn">
       </form>
@@ -58,7 +58,7 @@
   <!-- Main Menu: END -->
   
   <!-- Clients not FOUND Card -->
-  <div layout="row" layout-align="center end" ng-hide="clients.length">
+  <div layout="row" layout-align="center end" ng-hide="numItems">
     <div flex="70">
       <md-content layout-padding>
         <div layout="column">
@@ -69,7 +69,7 @@
                 <i class="material-icons large" style="color:blue;opacity:0.2">info_outline</i>
               </div>
               <div flex class="md-subhead">
-                Nenhum registro encontrado. <a href ng-click="openDialog('app/components/client/dialogs/client-create-diag.tmpl.html', clients)">Crie um novo cliente agora!</a><br>
+                Nenhum registro encontrado. <a href ng-click="openDialog('app/components/client/dialogs/client-create-diag.tmpl.html', null)">Crie um novo cliente agora!</a><br>
                 Os clientes são associados a um respectivo revendedor, certifique-se de criá-lo antes de prosseguir na criação de um novo cliente.
               </div>
             </div>
@@ -81,18 +81,20 @@
   </div>
 
   <!-- Client list -->
-  <div class="card">
-    <md-list ng-show="clientBodyMenu">
-      <md-list-item ng-click="showMainMenu(client)" ng-repeat="client in clients | filter:query.filter | orderBy: 'name' ">
-        <i class="material-icons">face</i>
-        <p> {{ client.name }} | {{ client.company }}</p>
-      </md-list-item>
-    </md-list>
+  <div class="card" ng-show="loadedPages.$resolved">
+    <md-virtual-repeat-container style={{vrSize}}>
+      <md-list>
+        <md-list-item ng-click="showMainMenu(client)" md-virtual-repeat="client in dynamicItems" md-on-demand flex>
+          <i class="material-icons">face</i>
+          <p> {{ client.name }} | {{ client.company }}</p>
+        </md-list-item>
+      </md-list>
+    </md-virtual-repeat-container>
   </div>
 
   <!-- Floating ADD button -->
   <div class="fixed-action-btn" style="bottom: 45px; right: 24px;" ng-show="isWriteClientEnabled">
-    <a ng-click="openDialog('app/components/client/dialogs/client-create-diag.tmpl.html', clients)" class="btn-floating btn-large waves-effect waves-light pink" >
+    <a ng-click="openDialog('app/components/client/dialogs/client-create-diag.tmpl.html', null)" class="btn-floating btn-large waves-effect waves-light pink" >
       <md-tooltip md-direction="bottom">Criar cliente</md-tooltip>
       <i class="large material-icons" >add</i>
     </a>
