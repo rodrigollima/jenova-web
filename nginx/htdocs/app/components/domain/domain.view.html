@@ -33,6 +33,11 @@ layout-align="center center" flex>
           <md-tooltip md-direction="bottom">Configurações</md-tooltip>
           <i class="material-icons">settings</i>
         </md-button>
+        <md-button class="md-icon-button" ng-disabled="isReadClientEnabled"
+        ng-click="openDialog('app/components/domain/dialogs/domain-info-diag.tmpl.html', currentDomain)" >
+          <md-tooltip md-direction="bottom">Informações do revendedor</md-tooltip>
+          <i class="material-icons">info</i>
+        </md-button>
         <md-button class="md-icon-button" ng-click="removeMenu()">
           <md-tooltip md-direction="bottom">Fechar menu</md-tooltip>
           <i class="material-icons md-dark">close</i>
