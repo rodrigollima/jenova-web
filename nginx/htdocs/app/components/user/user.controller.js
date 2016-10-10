@@ -308,7 +308,13 @@
       
       // It is not a global admin user, it must belong to a client or reseller
       if (!$rootScope._userData.user.global_admin){
-        resellerName = $rootScope._userData.user.reseller.name || $rootScope._userData.user.client.reseller.name
+        if ($rootScope._userData.user.reseller){
+          resellerName = $rootScope._userData.user.reseller.name;
+        }
+        else {
+          resellerName = $rootScope._userData.user.client.reseller.name;
+        }
+        
 
         return clientResource.clients.get({resellerName : resellerName}, function(data){
           clients = [];
