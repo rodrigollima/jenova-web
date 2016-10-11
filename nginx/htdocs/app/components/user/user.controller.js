@@ -72,11 +72,8 @@
     $scope.deleteUser = function(user_login){
       $scope.users.$resolved = false;
       userResource.delete({userName : user_login}, function(data){
-        console.log('user deleted successfully: ' + user_login);
-        console.log(data);
         $state.reload();
-      }, function(data){
-        //$scope.users.$resolved = null;
+      }, function(data){ 
         console.log('Error deleting user: ' + user_login);
         console.log(data);        
       });
@@ -115,12 +112,8 @@
           $scope.currentUser.icon = 'person_outline';
         }
       }, function(data){
-        // Show TOAST ACTION on ERROR
-        //$rootScope.$broadcast("showActionToast", {msg : 'Erro ao habilitar/desabilitar função', delay : 4000});
         $scope.blkUsrSwt = null;
       });
-      //$scope.currentUser.admin = !($scope.currentUser.admin);
-      //console.log('USER ADMIN ' + $scope.currentUser.admin);
     }
 
     $scope.blkUsrPermSwt = null;
@@ -163,7 +156,6 @@
 
     $scope.showMainMenu = function(user){
       $scope.currentUser = user;
-      //console.log(user);
       $scope.isManageServiceEnabled = (user.login === $rootScope._userData.user.login);
       $scope.userSelected = user.login;
 
@@ -225,7 +217,6 @@
     $scope.querySearch   = querySearch;
 
 
-    console.log($scope.currentUser)
     $scope.closeDialog = function() {
       $mdDialog.hide();
     }
@@ -241,10 +232,7 @@
         admin : $scope.newUser.admin
       };
 
-      //console.log(updateData);
       userResource.create({ userName : $scope.newUser.login }, createData, function(data){
-        console.log('User created successfully: ' + $scope.newUser.login);
-        console.log(data);
         $state.reload();
         $mdDialog.hide();
       }, function(data){
@@ -267,7 +255,6 @@
       }
 
       // Only admin can change client name
-      //console.log(user.client);
       if ($scope.currentUser.global_admin || $scope.currentUser.admin){
         if (user.client.name){
           updateData['client_name'] = user.client.name.display;  
@@ -275,8 +262,6 @@
       }
 
       userResource.update({ userName : user.login }, updateData, function(data){
-        console.log('User updated successfully: ' + user.login);
-        console.log(data);
         $state.reload();
         $mdDialog.hide();
       }, function(data){
@@ -316,10 +301,8 @@
         }
         
 
-        return clientResource.clients.get({resellerName : resellerName}, function(data){
+        return clientResource.clients.get({resellerName : resellerName, clientName : query}, function(data){
           clients = [];
-          console.log(data);
-          
           for (cidx in data.response.clients){
             var client = data.response.clients[cidx];
             clients.push(client.name);
