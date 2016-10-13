@@ -198,7 +198,9 @@
   /** 
   * DIALOG CONTROLLER 
   **/
-  function userDialogCtrl($scope, $mdDialog, $rootScope, $state, $q, data, userResource, clientResource){
+  function userDialogCtrl($scope, $mdDialog, $rootScope, $state, $q, data, userResource, resource){
+    var clientResource = resource.clients;
+
     $scope.newUser = { 
       restrictAccess : true,
       globaladmin : false,
@@ -223,7 +225,7 @@
 
     $scope.saveCreateDialog = function(){
       var createData = {
-        client_name : $scope.newUser.client.display,
+        client_name : $scope.newUser.client.value,
         name : $scope.newUser.name,
         email : $scope.newUser.email,
         password : $scope.newUser.password1,
@@ -302,38 +304,26 @@
         
 
         return clientResource.clients.get({resellerName : resellerName, clientName : query}, function(data){
-          clients = [];
-          for (cidx in data.response.clients){
-            var client = data.response.clients[cidx];
-            clients.push(client.name);
-          }
-
+          var clients = data.response.clients;
           data.response = clients.map(function(client){
             return {
-              value : client.toLowerCase(),
-              display : client
+              value : client.name.toLowerCase(),
+              display : client.name + ' : ' + client.company
             };
-          }).filter(createFilterFor(query));
+          })
         });
 
       }
       else {
-        return clientResource.resellers.get({resellerName : resellerName}, function(data){
-          clients = [];
-          for (ridx in data.response.resellers){
-            var resellers = data.response.resellers[ridx];
-            for (cidx in resellers.clients){
-              var client = resellers.clients[cidx];
-              clients.push(client.name)
-            }
-          }
-
+        return clientResource.clients_ga.get({clientName : query}, function(data){
+          var clients = data.response.clients;
           data.response = clients.map(function(client){
+            console.log(client);
             return {
-              value : client.toLowerCase(),
-              display : client
+              value : client.name.toLowerCase(),
+              display : client.name + ' : ' + client.company
             };
-          }).filter(createFilterFor(query));
+          })
         });
       }
     }
