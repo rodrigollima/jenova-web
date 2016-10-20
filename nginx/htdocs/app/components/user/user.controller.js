@@ -4,47 +4,15 @@
   /* TODO: Expire user session when setting a new PERM
   */
   function userCtrl($scope, $rootScope, $mdDialog, $state, Dialog, tokenPayload, userResource, userPermResource){
-    $scope.users = null;
-    $scope.currentUser = { name : 'Carregando usuários...' };
+    $scope.currentUser = null;
     $scope.userBodyMenu = false;
-    $scope.selectedUser = null;
-    var queryUsername = $rootScope._userData.user.login;
-    if ($rootScope._userData.user.admin || $rootScope._userData.user.global_admin){
-      queryUsername = '';
-    }
-    userResource.get({userName : queryUsername}, function(data){
-      $scope.users = null;
-      // ng-repeat expect an array, otherwise will fail
-      if (!Array.isArray(data.response.users)){
-        $scope.users = [data.response.users];
-      }else{
-        $scope.users = data.response.users;  
-      }
 
-      $scope.users.$resolved = data.$resolved;
-
-      if (data.$resolved){
-        $scope.userBodyMenu = true;
-      }
-      for (index in $scope.users){
-        if ($scope.users[index].global_admin){
-          $scope.users[index].icon = 'public';
-        }else if ($scope.users[index].admin){
-          $scope.users[index].icon = 'supervisor_account';
-        }
-        
-        $scope.users[index].permissions = 
-          tokenPayload.loadPermissions($scope.users[index].permissions);
-      }
-      $scope.currentUser = $rootScope._userData.user;
-    });
-
+    $scope.loadedPages = {$resolved: false};
     $scope.selected = [];
     
     $scope.isMainMenu = false;
     $scope.permBodyMenu = false;
     $scope.settingsBodyMenu = false;
-    $scope.mailRegistered = 'sandro.mello@inova.net';
 
     $scope.filter = {
       options: {
@@ -64,10 +32,6 @@
     $scope.isDeleteUserEnabled = !($scope.isAdmin || userData.permissions.users.delete);
     $scope.isEditUserEnabled = !($scope.isAdmin || userData.permissions.users.edit);
     $scope.isPermissionsEnabled = !($scope.isAdmin || userData.permissions.permissions.read);
-
-    $scope.filterExpression = function(perm){
-      return perm;
-    }
 
     $scope.deleteUser = function(user_login){
       $scope.users.$resolved = false;
@@ -145,6 +109,7 @@
     }
     
     $scope.removeMainMenu = function(){
+      $scope.currentUser = null;
       $scope.isMainMenu = false;
       $scope.settingsBodyMenu = false;
       $scope.permBodyMenu = false;
@@ -163,10 +128,7 @@
 
     $scope.showMainMenu = function(user){
       $scope.currentUser = user;
-      //console.log(user);
       $scope.isManageServiceEnabled = (user.login === $rootScope._userData.user.login);
-      $scope.userSelected = user.login;
-
       $scope.removeFilter();
       $scope.isMainMenu = true;
       $scope.userBodyMenu = true;
@@ -200,6 +162,118 @@
       //var url = 'app/components/user/user-diag.tmpl.html';
       Dialog.open(template_url, 'userDialogCtrl', data);
     }
+
+    function getVirtualRepeatSize(numItems){
+      // 0 fakes index from 1. 7 items = 355px
+      var sizes = [0, 65, 113, 160, 210, 260, 305, 355];
+      var height = sizes[numItems];
+      if (!height && height != 0){
+        height = 405;
+      }
+      return 'height: ' + height + 'px;';
+    }
+
+    // Load users
+    var DynamicItems = function(query) {
+      /**
+       * @type {!Object<?Array>} Data pages, keyed by page number (0-index).
+       */
+      this.query = query;
+      // $scope.loadedPages = {};
+
+      /** @type {number} Total number of items. */
+      $scope.numItems = 0;
+      /** @const {number} Number of items to fetch per request. */
+      this.PAGE_SIZE = 25;
+      this.fetchPage_();
+      // this.fetchNumItems_();
+    };
+    
+    DynamicItems.prototype.getItemAtIndex = function(index) {
+      var pageNumber = Math.floor(index / this.PAGE_SIZE);
+      var page = $scope.loadedPages[pageNumber];
+
+      if (page) {
+        return page[index % this.PAGE_SIZE];
+      } else if (page !== null) {
+        if (pageNumber > 0){
+          /* Will only fetch next page if the previous page has size of the PAGE_SIZE limit.
+          Prevents unwanted requests. */
+          var prevPageNumber = Math.max(0, pageNumber - 1);
+          if ($scope.loadedPages[prevPageNumber].length == this.PAGE_SIZE){
+            this.fetchPage_(pageNumber);
+          }
+        }else{
+          this.fetchPage_(pageNumber);
+        }
+      }
+    };
+    DynamicItems.prototype.getLength = function() {
+      return $scope.numItems;
+    };
+    DynamicItems.prototype.fetchPage_ = function(pageNumber) {
+      if (!pageNumber){
+        pageNumber = 0;
+      }
+    
+      // Set the page to null so we know it is already being fetched.
+      $scope.loadedPages[pageNumber] = null;
+      var pageOffset = pageNumber * this.PAGE_SIZE;
+      
+      if ($rootScope._userData.user.global_admin){
+        // Global Admin
+        var pathParams = {
+          userName : this.query,
+          limit : this.PAGE_SIZE,
+          offset : pageOffset
+        }
+        userResource.get(pathParams, function(data){
+          $scope.loadedPages[pageNumber] = data.response.users;
+          $scope.numItems = $scope.numItems + data.response.users.length;
+          $scope.loadedPages.$resolved = data.$resolved;
+          if ($scope.loadedPages.$resolved){
+            $scope.vrSize = getVirtualRepeatSize($scope.numItems);
+          }
+        }, function(data){
+          console.log('Error loading users. See response below...');
+          console.log(data);
+          mdToast.show(mdToast.getSimple(data.status + ' - Não foi possível obter a lista de usuários', 4000));
+        });
+      } else {
+        if ( $rootScope._userData.user.reseller ){
+          resellerName = $rootScope._userData.user.reseller.name;
+        } else {
+          resellerName = $rootScope._userData.user.client.reseller.name;
+        }
+
+        var pathParams = {
+          resellerName : resellerName,
+          userName : this.query,
+          limit : this.PAGE_SIZE,
+          offset : pageOffset
+        }
+        userResource.get(pathParams, function(data){
+          $scope.loadedPages[pageNumber] = data.response.users;
+          $scope.numItems = $scope.numItems + data.response.users.length;
+          $scope.loadedPages.$resolved = data.$resolved;
+          if ($scope.loadedPages.$resolved){
+            $scope.vrSize = getVirtualRepeatSize($scope.numItems);
+          }
+        }, function(data){
+          console.log('Error loading clients. See response below...');
+          console.log(data);
+          mdToast.show(mdToast.getSimple(data.status + ' - Não foi possível obter a lista de clientes', 4000));
+        });
+      }
+    };
+
+    $scope.searchUser = function (query) {
+      // vrSize=0 prevents rendering problems when searching and re-searching
+      $scope.vrSize = 0;
+      $scope.dynamicItems = new DynamicItems(query);
+    }
+    //init constructors
+    $scope.dynamicItems = new DynamicItems();
 
   }
 
