@@ -1,7 +1,7 @@
 JENOVA-WEB
 ==========
 
-**You can help build this...**
+[![Alt text for your video](http://img.youtube.com/vi/U7jRiZUXggA/0.jpg)](https://www.youtube.com/watch?v=U7jRiZUXggA)
 
 ---------
 
