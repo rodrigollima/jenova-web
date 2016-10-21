@@ -36,11 +36,8 @@
     $scope.deleteUser = function(user_login){
       $scope.users.$resolved = false;
       userResource.delete({userName : user_login}, function(data){
-        console.log('user deleted successfully: ' + user_login);
-        console.log(data);
         $state.reload();
-      }, function(data){
-        //$scope.users.$resolved = null;
+      }, function(data){ 
         console.log('Error deleting user: ' + user_login);
         console.log(data);        
       });
@@ -79,12 +76,8 @@
           $scope.currentUser.icon = 'person_outline';
         }
       }, function(data){
-        // Show TOAST ACTION on ERROR
-        //$rootScope.$broadcast("showActionToast", {msg : 'Erro ao habilitar/desabilitar função', delay : 4000});
         $scope.blkUsrSwt = null;
       });
-      //$scope.currentUser.admin = !($scope.currentUser.admin);
-      //console.log('USER ADMIN ' + $scope.currentUser.admin);
     }
 
     $scope.blkUsrPermSwt = null;
@@ -280,7 +273,9 @@
   /** 
   * DIALOG CONTROLLER 
   **/
-  function userDialogCtrl($scope, $mdDialog, $rootScope, $state, $q, data, userResource, clientResource){
+  function userDialogCtrl($scope, $mdDialog, $rootScope, $state, $q, data, userResource, resource){
+    var clientResource = resource.clients;
+
     $scope.newUser = { 
       restrictAccess : true,
       globaladmin : false,
@@ -299,14 +294,13 @@
     $scope.querySearch   = querySearch;
 
 
-    console.log($scope.currentUser)
     $scope.closeDialog = function() {
       $mdDialog.hide();
     }
 
     $scope.saveCreateDialog = function(){
       var createData = {
-        client_name : $scope.newUser.client.display,
+        client_name : $scope.newUser.client.value,
         name : $scope.newUser.name,
         email : $scope.newUser.email,
         password : $scope.newUser.password1,
@@ -315,10 +309,7 @@
         admin : $scope.newUser.admin
       };
 
-      //console.log(updateData);
       userResource.create({ userName : $scope.newUser.login }, createData, function(data){
-        console.log('User created successfully: ' + $scope.newUser.login);
-        console.log(data);
         $state.reload();
         $mdDialog.hide();
       }, function(data){
@@ -341,7 +332,6 @@
       }
 
       // Only admin can change client name
-      //console.log(user.client);
       if ($scope.currentUser.global_admin || $scope.currentUser.admin){
         if (user.client.name){
           updateData['client_name'] = user.client.name.display;  
@@ -349,8 +339,6 @@
       }
 
       userResource.update({ userName : user.login }, updateData, function(data){
-        console.log('User updated successfully: ' + user.login);
-        console.log(data);
         $state.reload();
         $mdDialog.hide();
       }, function(data){
@@ -390,41 +378,27 @@
         }
         
 
-        return clientResource.clients.get({resellerName : resellerName}, function(data){
-          clients = [];
-          console.log(data);
-          
-          for (cidx in data.response.clients){
-            var client = data.response.clients[cidx];
-            clients.push(client.name);
-          }
-
+        return clientResource.clients.get({resellerName : resellerName, clientName : query}, function(data){
+          var clients = data.response.clients;
           data.response = clients.map(function(client){
             return {
-              value : client.toLowerCase(),
-              display : client
+              value : client.name.toLowerCase(),
+              display : client.name + ' : ' + client.company
             };
-          }).filter(createFilterFor(query));
+          })
         });
 
       }
       else {
-        return clientResource.resellers.get({resellerName : resellerName}, function(data){
-          clients = [];
-          for (ridx in data.response.resellers){
-            var resellers = data.response.resellers[ridx];
-            for (cidx in resellers.clients){
-              var client = resellers.clients[cidx];
-              clients.push(client.name)
-            }
-          }
-
+        return clientResource.clients_ga.get({clientName : query}, function(data){
+          var clients = data.response.clients;
           data.response = clients.map(function(client){
+            console.log(client);
             return {
-              value : client.toLowerCase(),
-              display : client
+              value : client.name.toLowerCase(),
+              display : client.name + ' : ' + client.company
             };
-          }).filter(createFilterFor(query));
+          })
         });
       }
     }

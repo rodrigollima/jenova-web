@@ -89,10 +89,11 @@
       if ((!($scope.isAdmin || $scope.userData.permissions.dns.read) && serviceName == 'DNS')){
         return true;
       }
-      for ( idx in $scope.currentDomain.services){
-        if ($scope.currentDomain.services[idx].service_type == 'DNS'){
-          $rootScope.domainName = $scope.currentDomain.name;
-          return false;
+      if ($scope.currentDomain){
+        for ( idx in $scope.currentDomain.services){
+          if ($scope.currentDomain.services[idx].service_type == 'DNS'){
+            return false;
+          }
         }
       }
       return true;
@@ -179,7 +180,6 @@
         $scope.mxheroMenuOn = false;
         $scope.zimbraMenuOn = false;
         $scope.settingsMenuOn = true;
-        $location.path('/domain/' + domain);
       }else if (menuType === 'mxhero'){
         $scope.settingsMenuOn = false;
         $scope.zimbraMenuOn = false;
@@ -188,7 +188,6 @@
         $scope.settingsMenuOn = false;
         $scope.mxheroMenuOn = false;
         $scope.zimbraMenuOn = true;
-        // currentDomain.states.$resolved = false;
       }
 
     }
@@ -207,12 +206,14 @@
     }
 
     $scope.showMainMenu = function(domain){
-      $scope.currentDomain = domain;
-      currentData.domain = $scope.currentDomain;
-      $scope.removeFilter();
-      $scope.showmenu = true;
-      $scope.isDnsEnabled = checkServiceEnabled('DNS');
-      $scope.selected_domain = domain.name;
+      if (domain){
+        $scope.currentDomain = domain;
+        currentData.domain = $scope.currentDomain;
+        $scope.removeFilter();
+        $scope.showmenu = true;
+        $scope.isDnsEnabled = checkServiceEnabled('DNS');
+        $scope.selected_domain = domain.name;
+      }
     }
 
     $scope.removeMenu = function(){
@@ -224,8 +225,8 @@
       delete $scope.shopMenuOn;
       delete $scope.zimbraMenuOn;
       delete $scope.zimbraAccountOn;
+      delete $scope.currentDomain;
       $location.path('/domain/');
-      // $state.reload();
     }
 
     $scope.removeFilter = function (reload) {
@@ -257,7 +258,7 @@
        */
       this.query = query;
       $scope.loadedPages = {};
-
+      
       /** @type {number} Total number of items. */
       $scope.numItems = 1;
       /** @const {number} Number of items to fetch per request. */
@@ -314,23 +315,19 @@
         clientName = $scope.userData.user.client.name;
       }
 
-      // client request
-      //var clientName = $stateParams.client;
+      // client request`
       if ( clientName ) {
         domainResource.clients.get({clientName : clientName, domainName : this.query, limit:this.PAGE_SIZE, offset:pageOffset}, function(data){
           $scope.infoHint = false;
           console.log('Getting all domain from client sucessfull!');
-          // This is when we have a domain in path ex: http://dockerhost:8080/#/domain/domain.io
-          if ($stateParams.domain) {
-            $scope.currentDomain = data.response.domains[0];
+          
+          if ($scope.currentDomain){
             $scope.showMainMenu($scope.currentDomain);
             $scope.startMenu($scope.currentDomain.name, 'settings');
             $scope.getDomainState($scope.currentDomain);
           }
 
           $scope.loadedPages[pageNumber] = [];
-          //$scope.loadedPages. = data.response.domains.length;
-
           for ( idx in data.response.domains ){
             $scope.loadedPages[pageNumber].push(data.response.domains[idx]);
           }
@@ -354,9 +351,7 @@
           $scope.infoHint = false;
           console.log('Getting all reseller domains sucessfull!');
 
-          // This is when we have a domain in path ex: http://dockerhost:8080/#/domain/domain.io
-          if ($stateParams.domain) {
-            $scope.currentDomain = data.response.domains[0];
+          if ($scope.currentDomain){
             $scope.showMainMenu($scope.currentDomain);
             $scope.startMenu($scope.currentDomain.name, 'settings');
             $scope.getDomainState($scope.currentDomain);
