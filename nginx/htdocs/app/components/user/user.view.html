@@ -61,9 +61,9 @@
     </md-data-table-toolbar>   
   </div>
   <!-- Main Menu: END -->
-
-  <div class="card" ng-show="loadedPages.$resolved">
-    <md-virtual-repeat-container style={{vrSize}}>
+  
+  <div class="card">
+    <md-virtual-repeat-container style={{vrSize}} ng-show="userBodyMenu">
       <md-list>
         <md-list-item ng-click="showMainMenu(user)" md-virtual-repeat="user in dynamicItems" md-on-demand flex>
           <i ng-show="user.global_admin" style="{{user.enabled || 'color:#bdbdbd'}}" class="material-icons">public</i>
@@ -75,7 +75,6 @@
       </md-list>
     </md-virtual-repeat-container>
   </div>
-  
 
   <!-- Permissions Header -->
   <div ng-show="permBodyMenu">

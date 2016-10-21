@@ -146,6 +146,7 @@
         $scope.userBodyMenu = false;
         $scope.apiBodyMenu = false;
       }else if (menuType === 'permissions'){
+        $scope.currentUser.permissions = tokenPayload.loadPermissions($scope.currentUser.permissions);
         $scope.settingsBodyMenu = false;
         $scope.permBodyMenu = true;
         $scope.userBodyMenu = false;
@@ -231,6 +232,7 @@
           $scope.loadedPages[pageNumber] = data.response.users;
           $scope.numItems = $scope.numItems + data.response.users.length;
           $scope.loadedPages.$resolved = data.$resolved;
+          $scope.userBodyMenu = true;
           if ($scope.loadedPages.$resolved){
             $scope.vrSize = getVirtualRepeatSize($scope.numItems);
           }
