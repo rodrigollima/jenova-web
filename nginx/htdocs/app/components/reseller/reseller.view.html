@@ -46,7 +46,7 @@
 
     </md-data-table-toolbar>
 
-    <md-progress-linear ng-hide="resellers.$resolved" md-mode="indeterminate"></md-progress-linear> 
+    <md-progress-linear ng-hide="loadedPages.$resolved" md-mode="indeterminate"></md-progress-linear> 
 
     <md-data-table-toolbar ng-show="filter.show && !selected.length && focusSearch()">
       <i class="material-icons md-dark">search</i>
@@ -64,7 +64,7 @@
 
   <!-- This Card will blink on reload -->
   <!-- Resellers not FOUND Card -->
-  <div layout="row" layout-align="center end" ng-hide="resellers.length">
+  <div layout="row" layout-align="center end" ng-show="numItems == 0">
     <div flex="70">
       <md-content layout-padding>
         <div layout="column">
@@ -85,15 +85,16 @@
       </md-content> 
     </div>
   </div>
-
-  <!-- Reseller list -->
-  <div class="card">
-    <md-list ng-show="resellerBodyMenu">
-      <md-list-item ng-click="showMainMenu(reseller)" ng-repeat="reseller in resellers | filter:query.filter | orderBy: 'name' ">
-        <i style="{{reseller.enabled||'color:#bdbdbd'}}" class="material-icons">business</i>
-        <p style="{{reseller.enabled||'color:#bdbdbd'}}"> {{ reseller.name }} </p>
-      </md-list-item>
-    </md-list>
+  
+  <div class="card" ng-show="loadedPages.$resolved">
+    <md-virtual-repeat-container style={{vrSize}}>
+      <md-list>
+        <md-list-item ng-click="showMainMenu(reseller)" md-virtual-repeat="reseller in dynamicItems" md-on-demand flex>
+          <i style="{{reseller.enabled||'color:#bdbdbd'}}" class="material-icons">business</i>
+          <p style="{{reseller.enabled||'color:#bdbdbd'}}"> {{ reseller.name }} </p>
+        </md-list-item>
+      </md-list>
+    </md-virtual-repeat-container>
   </div>
 
   <!-- Floating ADD button -->

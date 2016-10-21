@@ -3,12 +3,13 @@
 
   function resellerCtrl($scope, $location, $rootScope, $state, Dialog, resource, mdToast){
     //$scope.currentReseller = { company : 'Carregando revendedores...' };
-    $scope.resellers = [];
     $scope.currentUser = $rootScope._userData.user;
     $scope.resellerBodyMenu = false;
     $scope.isMainMenu = false;
     $scope.hasResellerViewPerms = false;
     
+    $scope.loadedPages = {$resolved: false};
+
     $scope.filter = {
       options: {
         debounce: 500
@@ -21,24 +22,91 @@
       limit: 5,
       page: 1
     };
+    
+    function getVirtualRepeatSize(numItems){
+      // 0 fakes index from 1. 7 items = 355px
+      var sizes = [0, 65, 113, 160, 210, 260, 305, 355];
+      var height = sizes[numItems];
+      if (!height && height != 0){
+        height = 405;
+      }
+      return 'height: ' + height + 'px;';
+    }
 
-    // Global Admin
-    resource.clients.resellers.get({resellerName : ''}, function(data){
-      console.log('Get resellers sucessfully');
-      for (ridx in data.response.resellers){
-        $scope.resellers.push(data.response.resellers[ridx]);
+    // Load reseller
+    var DynamicItems = function(query) {
+      /**
+       * @type {!Object<?Array>} Data pages, keyed by page number (0-index).
+       */
+      this.query = query;
+      // $scope.loadedPages = {};
+
+      /** @type {number} Total number of items. */
+      $scope.numItems = 0;
+      /** @const {number} Number of items to fetch per request. */
+      this.PAGE_SIZE = 25;
+      this.fetchPage_();
+      // this.fetchNumItems_();
+    };
+    
+    DynamicItems.prototype.getItemAtIndex = function(index) {
+      var pageNumber = Math.floor(index / this.PAGE_SIZE);
+      var page = $scope.loadedPages[pageNumber];
+
+      if (page) {
+        return page[index % this.PAGE_SIZE];
+      } else if (page !== null) {
+        if (pageNumber > 0){
+          /* Will only fetch next page if the previous page has size of the PAGE_SIZE limit.
+          Prevents unwanted requests. */
+          var prevPageNumber = Math.max(0, pageNumber - 1);
+          if ($scope.loadedPages[prevPageNumber].length == this.PAGE_SIZE){
+            this.fetchPage_(pageNumber);
+          }
+        }else{
+          this.fetchPage_(pageNumber);
+        }
       }
-      $scope.resellers.$resolved = data.$resolved;
-      if (data.$resolved){
-        $scope.resellerBodyMenu = true;
+    };
+    DynamicItems.prototype.getLength = function() {
+      return $scope.numItems;
+    };
+    DynamicItems.prototype.fetchPage_ = function(pageNumber) {
+      if (!pageNumber){
+        pageNumber = 0;
       }
-    }, function(data){
-      console.log('Error getting resellers. See response below...');
-      console.log(data);
-      $scope.resellers.$resolved = true;
-      var msg = ' - Não foi possível obter lista de revendedores';
-      mdToast.show(mdToast.getSimple(data.status + msg, 5000));
-    });
+      var pageOffset = pageNumber * this.PAGE_SIZE;
+      var pathParams = {
+        resellerName : this.query,
+        limit : this.PAGE_SIZE,
+        offset : pageOffset
+      }
+
+      // Set the page to null so we know it is already being fetched.
+      $scope.loadedPages[pageNumber] = null;
+            
+      resource.clients.resellers.get(pathParams, function(data){
+        $scope.loadedPages[pageNumber] = data.response.resellers;
+        $scope.numItems = $scope.numItems + data.response.resellers.length;
+        $scope.loadedPages.$resolved = data.$resolved;
+        if ($scope.loadedPages.$resolved){
+          $scope.vrSize = getVirtualRepeatSize($scope.numItems);
+        }
+      }, function(data){
+        console.log('Error loading resellers. See response below...');
+        console.log(data);
+        mdToast.show(mdToast.getSimple(data.status + ' - Não foi possível obter a lista de revendedores', 4000));
+      });
+    };
+
+    $scope.searchReseller = function (query) {
+      // vrSize=0 prevents rendering problems when searching and re-searching
+      $scope.vrSize = 0;
+      $scope.dynamicItems = new DynamicItems(query);
+    }
+    //init constructors
+    $scope.dynamicItems = new DynamicItems();
+
 
     $scope.showMainMenu = function(reseller){
       $scope.currentReseller = reseller;
