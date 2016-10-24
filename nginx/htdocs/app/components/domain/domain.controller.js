@@ -245,14 +245,6 @@
       Dialog.open(template_url, 'domainDialogCtrl', data, false);
     }
 
-    $scope.searchDomain = function (query) {
-      // vrSize=0 prevents rendering problems when searching and re-searching
-      $scope.vrSize = 0;
-      $scope.setHint(false);
-      $scope.dynamicItems = new DynamicItems(query);
-      
-    }
-
     var DynamicItems = function(query) {
       /**
        * @type {!Object<?Array>} Data pages, keyed by page number (0-index).
@@ -261,9 +253,10 @@
       $scope.loadedPages = {};
       
       /** @type {number} Total number of items. */
-      $scope.numItems = 1;
+      $scope.numItems = 0;
       /** @const {number} Number of items to fetch per request. */
       this.PAGE_SIZE = 25;
+      this.fetchPage_();
       //this.fetchNumItems_();
     };
 
@@ -294,16 +287,19 @@
     };
 
     DynamicItems.prototype.fetchPage_ = function(pageNumber) {
+      if (!pageNumber){
+        pageNumber = 0;
+      }
       // Set the page to null so we know it is already being fetched.
       $scope.loadedPages[pageNumber] = null;
       var pageOffset = pageNumber * this.PAGE_SIZE;
       var resellerName = null;
       if ($stateParams.reseller){
         resellerName = $stateParams.reseller;
-      }else if ($scope.userData.user.reseller){
+      } else if ($scope.userData.user.reseller){
         // It's a reseller login
         resellerName = $scope.userData.user.reseller.name;
-      }else if($scope.userData.user.client){
+      } else if($scope.userData.user.client){
         // It's a normal admin user
         resellerName = $scope.userData.user.client.reseller.name;
       }
@@ -312,13 +308,15 @@
       var clientName = null;
       if ($stateParams.client){
         clientName = $stateParams.client;
-      }else if($scope.userData.user.client){
+      } else if($scope.userData.user.client){
         clientName = $scope.userData.user.client.name;
       }
 
       // client request`
       if ( clientName ) {
-        domainResource.clients.get({clientName : clientName, domainName : this.query, limit:this.PAGE_SIZE, offset:pageOffset}, function(data){
+        domainResource.clients.get({clientName : clientName, domainName : this.query,
+           limit:this.PAGE_SIZE, offset:pageOffset}, function(data){
+          
           $scope.infoHint = false;
           console.log('Getting all domain from client sucessfull!');
           
@@ -328,11 +326,11 @@
             $scope.getDomainState($scope.currentDomain);
           }
 
-          $scope.loadedPages[pageNumber] = [];
-          for ( idx in data.response.domains ){
-            $scope.loadedPages[pageNumber].push(data.response.domains[idx]);
-          }
-          $scope.numItems = data.response.total;
+          $scope.loadedPages[pageNumber] = data.response.domains;
+          //for ( idx in data.response.domains ){
+          //  $scope.loadedPages[pageNumber].push(data.response.domains[idx]);
+          //}
+          $scope.numItems = $scope.numItems + data.response.domains.length;
           $scope.loadedPages.$resolved = data.$resolved;
           if ($scope.loadedPages.$resolved){
             $scope.vrSize = getVirtualRepeatSize($scope.numItems);
@@ -346,9 +344,11 @@
           console.log('Error getting domains, response below...');
           console.log(data);
         });
-      }else if (resellerName || ($scope.isAdmin && this.query)){
+      } else if (resellerName || ($scope.isAdmin && this.query)){
         // reseller request, must bring all domains from the reseller
-        domainResource.resellers.get({resellerName : resellerName, domainName : this.query, limit:this.PAGE_SIZE, offset:pageOffset}, function(data){
+        domainResource.resellers.get({resellerName : resellerName, domainName : this.query, 
+          limit:this.PAGE_SIZE, offset:pageOffset}, function(data){
+          
           $scope.infoHint = false;
           console.log('Getting all reseller domains sucessfull!');
 
@@ -358,12 +358,12 @@
             $scope.getDomainState($scope.currentDomain);
           }
 
-          $scope.loadedPages[pageNumber] = [];
+          $scope.loadedPages[pageNumber] = data.response.domains;
 
-          for ( idx in data.response.domains ){
-            $scope.loadedPages[pageNumber].push(data.response.domains[idx]);
-          }
-          $scope.numItems = data.response.total;
+          //for ( idx in data.response.domains ){
+          //  $scope.loadedPages[pageNumber].push(data.response.domains[idx]);
+          //}
+          $scope.numItems = $scope.numItems + data.response.domains.length;
 
           $scope.loadedPages.$resolved = data.$resolved;
           if ($scope.loadedPages.$resolved){
@@ -386,15 +386,26 @@
 
     // Search domains
     if ($stateParams.client || $stateParams.reseller || !$scope.isAdmin){
+      $scope.vrSize = 0;
       $scope.dynamicItems = new DynamicItems();
       
       // Hide search hint message
       $scope.setHint(false);
     } else if ($stateParams.domain) {
+      $scope.vrSize = 0;
       $scope.dynamicItems = new DynamicItems($stateParams.domain);
       // Hide search hint message
       $scope.setHint(false);
     }
+
+    $scope.searchDomain = function (query) {
+      // vrSize=0 prevents rendering problems when searching and re-searching
+      $scope.vrSize = 0;
+      $scope.setHint(false);
+      $scope.dynamicItems = new DynamicItems(query);
+      
+    }
+    //$scope.dynamicItems = new DynamicItems();
 
   }
 
