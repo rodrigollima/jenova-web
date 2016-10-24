@@ -74,6 +74,7 @@
 
       domainResource.clients.delete(pathParams, function(data){
           mdToast.show(mdToast.getSimple('Dominio deletado com sucesso!', 8000));
+          $location.path('/domain/');
           $state.reload();
         }, function(data){
           console.log('Error deleting domain. See response below...');
@@ -528,10 +529,7 @@
     }
 
     $scope.closeDialog = function() {
-      // Disable loading at service desc state view
-      // $scope.currentDomain.currentService.activeDialog = false;
       $mdDialog.hide();
-      $state.reload();
     }
 
     $scope.setTaskInfo = function(state, taskId){
