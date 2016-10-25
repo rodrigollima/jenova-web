@@ -3,11 +3,12 @@
   <div class="card">
     <md-data-table-toolbar ng-hide="selected.length || filter.show">
       <div layout="column">
-        <div class="md-title">{{currentUser.name}}</div>
-        <div class="md-caption">
-          {{currentUser.login}} {{users.$resolved && '|' || ''}} {{currentUser.client.name && 'cliente - ' + currentUser.client.name || 
+        <div class="md-title">{{currentUser ? currentUser.name : 'Usuários'}}</div>
+        <div class="md-caption" ng-show="currentUser">
+          {{currentUser.login}} {{loadedPages.$resolved ? '|' : ''}} 
+          {{currentUser.client.name && 'cliente - ' + currentUser.client.name || 
           currentUser.reseller.name && 'revendedor - ' + currentUser.reseller.name || 
-          users.$resolved && 'Administrador Global'}}
+          loadedPages.$resolved && 'Administrador Global'}}
         </div>
       </div>
       <div flex></div>
@@ -22,8 +23,8 @@
           <i class="material-icons md-dark">delete</i>
         </md-button>
         <md-button class="md-icon-button" ng-disabled="_userData.user.login === currentUser.login" ng-click="updateUser('enabled', currentUser.enabled, 'button')">
-          <md-tooltip md-direction="bottom">{{currentUser.enabled && 'Desativar' || 'Ativar'}} conta</md-tooltip>
-          <i class="material-icons md-dark">{{currentUser.enabled && 'radio_button_on' || 'radio_button_off'}}</i>
+          <md-tooltip md-direction="bottom">{{currentUser.enabled ? 'Desativar': 'Ativar'}} conta</md-tooltip>
+          <i class="material-icons md-dark">{{currentUser.enabled ? 'radio_button_on' : 'radio_button_off'}}</i>
         </md-button>
         <md-button class="md-icon-button" ng-click="showBodyMenu('api')" ng-disabled="!currentUser.api_enabled">
           <md-tooltip md-direction="bottom">API</md-tooltip>
@@ -47,7 +48,7 @@
 
     <md-data-table-toolbar ng-show="filter.show && !selected.length && focusSearch()">
       <i class="material-icons md-dark">search</i>
-      <form flex name="filter.form">
+      <form flex name="filter.form" ng-submit="searchUser(query.filter)">
         <input type="text" ng-model="query.filter" ng-model-options="filter.options" 
           placeholder="Busca" focus-me="focusOn">
       </form>
@@ -57,18 +58,22 @@
       </md-button>
     </md-data-table-toolbar>   
 
-    <md-progress-linear ng-hide="users.$resolved" md-mode="indeterminate"></md-progress-linear> 
+    <md-progress-linear ng-hide="loadedPages.$resolved" md-mode="indeterminate"></md-progress-linear> 
+
   </div>
   <!-- Main Menu: END -->
-
-  <!-- User list -->
   <div class="card">
-    <md-list ng-show="userBodyMenu">
-      <md-list-item ng-click="showMainMenu(user)" ng-repeat="user in users | filter:query.filter | orderBy: 'login' ">
-        <i style="{{user.enabled||'color:#bdbdbd'}}" class="material-icons">{{user.icon||'person_outline'}}</i>
-        <p style="{{user.enabled || 'color:#bdbdbd'}}"> {{ user.login }} | {{user.client.name && 'cliente - ' + user.client.name || user.reseller.name && 'revendedor - ' + user.reseller.name || 'Administrador Global'}}</p>
-      </md-list-item>
-    </md-list>
+    <md-virtual-repeat-container style={{vrSize}} ng-show="userBodyMenu && loadedPages.$resolved">
+      <md-list>
+        <md-list-item ng-click="showMainMenu(user)" md-virtual-repeat="user in dynamicItems" md-on-demand flex>
+          <i ng-show="user.global_admin" style="{{user.enabled || 'color:#bdbdbd'}}" class="material-icons">public</i>
+          <i ng-show="user.admin" style="{{user.enabled || 'color:#bdbdbd'}}" class="material-icons">supervisor_account</i>          
+          <i ng-show="!user.admin && !user.global_admin" style="{{user.enabled || 'color:#bdbdbd'}}" class="material-icons">person_outline</i>                    
+          <p style="{{user.enabled || 'color:#bdbdbd'}}"> {{ user.login }} | 
+            {{user.client.name ? 'cliente - ' + user.client.name : user.reseller.name ? 'revendedor - ' + user.reseller.name : 'Administrador Global'}}</p>
+        </md-list-item>
+      </md-list>
+    </md-virtual-repeat-container>
   </div>
 
   <!-- Permissions Header -->

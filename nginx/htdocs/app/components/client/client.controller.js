@@ -257,7 +257,6 @@
           if ($scope.loadedPages.$resolved){
             $scope.vrSize = getVirtualRepeatSize($scope.numItems);
           }
-          console.log($scope.numItems);
         }, function(data){
           console.log('Error loading clients. See response below...');
           console.log(data);
