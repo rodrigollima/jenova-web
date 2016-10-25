@@ -3,7 +3,7 @@
 
   /* TODO: Expire user session when setting a new PERM
   */
-  function userCtrl($scope, $rootScope, $mdDialog, $state, Dialog, tokenPayload, userResource, userPermResource){
+  function userCtrl($scope, $rootScope, $mdDialog, $state, Dialog, tokenPayload, userResource, userPermResource, mdToast){
     $scope.currentUser = null;
     $scope.userBodyMenu = false;
 
@@ -230,6 +230,7 @@
             $scope.vrSize = getVirtualRepeatSize($scope.numItems);
           }
         }, function(data){
+          $scope.loadedPages.$resolved = data.$resolved;
           console.log('Error loading users. See response below...');
           console.log(data);
           mdToast.show(mdToast.getSimple(data.status + ' - Não foi possível obter a lista de usuários', 4000));
@@ -255,6 +256,7 @@
             $scope.vrSize = getVirtualRepeatSize($scope.numItems);
           }
         }, function(data){
+          $scope.loadedPages.$resolved = data.$resolved;
           console.log('Error loading clients. See response below...');
           console.log(data);
           mdToast.show(mdToast.getSimple(data.status + ' - Não foi possível obter a lista de clientes', 4000));
