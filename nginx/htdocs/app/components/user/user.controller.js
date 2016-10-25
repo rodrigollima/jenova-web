@@ -4,7 +4,7 @@
   /* TODO: Expire user session when setting a new PERM
   */
   function userCtrl($scope, $rootScope, $mdDialog, $state, Dialog, tokenPayload, userResource, userPermResource, mdToast){
-    $scope.currentUser = null;
+    $scope.currentUser = $rootScope._userData.user;
     $scope.userBodyMenu = false;
 
     $scope.loadedPages = {$resolved: false};
@@ -26,7 +26,7 @@
       page: 1
     };
     
-    var userData = $rootScope._userData
+    var userData = $rootScope._userData;
     $scope.isAdmin = userData.user.admin || userData.user.global_admin;
     $scope.isWriteUserEnabled = !($scope.isAdmin || userData.permissions.users.write);
     $scope.isDeleteUserEnabled = !($scope.isAdmin || userData.permissions.users.delete);
@@ -214,54 +214,30 @@
       $scope.loadedPages[pageNumber] = null;
       var pageOffset = pageNumber * this.PAGE_SIZE;
       
-      if ($rootScope._userData.user.global_admin){
-        // Global Admin
-        var pathParams = {
-          userName : this.query,
-          limit : this.PAGE_SIZE,
-          offset : pageOffset
-        }
-        userResource.get(pathParams, function(data){
-          $scope.loadedPages[pageNumber] = data.response.users;
-          $scope.numItems = $scope.numItems + data.response.users.length;
-          $scope.loadedPages.$resolved = data.$resolved;
-          $scope.userBodyMenu = true;
-          if ($scope.loadedPages.$resolved){
-            $scope.vrSize = getVirtualRepeatSize($scope.numItems);
-          }
-        }, function(data){
-          $scope.loadedPages.$resolved = data.$resolved;
-          console.log('Error loading users. See response below...');
-          console.log(data);
-          mdToast.show(mdToast.getSimple(data.status + ' - Não foi possível obter a lista de usuários', 4000));
-        });
-      } else {
-        if ( $rootScope._userData.user.reseller ){
-          resellerName = $rootScope._userData.user.reseller.name;
-        } else {
-          resellerName = $rootScope._userData.user.client.reseller.name;
-        }
-
-        var pathParams = {
-          resellerName : resellerName,
-          userName : this.query,
-          limit : this.PAGE_SIZE,
-          offset : pageOffset
-        }
-        userResource.get(pathParams, function(data){
-          $scope.loadedPages[pageNumber] = data.response.users;
-          $scope.numItems = $scope.numItems + data.response.users.length;
-          $scope.loadedPages.$resolved = data.$resolved;
-          if ($scope.loadedPages.$resolved){
-            $scope.vrSize = getVirtualRepeatSize($scope.numItems);
-          }
-        }, function(data){
-          $scope.loadedPages.$resolved = data.$resolved;
-          console.log('Error loading clients. See response below...');
-          console.log(data);
-          mdToast.show(mdToast.getSimple(data.status + ' - Não foi possível obter a lista de clientes', 4000));
-        });
+      var queryUsername = $rootScope._userData.user.login;
+      if ($rootScope._userData.user.admin || $rootScope._userData.user.global_admin){
+        queryUsername = '';
       }
+      
+      var pathParams = {
+        userName : this.query || queryUsername,
+        limit : this.PAGE_SIZE,
+        offset : pageOffset
+      }
+      userResource.get(pathParams, function(data){
+        $scope.loadedPages[pageNumber] = data.response.users;
+        $scope.numItems = $scope.numItems + data.response.users.length;
+        $scope.loadedPages.$resolved = data.$resolved;
+        $scope.userBodyMenu = true;
+        if ($scope.loadedPages.$resolved){
+          $scope.vrSize = getVirtualRepeatSize($scope.numItems);
+        }
+      }, function(data){
+        $scope.loadedPages.$resolved = data.$resolved;
+        console.log('Error loading users. See response below...');
+        console.log(data);
+        mdToast.show(mdToast.getSimple(data.status + ' - Não foi possível obter a lista de usuários', 4000));
+      });
     };
 
     $scope.searchUser = function (query) {
