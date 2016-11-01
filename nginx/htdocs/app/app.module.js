@@ -10,7 +10,7 @@ var app = angular.module('jenovaApp', [
       'ngAnimate',
       'ngResource'
   ])
-  .constant('APIHOST', 'https://api.inova.com.br:8443');
+  .constant('APIHOST', 'https://localhost:8443');
 
 app.factory('Dialog', ['$mdDialog', function DialogFactory ($mdDialog) {
   return {
@@ -92,8 +92,8 @@ app.factory('tokenPayload', function($window, jwtHelper) {
       users : {
         scopeName : 'Usuários'
       },
-      zimbra_login_delegated : {
-        scopeName : 'Login Delegado Zimbra'
+      zimbra : {
+        scopeName : 'Zimbra'
       },
       permissions : {
         scopeName : 'Permissões'
