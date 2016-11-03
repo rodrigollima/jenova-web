@@ -92,8 +92,8 @@ app.factory('tokenPayload', function($window, jwtHelper) {
       users : {
         scopeName : 'Usuários'
       },
-      zimbra_login_delegated : {
-        scopeName : 'Login Delegado Zimbra'
+      zimbra : {
+        scopeName : 'Zimbra'
       },
       permissions : {
         scopeName : 'Permissões'

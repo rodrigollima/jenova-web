@@ -55,9 +55,35 @@
     * Permissions
     **/
     $scope.userData = $rootScope._userData;
-    $scope.isAdmin = userData.user.admin || $scope.userData.user.global_admin
+    $scope.isAdmin = $scope.userData.user.global_admin
+    $scope.isWriteZimbra = getWriteZimbra();
+    $scope.isDeleteZimbra = isDeleteZimbra();
+    $scope.isReadZimbra = isReadZimbra();
 
-    
+    function getWriteZimbra(){
+      result = $scope.isAdmin || $scope.userData.permissions.zimbra.write;
+      if (!result){
+        return false;
+      }
+      return true;
+    }
+
+    function isDeleteZimbra(){
+      result = $scope.isAdmin || $scope.userData.permissions.zimbra.delete;
+      if (!result){
+        return false;
+      }
+      return true;
+    }
+
+    function isReadZimbra(){
+      result = $scope.isAdmin || $scope.userData.permissions.zimbra.read;
+      if (!result){
+        return false;
+      }
+      return true;
+    }
+
     // Search Distribution Lists
     $scope.searchDList = function(query){
       if (!query){
@@ -370,6 +396,7 @@
    }
    
     $scope.openDialog = function(template_url, data) {
+      console.log(permissions);
       Dialog.open(template_url, 'zimbraDialogCtrl', data, false);
     }
 
@@ -453,7 +480,40 @@
 
 
 // Dialog Distribution List Controller
-function zimbraDListDialogCtrl($scope, $mdDialog, $state, data, currentData, mdToast){
+function zimbraDListDialogCtrl($scope, $rootScope, $mdDialog, $state, data, currentData, mdToast){  
+    /**
+    * Permissions
+    **/
+    $scope.userData = $rootScope._userData;
+    $scope.isAdmin = $scope.userData.user.global_admin
+    $scope.isWriteZimbra = getWriteZimbra();
+    $scope.isDeleteZimbra = isDeleteZimbra();
+    $scope.isReadZimbra = isReadZimbra();
+
+    function getWriteZimbra(){
+      result = $scope.isAdmin || $scope.userData.permissions.zimbra.write;
+      if (!result){
+        return false;
+      }
+      return true;
+    }
+
+    function isDeleteZimbra(){
+      result = $scope.isAdmin || $scope.userData.permissions.zimbra.delete;
+      if (!result){
+        return false;
+      }
+      return true;
+    }
+
+    function isReadZimbra(){
+      result = $scope.isAdmin || $scope.userData.permissions.zimbra.read;
+      if (!result){
+        return false;
+      }
+      return true;
+    }  
+  
   $scope.currentDList = data;
   $scope.currentDomain = currentData.domain;
   if ( ! $scope.currentDList ){
@@ -643,7 +703,40 @@ function zimbraDListDialogCtrl($scope, $mdDialog, $state, data, currentData, mdT
 }
 
   // DIALOG CONTROLLER
-function zimbraDialogCtrl($scope, $mdDialog, $state, data, currentData, mdToast){
+function zimbraDialogCtrl($scope, $rootScope, $mdDialog, $state, data, currentData, mdToast){  
+  /**
+  * Permissions
+  **/
+  $scope.userData = $rootScope._userData;
+  $scope.isAdmin = $scope.userData.user.global_admin
+  $scope.isWriteZimbra = getWriteZimbra();
+  $scope.isDeleteZimbra = isDeleteZimbra();
+  $scope.isReadZimbra = isReadZimbra();
+
+  function getWriteZimbra(){
+    result = $scope.isAdmin || $scope.userData.permissions.zimbra.write;
+    if (!result){
+      return false;
+    }
+    return true;
+  }
+
+  function isDeleteZimbra(){
+    result = $scope.isAdmin || $scope.userData.permissions.zimbra.delete;
+    if (!result){
+      return false;
+    }
+    return true;
+  }
+
+  function isReadZimbra(){
+    result = $scope.isAdmin || $scope.userData.permissions.zimbra.read;
+    if (!result){
+      return false;
+    }
+    return true;
+  }
+  
   $scope.currentAccount = data;
   $scope.currentDomain = currentData.domain;
   $scope.firstCos = '';
