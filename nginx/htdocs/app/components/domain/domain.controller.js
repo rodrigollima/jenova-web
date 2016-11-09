@@ -36,7 +36,7 @@
     $scope.isAdmin = userData.user.admin || $scope.userData.user.global_admin
     $scope.isSyncEnabled = !($scope.userData.user.global_admin);
     $scope.isManageServiceEnabled = !($scope.userData.user.global_admin || $scope.userData.user.admin);
-    $scope.isManageZimbraDelegatedEnabled = !($scope.isAdmin || $scope.userData.permissions.zimbra_login_delegated.edit);
+    $scope.isManageZimbraDelegatedEnabled = !($scope.isAdmin || $scope.userData.permissions.zimbra.edit);
     $scope.isDeleteDomainEnabled = !($scope.isAdmin || $scope.userData.permissions.domain.delete);
     $scope.infoHint = $scope.userData.user.global_admin;
     $scope.isWriteDomainEnabled = isWriteDomainEnabled();
@@ -154,7 +154,7 @@
     $scope.isZimbraDelegatedEnabled = function(){
       var result = true;
       if ($scope.currentDomain){
-        if (!($scope.isAdmin || $scope.userData.permissions.zimbra_login_delegated.read)){
+        if (!($scope.isAdmin || $scope.userData.permissions.zimbra.read)){
           result = false;
         }
         for ( idx in $scope.currentDomain.services){

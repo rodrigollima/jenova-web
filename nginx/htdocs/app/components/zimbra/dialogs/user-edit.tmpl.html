@@ -25,29 +25,33 @@
               <div layout="row">
                 <md-input-container flex class="md-block">
                   <label>Primeiro Nome</label>
-                  <input ng-model="currentAccount.givenName"></input>
+                  <input ng-model="currentAccount.givenName" ng-disabled="{{!isWriteZimbra}}"></input>
                 </md-input-container>
                 <md-input-container flex class="md-block">
                   <label>Último Nome</label>
-                  <input ng-model="currentAccount.sn"></input>
+                  <input ng-model="currentAccount.sn" ng-disabled="{{!isWriteZimbra}}"></input>
                 </md-input-container>
               </div>
               <!--ROW TWO-->
               <div layout="row">
                 <md-input-container flex class="md-block">
                   <label>Nome de Exibição</label>
-                  <input ng-model="currentAccount.displayName"></input>
+                  <input ng-model="currentAccount.displayName" ng-disabled="{{!isWriteZimbra}}"></input>
                 </md-input-container>
                 <md-input-container flex>
                   <label>Status</label>
-                  <md-select ng-model="currentAccount.zimbraAccountStatus">
-                    <md-option value="{{status.zimbra}}" ng-repeat="status in zStatus">{{status.desc}}</md-option>
+                  <md-select ng-model="currentAccount.zimbraAccountStatus" ng-disabled="{{!isWriteZimbra}}">
+                    <md-option value="{{status.zimbra}}" ng-repeat="status in zStatus">
+                      {{status.desc}}
+                    </md-option>
                   </md-select>
                 </md-input-container>
                 <md-input-container flex>
                   <label>Tipo</label>
-                  <md-select ng-model="currentAccount.zimbraCOSId">
-                    <md-option ng-disabled="isCosLimitReached(cos)" value="{{cos.id}}"" ng-repeat="cos in currentDomain.cos">{{cos.name}}</md-option>
+                  <md-select ng-model="currentAccount.zimbraCOSId" ng-disabled="{{!isWriteZimbra}}">
+                    <md-option ng-disabled="isCosLimitReached(cos)" value="{{cos.id}}" ng-repeat="cos in currentDomain.cos">
+                      {{cos.name}}
+                    </md-option>
                   </md-select>
                 </md-input-container>
               </div>
@@ -55,7 +59,7 @@
               <div layout="row">
                 <md-input-container flex>
                   <label for="password">Senha</label>
-                  <input ng-model="currentAccount.userPassword" type="password" name="password1" 
+                  <input ng-model="currentAccount.userPassword" type="password" name="password1" ng-disabled="{{!isWriteZimbra}}"
                     ng-pattern="/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,20}$/"/>
                     <div ng-messages="accountForm.password1.$error" role="alert" multiple>
                       <div ng-message="pattern" class="my-message">A senha deve conter de 8 a 20 caracteres e ao menos um maiusculo, minusculo, digito e caractere especial.</div>
@@ -63,7 +67,7 @@
                 </md-input-container>
                 <md-input-container flex>
                   <label for="password">Confirmar Senha </label>
-                  <input ng-model="password2" type="password" name="password2" 
+                  <input ng-model="password2" type="password" name="password2" ng-disabled="{{!isWriteZimbra}}"
                     ng-pattern="{{currentAccount.userPassword}}"/>
                   <div ng-messages="accountForm.password2.$error" role="alert" multiple>
                       <div ng-message="pattern" class="my-message">As senhas são diferentes.</div>
@@ -103,7 +107,7 @@
                 
                   <md-input-container flex class="md-block" layout-align="center right">
                     <label>Email</label>
-                    <input ng-blur="validateAlias(accountAlias)" ng-model="accountAlias"></input>
+                    <input ng-blur="validateAlias(accountAlias)" ng-model="accountAlias" ng-disabled="{{!isWriteZimbra}}"></input>
                   </md-input-container>
                 
                   <md-button  class="md-icon-button md-primary" ng-disabled="!accountAlias" ng-click="addAccountAlias()">
@@ -119,13 +123,13 @@
   </md-content> 
   <md-progress-linear ng-show="zimbraOverlayLoader" md-mode="indeterminate"></md-progress-linear>
   <md-dialog-actions class="grey lighten-3" layout="row" ng-init="deleteMode = false">
-    <md-button ng-show="!deleteMode" ng-click="deleteMode = true" class="md-warn">Deletar</md-button>
+    <md-button ng-show="!deleteMode" ng-click="deleteMode = true" class="md-warn" ng-disabled="{{!isDeleteZimbra}}">Deletar</md-button>
     
     <md-button ng-show="deleteMode" ng-click="deleteMode = false">Não</md-button>
     <md-button ng-show="deleteMode" ng-click="deleteAccount()" class="md-warn">Sim</md-button>
     <span flex></span>
     <md-button ng-click="updateAccount()" class="md-primary"
-      ng-disabled="!(accountForm.$valid === true)" >Salvar
+      ng-disabled="!(accountForm.$valid === true) || !isWriteZimbra">Salvar
     </md-button> 
     <md-button ng-click="closeDialog()">Cancelar</md-button> 
   </md-dialog-actions>
