@@ -87,12 +87,11 @@
         read : $scope.currentUser.permissions[scope].read,
         write : $scope.currentUser.permissions[scope].write,
         delete : $scope.currentUser.permissions[scope].delete,
-        edit : $scope.currentUser.permissions[scope].edit
+        edit : $scope.currentUser.permissions[scope].write
       }
       $scope.currentUser.permissions[scope][perm_name] = !($scope.currentUser.permissions[scope][perm_name])
-      if (perm_name === 'write'){
-        $scope.currentUser.permissions[scope]['edit'] = $scope.currentUser.permissions[scope][perm_name]       
-      }
+      $scope.currentUser.permissions[scope]['edit'] = !($scope.currentUser.permissions[scope]['write'])
+
       userPermResource.update({userName : $scope.currentUser.login, scopeName : scope}, updateData, function(data){
         // Here we release the loading spinner and the switches
         $scope.blkUsrPermSwt = null;
