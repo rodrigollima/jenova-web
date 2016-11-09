@@ -40,8 +40,15 @@
     $scope.isDeleteDomainEnabled = !($scope.isAdmin || $scope.userData.permissions.domain.delete);
     $scope.infoHint = $scope.userData.user.global_admin;
     $scope.isWriteDomainEnabled = isWriteDomainEnabled();
+    $scope.isReadZimbra = isReadZimbra();
 
-
+    function isReadZimbra(){
+      result = $scope.isAdmin || $scope.userData.permissions.zimbra.read;
+      if (!result){
+        return false;
+      }
+      return true;
+    }
 
     $scope.setHint = function(state, notFound){
       if (!$rootScope._userData.user.global_admin){
@@ -152,24 +159,11 @@
     }
 
     $scope.isZimbraDelegatedEnabled = function(){
-      var result = true;
-      if ($scope.currentDomain){
-        if (!($scope.isAdmin || $scope.userData.permissions.zimbra.read)){
-          result = false;
-        }
-        for ( idx in $scope.currentDomain.services){
-          if ($scope.currentDomain.services[idx].service_type == 'ZIMBRA'){
-            $scope.currentDomain.zimbra_service_name = $scope.currentDomain.services[idx].name
-            result = false;
-          }
-        }
-      }
       var mdIco = 'assets/img/icons/zimbra-logo-black.svg';
-      if (result){
+      if (!$scope.isReadZimbra){
         mdIco = 'assets/img/icons/zimbra-logo-grey.svg';
       }
       return {
-        content : result,
         mdIco : mdIco
       };
     }

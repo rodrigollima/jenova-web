@@ -19,7 +19,7 @@ layout-align="center center" flex>
           <md-tooltip md-direction="bottom">Remover domínio</md-tooltip>
           <i class="material-icons md-dark">delete</i>
         </md-button>
-        <md-button class="md-icon-button" ng-disabled="isZimbraDelegatedEnabled().content"
+        <md-button class="md-icon-button" ng-disabled="!isReadZimbra"
           ng-click="goToZimbra(selected_domain)">
           <md-tooltip md-direction="bottom">Zimbra Admin</md-tooltip>
           <md-icon md-svg-src="{{isZimbraDelegatedEnabled().mdIco}}"></md-icon>
