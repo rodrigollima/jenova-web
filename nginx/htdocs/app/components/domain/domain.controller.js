@@ -167,30 +167,6 @@
       });
     }
 
-    $scope.isZimbraDelegatedEnabled = function(){
-      var result = true;
-      if ($scope.currentDomain){
-        if (!($scope.isAdmin || $scope.userData.permissions.zimbra.read)){
-          result = false;
-        }
-        for ( idx in $scope.currentDomain.services){
-          if ($scope.currentDomain.services[idx].service_type == 'ZIMBRA'){
-            $scope.currentDomain.zimbra_service_name = $scope.currentDomain.services[idx].name
-            result = false;
-          }
-        }
-      }
-      var mdIco = 'assets/img/icons/zimbra-logo-black.svg';
-      if (!result){
-        mdIco = 'assets/img/icons/zimbra-logo-grey.svg';
-      }
-      return {
-        content : result,
-        mdIco : mdIco
-      };
-    }
-
-
     $scope.startMenu = function(domain, menuType, event){
       $scope.domainListOff = true;
       if (menuType === 'settings'){
