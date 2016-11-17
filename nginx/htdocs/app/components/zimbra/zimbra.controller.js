@@ -22,7 +22,7 @@
     $scope.querySearch   = querySearch;
     $scope.loadedPages = {$resolved: true};
     $scope.zDomainStatus = { active : true, class : '' };
-
+    
     $scope.menu = {
       users : true,
       dlist : false,
@@ -55,13 +55,14 @@
     * Permissions
     **/
     $scope.userData = $rootScope._userData;
-    $scope.isAdmin = $scope.userData.user.global_admin
+    $scope.isAdmin = $scope.userData.user.admin || $scope.userData.user.global_admin;
+    $scope.isGlobalAdmin = $scope.userData.user.global_admin
     $scope.isWriteZimbra = getWriteZimbra();
     $scope.isDeleteZimbra = isDeleteZimbra();
     $scope.isReadZimbra = isReadZimbra();
 
     function getWriteZimbra(){
-      result = $scope.isAdmin || $scope.userData.permissions.zimbra.write;
+      result = $scope.isGlobalAdmin || $scope.userData.permissions.zimbra.write;
       if (!result){
         return false;
       }
@@ -69,7 +70,7 @@
     }
 
     function isDeleteZimbra(){
-      result = $scope.isAdmin || $scope.userData.permissions.zimbra.delete;
+      result = $scope.isGlobalAdmin || $scope.userData.permissions.zimbra.delete;
       if (!result){
         return false;
       }
@@ -77,7 +78,7 @@
     }
 
     function isReadZimbra(){
-      result = $scope.isAdmin || $scope.userData.permissions.zimbra.read;
+      result = $scope.isGlobalAdmin || $scope.userData.permissions.zimbra.read;
       if (!result){
         return false;
       }
@@ -485,13 +486,14 @@ function zimbraDListDialogCtrl($scope, $rootScope, $mdDialog, $state, data, curr
     * Permissions
     **/
     $scope.userData = $rootScope._userData;
-    $scope.isAdmin = $scope.userData.user.global_admin
+    $scope.isAdmin = $scope.userData.user.admin;
+    $scope.isGlobalAdmin = $scope.userData.user.global_admin;
     $scope.isWriteZimbra = getWriteZimbra();
     $scope.isDeleteZimbra = isDeleteZimbra();
     $scope.isReadZimbra = isReadZimbra();
 
     function getWriteZimbra(){
-      result = $scope.isAdmin || $scope.userData.permissions.zimbra.write;
+      result = $scope.isGlobalAdmin || $scope.userData.permissions.zimbra.write;
       if (!result){
         return false;
       }
@@ -499,7 +501,7 @@ function zimbraDListDialogCtrl($scope, $rootScope, $mdDialog, $state, data, curr
     }
 
     function isDeleteZimbra(){
-      result = $scope.isAdmin || $scope.userData.permissions.zimbra.delete;
+      result = $scope.isGlobalAdmin || $scope.userData.permissions.zimbra.delete;
       if (!result){
         return false;
       }
@@ -507,7 +509,7 @@ function zimbraDListDialogCtrl($scope, $rootScope, $mdDialog, $state, data, curr
     }
 
     function isReadZimbra(){
-      result = $scope.isAdmin || $scope.userData.permissions.zimbra.read;
+      result = $scope.isGlobalAdmin || $scope.userData.permissions.zimbra.read;
       if (!result){
         return false;
       }
@@ -708,13 +710,14 @@ function zimbraDialogCtrl($scope, $rootScope, $mdDialog, $state, data, currentDa
   * Permissions
   **/
   $scope.userData = $rootScope._userData;
-  $scope.isAdmin = $scope.userData.user.global_admin
+  $scope.isAdmin = $scope.userData.user.admin;
+  $scope.isGlobalAdmin = $scope.userData.user.global_admin;
   $scope.isWriteZimbra = getWriteZimbra();
   $scope.isDeleteZimbra = isDeleteZimbra();
   $scope.isReadZimbra = isReadZimbra();
 
   function getWriteZimbra(){
-    result = $scope.isAdmin || $scope.userData.permissions.zimbra.write;
+    result = $scope.isGlobalAdmin || $scope.userData.permissions.zimbra.write;
     if (!result){
       return false;
     }
@@ -722,7 +725,7 @@ function zimbraDialogCtrl($scope, $rootScope, $mdDialog, $state, data, currentDa
   }
 
   function isDeleteZimbra(){
-    result = $scope.isAdmin || $scope.userData.permissions.zimbra.delete;
+    result = $scope.isGlobalAdmin || $scope.userData.permissions.zimbra.delete;
     if (!result){
       return false;
     }
@@ -730,7 +733,7 @@ function zimbraDialogCtrl($scope, $rootScope, $mdDialog, $state, data, currentDa
   }
 
   function isReadZimbra(){
-    result = $scope.isAdmin || $scope.userData.permissions.zimbra.read;
+    result = $scope.isGlobalAdmin || $scope.userData.permissions.zimbra.read;
     if (!result){
       return false;
     }
