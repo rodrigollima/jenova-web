@@ -33,19 +33,18 @@
     * Permissions
     **/
     $scope.userData = $rootScope._userData;
-    $scope.isAdmin = userData.user.admin || $scope.userData.user.global_admin
-    $scope.isSyncEnabled = !($scope.userData.user.global_admin);
-    $scope.isManageServiceEnabled = !($scope.userData.user.global_admin || $scope.userData.user.admin);
-    $scope.isManageZimbraDelegatedEnabled = !($scope.isAdmin || $scope.userData.permissions.zimbra.edit);
-    $scope.isDeleteDomainEnabled = !($scope.isAdmin || $scope.userData.permissions.domain.delete);
-    $scope.infoHint = $scope.userData.user.global_admin;
+    $scope.isAdmin = $scope.userData.user.admin;
+    $scope.isGlobalAdmin = $scope.userData.user.global_admin;
+    $scope.isManageServiceEnabled = !($scope.isGlobalAdmin || $scope.isAdmin);
+    $scope.isDeleteDomainEnabled = !($scope.isGlobalAdmin || $scope.userData.permissions.domain.delete);
+    $scope.infoHint = $scope.isGlobalAdmin;
     $scope.isWriteDomainEnabled = isWriteDomainEnabled();
 
     $scope.isReadZimbra = function (){
       result = false;
       var zico = 'assets/img/icons/zimbra-logo-grey.svg';
       if ($scope.currentDomain){
-        result = $scope.isAdmin || $scope.userData.permissions.zimbra.read;
+        result = $scope.isGlobalAdmin || $scope.userData.permissions.zimbra.read;
         for ( idx in $scope.currentDomain.services){
           if ($scope.currentDomain.services[idx].service_type == 'ZIMBRA'){
             $scope.currentDomain.zimbra_service_name = $scope.currentDomain.services[idx].name
@@ -67,7 +66,7 @@
 		}
 
     function isWriteDomainEnabled(){
-      result = $scope.isAdmin || $scope.userData.permissions.domain.write;
+      result = $scope.isGlobalAdmin || $scope.userData.permissions.domain.write;
       if (!result){
         return false;
       }
@@ -103,7 +102,7 @@
 
     $scope.searchHint = true;
     function checkServiceEnabled(serviceName) {
-      if ((!($scope.isAdmin || $scope.userData.permissions.dns.read) && serviceName == 'DNS')){
+      if ((!($scope.isGlobalAdmin || $scope.userData.permissions.dns.read) && serviceName == 'DNS')){
         return true;
       }
       if ($scope.currentDomain){
@@ -336,7 +335,7 @@
           console.log('Error getting domains, response below...');
           console.log(data);
         });
-      } else if (resellerName || ($scope.isAdmin && this.query)){
+      } else if (resellerName || ($scope.isGlobalAdmin && this.query)){
         // reseller request, must bring all domains from the reseller
         domainResource.resellers.get({resellerName : resellerName, domainName : this.query, 
           limit:this.PAGE_SIZE, offset:pageOffset}, function(data){
@@ -377,7 +376,7 @@
     };
 
     // Search domains
-    if ($stateParams.client || $stateParams.reseller || !$scope.isAdmin){
+    if ($stateParams.client || $stateParams.reseller || !$scope.isGlobalAdmin){
       $scope.vrSize = 0;
       $scope.dynamicItems = new DynamicItems();
       
