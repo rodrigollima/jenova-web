@@ -59,7 +59,7 @@
 
   <md-progress-linear ng-show="zimbraOverlayLoader" md-mode="indeterminate"></md-progress-linear>
   <md-dialog-actions class="grey lighten-3" layout="row" ng-init="deleteMode = false">
-    <md-button ng-show="!deleteMode" ng-click="deleteMode = true" class="md-warn">Deletar</md-button>
+    <md-button ng-show="!deleteMode" ng-click="deleteMode = true" class="md-warn" ng-disabled="{{!isDeleteZimbra}}">Deletar</md-button>
     
     <md-button ng-show="deleteMode" ng-click="deleteMode = false">Não</md-button>
     <md-button ng-show="deleteMode" ng-click="deleteDList()" class="md-warn">Sim</md-button>
