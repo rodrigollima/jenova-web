@@ -527,6 +527,7 @@ function zimbraDListDialogCtrl($scope, $rootScope, $mdDialog, $state, data, curr
   
   
   $scope.addDListMember = function(account){
+    console.log(account);
     var member = {name : ''};
     if (indexByAccount($scope.currentDList.members, account.name) !== -1){
       openToast('Esta conta já é membro da lista!', 5, 409);
@@ -541,6 +542,19 @@ function zimbraDListDialogCtrl($scope, $rootScope, $mdDialog, $state, data, curr
     idx = indexByAccount($scope.currentDList.members, account.name);
     $scope.currentDList.members.splice(idx,1);
     openToast(account.name + ' removido!', 4, 'OK');
+  }
+
+  //Show form
+  $scope.addDListMemberInputText = function() {
+    $scope.showInputAddMember = true;
+  }
+
+  //Add object addDListMember
+  $scope.addDlistMemberSubmit = function (mail) {
+    if (undefined !== mail.eMember && "" !== mail.eMember) {
+      this.addDListMember({name : mail.eMember})
+      this.eMember = "";
+    }
   }
 
   $scope.closeDialog = function() {

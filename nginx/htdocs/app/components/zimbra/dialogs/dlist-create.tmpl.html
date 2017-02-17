@@ -26,9 +26,33 @@
       <div layout="row" layout-xs="column">
         <!--MEMBERS-->
         <div flex = "50">
-          <md-subheader>Membros</md-subheader>
+        <md-subheader>
+          Membros
+          <md-menu md-position-mode="target-right target" class="sub-header-icon">
+            <md-button class="md-icon-button" ng-click="$mdOpenMenu()">
+              <md-tooltip md-direction="bottom">Usuários</md-tooltip>
+              <md-icon>
+                <i class="material-icons">menu</i>
+              </md-icon>
+            </md-button>
+            <md-menu-content width="4">
+            <md-menu-item>
+            <md-button ng-click="addDListMemberInputText()">
+              <md-icon>
+                <i class="material-icons">person</i>
+              </md-icon>
+              Adicionar membro externo
+            </md-button>
+            </md-menu-item>
+            </md-menu-content>
+          </md-menu>
+      </md-subheader>
+                
           <md-divider flex="90"></md-divider>
           <div>
+              <md-input-container flex="90" class="md-block md-input-container-add-mail" ng-if="showInputAddMember">
+                <input type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" placeholder="Email *" ng-model="eMember" ng-required="false" ng-keyup="$event.keyCode == 13 && addDlistMemberSubmit(this)">
+             </md-input-container>
             <md-virtual-repeat-container style="height:300px">
               <md-list>
                 <md-list-item layout="row" layout-align="space-between center"
