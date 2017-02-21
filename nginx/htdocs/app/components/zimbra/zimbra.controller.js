@@ -61,6 +61,11 @@
     $scope.isDeleteZimbra = isDeleteZimbra();
     $scope.isReadZimbra = isReadZimbra();
 
+    /**
+     * Scope Options
+     */
+    $scope.hasScopeOptionAddExternalAccount = hasScopeOption('hostedzimbra.dlists.add_external_account');
+
     function getWriteZimbra(){
       result = $scope.isGlobalAdmin || $scope.userData.permissions.zimbra.write;
       if (!result){
@@ -83,6 +88,17 @@
         return false;
       }
       return true;
+    }
+
+    function hasScopeOption(option) {
+      var scopeOption = false;
+      for (scope in $scope.userData.user.scope_options) {
+        if ($scope.userData.user.scope_options[scope].scope == option) {
+          scopeOption = true;
+          break;
+        }
+      }
+      return scopeOption;
     }
 
     // Search Distribution Lists
