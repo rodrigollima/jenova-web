@@ -3,7 +3,7 @@
 
   /* TODO: Expire user session when setting a new PERM
   */
-  function userCtrl($scope, $rootScope, $mdDialog, $state, Dialog, tokenPayload, userResource, userPermResource, mdToast){
+  function userCtrl($scope, $rootScope, $mdDialog, $state, Dialog, tokenPayload, userResource, userPermResource, userScopeOptionsResource, mdToast){
     $scope.currentUser = $rootScope._userData.user;
     $scope.userBodyMenu = false;
 
@@ -25,7 +25,7 @@
       limit: 5,
       page: 1
     };
-    
+   
     var userData = $rootScope._userData;
     $scope.isAdmin = userData.user.admin || userData.user.global_admin;
     $scope.isWriteUserEnabled = !($scope.isAdmin || userData.permissions.users.write);
@@ -102,6 +102,22 @@
         $scope.blkUsrPermSwt = null;
       });
     }
+
+    $scope.blkUsrScopeOptionSwt = null;
+    $scope.updateUserScopeOptions = function(scope){
+      $scope.blkUsrScopeOptionSwt = true;
+      var data = {};
+      userScopeOptionsResource.remove({userName : $scope.currentUser.login, scopeName : scope.alias}, data, function(data){
+        // Here we release the loading spinner and the switches
+        $scope.blkUsrScopeOptionSwt = null;
+        //$scope.currentUser.permissions[scope][perm_name] = updateData[perm_name];
+      }, function(data){
+        // Show TOAST ACTION on ERROR
+        //$rootScope.$broadcast("showActionToast", {msg : 'Erro ao habilitar/desabilitar função', delay : 4000});
+        $scope.blkUsrScopeOptionSwt = null;
+      });
+    }
+
     
     $scope.removeMainMenu = function(){
       $scope.currentUser = null;
@@ -141,7 +157,10 @@
         $scope.userBodyMenu = false;
         $scope.apiBodyMenu = false;
       }else if (menuType === 'permissions'){
+        
         $scope.currentUser.permissions = tokenPayload.loadPermissions($scope.currentUser.permissions);
+        $scope.currentUser.scopeOptions = tokenPayload.loadScopeOptions(userData.scope_options);
+        
         $scope.settingsBodyMenu = false;
         $scope.permBodyMenu = true;
         $scope.userBodyMenu = false;
@@ -266,6 +285,7 @@
     };
 
     $scope.currentUser = $rootScope._userData.user;
+    
     if (data){
       // variable bind to view
       $scope.editUser = JSON.parse(JSON.stringify(data));

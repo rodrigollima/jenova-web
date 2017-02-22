@@ -132,7 +132,26 @@
               </md-list-item>
             </md-list>       
           </md-tab>
-          
+        </md-tabs>
+      </md-content>
+    </div>
+
+    <md-subheader class="card pink white-text">Confirugações extras</md-subheader>
+
+    <!-- Scope options -->
+    <div>
+      <md-content class="white card">
+        <md-progress-linear md-mode="indeterminate" ng-show="blkUsrPermSwt"></md-progress-linear> 
+        <md-tabs md-dynamic-height md-border-bottom md-no-pagination>
+          <md-tab label="{{scope}}" ng-repeat="(scope, perm) in currentUser.scopeOptions">
+            <md-list>
+              <md-list-item ng-repeat="(service, option) in perm">
+                <i class="material-icons">lock_outline</i>
+                <p class="active">{{option.scopeName}}</p>
+                <md-switch class="md-secondary" ng-change="updateUserScopeOptions(option)" ng-model="option.active" ng-disabled="blkUsrPermSwt"></md-switch>
+              </md-list-item>
+            </md-list>       
+          </md-tab>
         </md-tabs>
       </md-content>
     </div>

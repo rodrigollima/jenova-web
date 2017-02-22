@@ -121,8 +121,35 @@ app.factory('tokenPayload', function($window, jwtHelper) {
       }
     }
     return defaultPermissions;
-
   }
+
+  function loadScopeOptions(scopeOptions){
+    var defaultPermissions = {
+      zimbra : [
+        {
+          scopeName : 'Adicionar conta externa',
+          alias     : 'hostedzimbra.dlists.add_external_account',
+          active    : false,
+        }
+      ]
+    };
+
+    for (index in scopeOptions){
+      for (indexDefault in defaultPermissions) {
+        for(indexScope in defaultPermissions[indexDefault]) {
+          try {
+            if (defaultPermissions[indexDefault][indexScope].alias == scopeOptions[index].scope) {
+              defaultPermissions[indexDefault][indexScope].active = true;  
+            }
+          } catch (err) {
+            console.log('Error setting permission, using default. ' + err);  
+          }
+        }
+      }
+    }
+    return defaultPermissions;
+  }
+
   return {
 
     data : function() {
@@ -134,15 +161,21 @@ app.factory('tokenPayload', function($window, jwtHelper) {
 
       //var data = {permissions : token.user.permissions}
       permissions = loadPermissions(token.user.permissions);
+      scopeOtions = loadScopeOptions(token.user.scope_options);
+
       token.user.permissions = permissions;
+      token.user.scopeOtions = scopeOtions;
 
       return {
         user : token.user,
         permissions : permissions,
+        scopeOtions : scopeOtions,
+        scope_options : token.user.scope_options,
         isAdmin : token.user.admin || token.user.global_admin
       }
     },
-    loadPermissions : loadPermissions
+    loadPermissions : loadPermissions,
+    loadScopeOptions: loadScopeOptions
   };
 });
 
@@ -165,6 +198,14 @@ app.factory('userResource', function($resource, APIHOST) {
 app.factory('userPermResource', function($resource, APIHOST) {
   return $resource(APIHOST + '/scopes/:scopeName/users/:userName/permissions', null, {
     'update' : { method : 'PUT' }
+  });
+});
+
+// DEPRECATED - remove later
+app.factory('userScopeOptionsResource', function($resource, APIHOST) {
+  return $resource(APIHOST + '/scopes/:scopeName/users/:userName/options', null, {
+    'create' : { method : 'POST' },
+    'remove' : { method : 'DELETE' }
   });
 });
 
