@@ -66,6 +66,19 @@
      */
     $scope.hasScopeOptionAddExternalAccount = hasScopeOption('hostedzimbra.dlists.add_external_account');
 
+    function hasScopeOption(option) {
+      var scopeOption = false;
+      for (scope in $scope.userData.user.scope_options) {
+        if ($scope.userData.user.scope_options[scope].scope == option) {
+          scopeOption = true;
+          break;
+        }
+      }
+      return scopeOption;
+    }
+
+
+
     function getWriteZimbra(){
       result = $scope.isGlobalAdmin || $scope.userData.permissions.zimbra.write;
       if (!result){
@@ -88,17 +101,6 @@
         return false;
       }
       return true;
-    }
-
-    function hasScopeOption(option) {
-      var scopeOption = false;
-      for (scope in $scope.userData.user.scope_options) {
-        if ($scope.userData.user.scope_options[scope].scope == option) {
-          scopeOption = true;
-          break;
-        }
-      }
-      return scopeOption;
     }
 
     // Search Distribution Lists
@@ -507,6 +509,22 @@ function zimbraDListDialogCtrl($scope, $rootScope, $mdDialog, $state, data, curr
     $scope.isWriteZimbra = getWriteZimbra();
     $scope.isDeleteZimbra = isDeleteZimbra();
     $scope.isReadZimbra = isReadZimbra();
+    /**
+     * Scope Options
+     */
+    $scope.hasScopeOptionAddExternalAccount = hasScopeOption('hostedzimbra.dlists.add_external_account');
+
+    function hasScopeOption(option) {
+      var scopeOption = false;
+      for (scope in $scope.userData.user.scope_options) {
+        if ($scope.userData.user.scope_options[scope].scope == option) {
+          scopeOption = true;
+          break;
+        }
+      }
+      return scopeOption;
+    }
+
 
     function getWriteZimbra(){
       result = $scope.isGlobalAdmin || $scope.userData.permissions.zimbra.write;
@@ -745,6 +763,24 @@ function zimbraDialogCtrl($scope, $rootScope, $mdDialog, $state, data, currentDa
   $scope.isWriteZimbra = getWriteZimbra();
   $scope.isDeleteZimbra = isDeleteZimbra();
   $scope.isReadZimbra = isReadZimbra();
+
+    /**
+     * Scope Options
+     */
+    $scope.hasScopeOptionAddExternalAccount = hasScopeOption('hostedzimbra.dlists.add_external_account');
+
+    function hasScopeOption(option) {
+      var scopeOption = false;
+      for (scope in $scope.userData.user.scope_options) {
+        if ($scope.userData.user.scope_options[scope].scope == option) {
+          scopeOption = true;
+          break;
+        }
+      }
+      return scopeOption;
+    }
+
+
 
   function getWriteZimbra(){
     result = $scope.isGlobalAdmin || $scope.userData.permissions.zimbra.write;

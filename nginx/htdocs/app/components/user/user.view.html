@@ -145,10 +145,10 @@
         <md-tabs md-dynamic-height md-border-bottom md-no-pagination>
           <md-tab label="{{scope}}" ng-repeat="(scope, perm) in currentUser.scopeOptions">
             <md-list>
-              <md-list-item ng-repeat="(service, option) in perm">
+              <md-list-item ng-repeat="(index, option) in perm">
                 <i class="material-icons">lock_outline</i>
                 <p class="active">{{option.scopeName}}</p>
-                <md-switch class="md-secondary" ng-change="updateUserScopeOptions(option)" ng-model="option.active" ng-disabled="blkUsrPermSwt"></md-switch>
+                <md-switch class="md-secondary" ng-change="updateUserScopeOptions(option, scope, index)" ng-model="option.active" ng-disabled="blkUsrPermSwt"></md-switch>
               </md-list-item>
             </md-list>       
           </md-tab>

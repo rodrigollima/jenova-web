@@ -104,16 +104,29 @@
     }
 
     $scope.blkUsrScopeOptionSwt = null;
-    $scope.updateUserScopeOptions = function(scope){
+    $scope.updateUserScopeOptions = function(option, scope, index){
       $scope.blkUsrScopeOptionSwt = true;
       var data = {};
-      userScopeOptionsResource.remove({userName : $scope.currentUser.login, scopeName : scope.alias}, data, function(data){
+      var request = option.active ? 'create' : 'remove';
+      userScopeOptionsResource[request]({userName : $scope.currentUser.login, scopeName : option.alias}, data, function(data) {
         // Here we release the loading spinner and the switches
         $scope.blkUsrScopeOptionSwt = null;
-        //$scope.currentUser.permissions[scope][perm_name] = updateData[perm_name];
+        if (request === 'create') {
+          $scope.currentUser.scope_options.push({
+            id : data.response.scope_id,
+            scope : option.alias
+          });
+        } else if (request === 'remove') {
+          $scope.currentUser.scope_options.map(function (scope, key) {
+            if (scope.scope == option.alias) {
+              $scope.currentUser.scope_options.splice(key, 1);
+            }
+          });
+        } 
+
       }, function(data){
         // Show TOAST ACTION on ERROR
-        //$rootScope.$broadcast("showActionToast", {msg : 'Erro ao habilitar/desabilitar função', delay : 4000});
+        $rootScope.$broadcast("showActionToast", {msg : 'Erro ao habilitar/desabilitar função', delay : 4000});
         $scope.blkUsrScopeOptionSwt = null;
       });
     }
@@ -159,7 +172,7 @@
       }else if (menuType === 'permissions'){
         
         $scope.currentUser.permissions = tokenPayload.loadPermissions($scope.currentUser.permissions);
-        $scope.currentUser.scopeOptions = tokenPayload.loadScopeOptions(userData.scope_options);
+        $scope.currentUser.scopeOptions = tokenPayload.loadScopeOptions($scope.currentUser.scope_options);
         
         $scope.settingsBodyMenu = false;
         $scope.permBodyMenu = true;
