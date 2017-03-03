@@ -32,7 +32,7 @@
     $scope.isDeleteUserEnabled = !($scope.isAdmin || userData.permissions.users.delete);
     $scope.isEditUserEnabled = !($scope.isAdmin || userData.permissions.users.edit);
     $scope.isPermissionsEnabled = !($scope.isAdmin || userData.permissions.permissions.read);
-
+    
     $scope.deleteUser = function(user_login){
       $scope.users.$resolved = false;
       userResource.delete({userName : user_login}, function(data){

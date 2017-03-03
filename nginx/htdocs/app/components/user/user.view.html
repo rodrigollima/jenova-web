@@ -136,10 +136,10 @@
       </md-content>
     </div>
 
-    <md-subheader class="card pink white-text">Confirugações extras</md-subheader>
+    <md-subheader class="card pink white-text" ng-if="{isAdmin}">Confirugações extras</md-subheader>
 
     <!-- Scope options -->
-    <div>
+    <div nf-if="{isAdmin}">
       <md-content class="white card">
         <md-progress-linear md-mode="indeterminate" ng-show="blkUsrPermSwt"></md-progress-linear> 
         <md-tabs md-dynamic-height md-border-bottom md-no-pagination>
