@@ -8,6 +8,7 @@
     "angular-messages": "~1.5.0",
     "angular-resource": "~1.5.0",
     "angular-material": "~1.0.6",
+    "angular-animate": "1.5.8",
     "angular-material-icons": "https://github.com/klarsys/angular-material-icons.git#v0.6.0",
     "materialize": "https://github.com/Dogfalo/materialize.git#v0.97.3",
     "font-awesome": "https://github.com/FortAwesome/Font-Awesome.git#v4.5.0",
